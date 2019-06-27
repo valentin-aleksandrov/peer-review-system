@@ -5,6 +5,7 @@ import {
     JoinTable 
 } from "typeorm";
 import { User } from "./user.entity";
+import { Role } from "./role.entity";
 
 @Entity('teams')
 export class Team {

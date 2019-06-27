@@ -6,6 +6,8 @@ import {
   ManyToMany, 
 } from 'typeorm';
 import { Team } from './team.entity';
+import { Role } from './role.entity';
+import { type } from 'os';
 
 
 @Entity('users')
@@ -33,4 +35,7 @@ export class User {
 
   @ManyToMany(type => Team, team => team.users)
   teams: Promise<Team[]>;
+
+  @ManyToMany(type => Role, role => role.users)
+  roles: Role[];
 }
