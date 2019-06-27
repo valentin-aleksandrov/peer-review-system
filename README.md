@@ -1,1 +1,1 @@
-# peer-review-system
+# Peer Review System
