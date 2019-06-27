@@ -3,11 +3,14 @@ import {
   Entity, 
   PrimaryGeneratedColumn, 
   Column, 
-  ManyToMany, 
+  ManyToMany,
+  OneToMany, 
 } from 'typeorm';
 import { Team } from './team.entity';
 import { Role } from './role.entity';
 import { type } from 'os';
+import { WorkItem } from './work-item.entity';
+import { CommentEntity } from './comment.entity';
 
 
 @Entity('users')
@@ -38,4 +41,13 @@ export class User {
 
   @ManyToMany(type => Role, role => role.users)
   roles: Role[];
+
+  @OneToMany(type => WorkItem, workitem => workitem.assignee)
+  workItems: Promise<WorkItem[]>;
+
+  @ManyToMany(type => WorkItem, workItem => workItem.reviewers)
+  workItemsToReview: WorkItem[];
+
+  @OneToMany(type => CommentEntity, comment => comment.author)
+  comments: Promise<CommentEntity[]>;
 }
