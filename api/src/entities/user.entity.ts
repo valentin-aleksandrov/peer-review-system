@@ -4,11 +4,8 @@ import {
   PrimaryGeneratedColumn, 
   Column, 
   ManyToMany, 
-  OneToMany, 
-  CreateDateColumn, 
-  UpdateDateColumn, 
-  JoinTable 
 } from 'typeorm';
+import { Team } from './team.entity';
 
 
 @Entity('users')
@@ -33,4 +30,7 @@ export class User {
 
   @Column({default: false})
   isDeleted: boolean;
+
+  @ManyToMany(type => Team, team => team.users)
+  teams: Promise<Team[]>;
 }
