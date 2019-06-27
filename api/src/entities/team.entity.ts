@@ -13,5 +13,5 @@ export class Team {
 
   @ManyToMany(type => User, user => user.teams)
   @JoinTable()
-  users: User[];
+  users: Promise<User[]>;
 }
