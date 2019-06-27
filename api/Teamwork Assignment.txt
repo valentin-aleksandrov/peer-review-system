@@ -1,0 +1,336 @@
+Web Applications Teamwork Assignment
+
+Table of Contents
+Project Description	1
+Functional Requirements	1
+Public Part	1
+Homepage	1
+Register	2
+Login	2
+Logout	2
+Private Part	3
+Read posts	3
+Read individual post	3
+Create post	3
+Update post	4
+Delete post	4
+Read post comments	4
+Create post comment	5
+Update post comment	5
+Delete post comment	6
+Like posts/comments	6
+Add friends	6
+Flag posts	7
+Forum activity	7
+Administration Part	7
+CRUD any posts/comments	7
+Ban users	8
+Delete users	8
+Read any user’s forum activity	8
+Lock post from changing	8
+General Requirements	9
+Backend Requirements	9
+Frontend Requirements	9
+Teamwork Guidelines	10
+Project Description
+Design and implement the new Telerik Academy Forum System, where the users can create posts, add comments and upvote/downvote the things that they like or dislike the most. 
+Functional Requirements
+The application will be done in the course of the next teamwork project, which is split in two stages – first you will design a backend REST API and the you will create a frontend client that consumes it.
+
+Stage 1 (backend) defenses: May 21
+Stage 2 (frontend) defenses: June 24
+
+Each requirement is categorized in one of three categories – must, should or could. 
+•	Must requirements have the highest priority and should be addressed first. 
+•	Should requirements have medium priority and should be addressed after all or most must requirements have been implemented and tested. 
+•	Could requirements should be left for the last.
+The application should have: 
+•	public part (accessible without authentication)
+•	private part (available for registered users)
+•	administration part (available for admin users only)
+
+Any additional features are welcome, if you have covered all the listed requirements below.
+#Public Part 
+The public part of your forum system should be accessible without authentication.
+This section must support the following functionalities:
+Homepage
+The homepage must be the landing page for the forum where the user can get acquainted with the system is some way along with corresponding functionality for user register and user login.
+•	Frontend
+The homepage is the face of your system. It should have something engaging for the user (public posts, video, carousel widget, etc.) and should show some kind of navigation through the application (navbar, side menu, etc.) as well as points to the register/login functionalities or pages.
+
+#Register
+A register functionality must exist with at least a username field and a password field, which are both client-side and server-side validated. Two users with the same username cannot exist.
+•	Backend
+You should get the user from the request body, validate the properties, check if a user with such username already exists and store it in the database. Don’t store the password as a plain text! Use hashing.
+
+Example requests: POST /api/users, POST /api/users/register,  POST /api/register
+Example responses: The user’s data (without the password), a success/error message
+
+•	Frontend
+The register functionality may be done on a separate route or within a widget (like a modal). It should contain the desired fields with the desired validations that can tell the user immediately that his field is invalid and a button that will make a request to the API with the user’s input. After the response you can redirect or show a notification to the user.
+
+#Login
+A login functionality must exist with at least username field and a password field.
+•	Backend
+You should get the user from the request body, validate the properties, check if user with such username exists and if so, compare the password from the request body with the password in the database. If the login passes send a token (JWT), that will be used to authenticate the user, as a response.
+
+Example requests: POST /api/session, POST /api/users/login, POST /api/login
+Example responses: A token (JWT) for the authenticated user, a success/error message
+
+•	Frontend
+The login functionality may be done on a separate route or within a widget (like modal). It should contain the desired fields with the desired validations that can tell the user immediately that his field is invalid and a button that will make a request to the API with the user’s input. If the server returns a successful response with token, you should save the token in the local/session/cookie storage and use it to access the private API resources. You can redirect or show a notification to the user.
+
+#Logout
+A logout functionality must exist.
+•	Backend
+You should listen for an authenticated request with a valid token.
+
+Example requests: DELETE /api/session, GET /api/users/logout, GET /api/logout
+Example responses: The user data, a success/error message
+
+•	Frontend
+The login functionality may be done with just a button that sends a request to the API and on successful response deletes the token from the storage. You can redirect or show a notification to the user.
+
+#Private Part 
+The private part of your forum system should be accessible for registered users.
+This section must support the following functionality:
+Read posts
+A read posts functionality must exist that will allow the user to see the forum posts.
+•	Backend
+You should get the posts from the database and return them as a response. You can add some additional features like server-side pagination, filtering or sorting using query parameters.
+
+Example requests: GET /api/posts, GET /api/users/:userId/posts
+Example responses: The posts data
+
+•	Frontend
+The read posts functionality should make a call to the API and visualize the returned posts in some way. You can add some additional features like client-side pagination, filtering or sorting. Additionally, you can make a user profile page to show the user’s info and the individual user’s posts.
+
+#Read individual post
+A read individual post functionality must exist that will allow the user to see individual forum posts.
+•	Backend
+You should get the post from the database by something unique (like id) and return it as a response.
+
+Example requests: GET /api/posts/:postId, GET /api/users/:userId/posts/:postId
+Example responses: The post’s data
+
+•	Frontend
+The read individual post functionality should make a call to the API and visualize the returned post in some way.
+
+#Create post
+A create post functionality must exist with at least title field and a content field.
+•	Backend
+You should get the post from the request body, validate the properties and add the post in the authenticated user’s posts in the database.
+
+Example requests: POST /api/posts, POST /api/users/:userId/posts
+Example responses: The post’s data, the user’s posts, a success/error message
+
+•	Frontend
+The create post functionality may be done on a separate route or within a widget (like modal). It should contain the desired fields with the desired validations that can tell the user immediately that his field is invalid and a button that will make a request to the API with the post’s data. You can add some additional features that will allow the user to make the font of the text bold/italic or create a hyperlink. On response you can redirect or show a notification to the user.
+
+#Update post
+An update post functionality must exist that will allow the user to edit forum posts. The user should be able to edit only his own posts.
+•	Backend
+You should get the post (or only the changed properties) from the request body, validate the properties, find the same post in the authenticated user’s posts in the database by something unique (like id) and update it. 
+
+Example requests: PUT /api/posts/:postId, PUT /api/users/:userId/posts/:postId
+Example responses: The updated post’s data, the user’s posts, a success/error message
+
+•	Frontend
+The update post functionality can be done in the ‘read individual post’ view or in the ‘read all posts’ view with a button somewhere in the post. The feature should enable the user to update the post’s title/content with a form that contains the desired fields with the desired validations that can tell the user immediately that his field is invalid and a button that will make a request to the API with the updated post’s data. On response you can redirect or show a notification to the user.
+
+#Delete post
+A delete post functionality must exist that will allow the user to remove forum posts. The user should be able to remove only his own posts.
+•	Backend
+You should find the post in the authenticated user’s posts in the database by something unique (like id) and delete it. Instead of deleting anything you can consider featuring an isDeleted: boolean property to your db entities and rise the flag instead. 
+
+Example requests: DELETE /api/posts/:postId, DELETE /api/users/:userId/posts/:postId
+Example responses: The deleted post’s data, the user’s posts, a success/error message
+
+•	Frontend
+The delete post functionality can be done in the ‘read individual post’ view or in the ‘read all posts’ view with a button somewhere in the post. You can consider showing a popup to the user to confirm if he really wants to delete his post. The delete post feature should make a request to the API and on response you can redirect or show a notification.
+
+#Read post comments
+The posts must have comments as additional property.
+•	Backend
+Each individual post should hold its comments. You can consider each user to hold its comments also. The comments should not exist as a separate resource, unless you have a good reason to expose it (e.g. GET /api/comments)!
+
+•	Frontend
+The ‘read individual post’ view should be extended to feature the post’s comments.
+
+#Create post comment
+A create post comment functionality must exist with at least a message field.
+•	Backend
+You should get the comment from the request body, validate the properties and add the comment in the authenticated user’s post comments in the database.
+
+Example requests: POST /api/posts/:postId/comments,
+      POST /api/users/:userId/comments,
+      POST /api/users/:userId/posts/:postId/comments
+Example responses: The comment’s data, the post’s comments, a success/error message
+
+•	Frontend
+The create post comment functionality can be done in the ‘read individual post’ view or in the ‘read all posts’ view with a button somewhere in the post. The feature should enable the user to create a comment for the desired post with a form that contains the comment’s fields with the desired validations that can tell the user immediately that his field is invalid and a button that will make a request to the API with the comment’s data. You can add some additional features that will allow the user to make the font of the text bold/italic or create a hyperlink. On response you can redirect or show a notification to the user.
+
+#Update post comment
+An update post comment functionality must exist that will allow the user to edit comments. The user should be able to edit only his own comments.
+•	Backend
+You should get the comment (or only the changed properties) from the request body and validate the properties. Find the same comment by first finding the post or the user, that it belongs to, and then searching inside the entity’s comments property by something unique (like id) and update it if it belongs to the authenticated user.
+
+Example requests: PUT /api/posts/:postId/comments/:commentId,
+      PUT /api/users/:userId/comments/:commentId,
+      PUT /api/users/:userId/posts/:postId/comments/:commentId
+Example responses: The updated comment’s data, a success/error message
+
+•	Frontend
+The update post comment functionality can be done in the ‘read individual post’ view or in the ‘read all posts’ view (where you show the comments) with a button somewhere in the comment. The feature should enable the user to edit the post’s message with a form that contains the desired fields with the desired validations that can tell the user immediately that his field is invalid and a button that will make a request to the API with the updated comment’s data. On response you can redirect or show a notification to the user.
+
+#Delete post comment
+A delete post comment functionality must exist that will allow the user to remove forum post’s comments. The user should be able to remove only his own comments.
+•	Backend
+You should find the comment by first finding the post or the user, that it belongs to, and then searching inside the entity’s comments property by something unique (like id) and delete it if it belongs to the authenticated user. Instead of deleting anything you can consider featuring an isDeleted: boolean property to your db entities and rise the flag instead. 
+
+Example requests: DELETE /api/posts/:postId/comments/:commentId,
+      DELETE /api/users/:userId/comments/:commentId,
+      DELETE /api/users/:userId/posts/:postId/comments/:commentId
+Example responses: The deleted comment’s data, a success/error message
+
+•	Frontend
+The delete post comment functionality can be done in the ‘read individual post’ view or in the ‘read all posts’ view (where you show the comments) with a button somewhere in the post. You can consider showing a popup to the user to confirm if he really wants to delete his comment. The delete comment feature should make a request to the API and on response you can redirect or show a notification.
+
+#This section should support the following functionality:
+#Like posts/comments
+The posts/comments should have votes as additional property and the user should be able to like or dislike a post or comment. A vote model must exist with at least a username field and a like field (boolean).
+•	Backend
+You should find the post/comment in the database and check if it has a vote from the authenticated user’s username already. If it has, update it, if it doesn’t, add a new vote to the post/comment and update it.
+
+Example requests: PUT /api/posts/:postId/votes,
+      PUT /api/posts/:postId/comments/:commentId/votes
+Example responses: The post’s data, the post’s likes, a success/error message
+
+•	Frontend
+The user should be able see the votes count and click a button to like/dislike a post or comment in the view.
+
+#Add friends
+The users should have friends as additional property and the user should be able to add other users as friends.
+•	Backend
+You should get the friend’s id/username from the request’s body and find him in the db. Then add/remove it from the authenticated user’s friends list.
+
+Example requests: POST /api/users/:userId/friends (add friend)
+      DELETE /api/users/:userId/friends (remove friend)
+Example responses: The user’s data, the users’s friends list, a success/error message
+
+•	Frontend
+You should create some view for the users that allows the authenticated user to add/remove another user as a friend. You can consider adding a view that shows the current user’s friends list.
+
+This section could support the following functionality:
+#Flag posts
+The posts could have flagged as an additional property and the user should be able to flag posts that he sees as inappropriate. Additionally, you can send a notification to the admin users or to the user that the post is belonging to.
+•	Backend
+You could get the post’s id from the request and find it in the db. Then update its fagged property.
+
+•	Frontend
+You could update the post’s view to show if the post has been flagged and to allow for the user to flag it.
+
+#Forum activity
+The users could have activity as an additional property. Whenever the user does something in the forum (creates a post, likes a comment, etc.) you can record its activity and keep track of it. Additionally, you can restrict the user to have access to only his and his friend’s forum activity.
+•	Backend
+You could enhance your existing classes, methods and routes with this additional functionality.
+
+•	Frontend
+You could create separate view for the user’s forum activity or consider creating a user profile view that shows all of the user’s info and its forum activity.
+
+#Administration Part
+The administration part of your forum system should be accessible only for admin users.
+This section should support the following functionality:
+#CRUD any posts/comments
+An admin user should be able to create, read, update and delete any post or comment.
+•	Backend
+Extend your post/comment routes to check if the authenticated user has admin rights.
+
+•	Frontend
+Extend your existing views to check if the authenticated user has admin rights. (you may store this information and pass it in the JWT)
+
+#Ban users
+An admin user should be able to ban users. The users should have banstatus as additional property and the admin should be able to ban users from all forum activities except reading. A banstatus model must exist with at least an isBanned field and a description field. Additionally, it could feature a ban expiration date.
+
+•	Backend
+You should find the user in the database and update his ban status. A banned user should be restricted from every operation in the forum (creating posts, updating comments, etc.), except reading.
+
+Example requests: PUT /api/users/:userId/banstatus,
+		      POST/DELETE /api/users/:userId/banstatus
+Example responses: The user’s data, a success/error message
+
+•	Frontend
+An admin user should have a “ban” button available in the user’s view. The buttons and actions for the modifying operations should be disabled/hidden for the banned users.
+
+#Delete users
+An admin user should be able to delete users from the forum system.
+
+•	Backend
+You should find the user in the database and delete him. Instead of deleting anything you can consider featuring an isDeleted: boolean property to your db entities and rise the flag instead. 
+
+Example requests: DELETE /api/users/:userId
+Example responses: The deleted user’s data, a success/error message
+
+•	Frontend
+An admin user should have a “delete” button available in the user’s view or you can consider creating a view for all users and enable the removing there.
+
+#This section could support the following functionality:
+#Read any user’s forum activity
+An admin user could be able to see any user’s forum activity. You should restrict the forum activity feature to be seen from just the user itself, admin users and the user’s friends (if the feature is implemented).
+•	Backend
+Restrict the forum activity reading feature to just the authorized users.
+
+•	Frontend
+Check if the authenticated user is authorized for the feature.
+
+#Lock post from changing
+An admin user could be able to lock/unlock any post from changing (adding comments, like/dislike, flag, etc.).
+•	Backend
+Restrict all users from every operation in the locked post except reading. Only an admin user should be able to unlock the post.
+
+•	Frontend
+An admin user should have “lock” button available in the post’s view. The buttons and actions for the modifying operations should be disabled/hidden for the locked post.
+
+#General Requirements
+This section must support the following functionality:
+•	You must use Git to keep your source code and for team collaboration.
+•	You must use Trello for project management.
+•	You must use TSLint to write consistently styled code.
+•	You must follow the SOLID principles and the OOP principles. The lack of SRP or DI will be punished by death.
+•	You must use correct naming and write clean, self-documenting code.
+
+#Backend Requirements
+This section must support the following functionality:
+•	You must use NestJS.
+•	You must follow the REST architectural principles.
+•	You must use TypeORM.
+•	You must use MySQL/MariaDB.
+•	You must use services and repositories for the data access and for the business logic.
+•	You must have at least five types of database entities.
+•	You must provide at least two type of relations in the database.
+•	You must apply proper data validation. All data received from the client should be validated through validation pipes.
+•	You must apply proper error handling.
+•	You must write unit tests for the majority of your application's features. Non-isolated tests are not considered valid.
+
+#Frontend Requirements
+This section must support the following functionality:
+•	You must use Angular.
+•	You must create usable and responsive UI (use Bootstrap/Material).
+•	You must use modules and routing to split your application logic.
+•	You must use route guards.
+•	You must apply proper data validation.
+•	You must apply proper error handling.
+•	You must write unit tests for the majority of your application's features.  Non-isolated tests are not considered valid. 
+
+#Teamwork Guidelines
+Refer to the teamwork guidelines document found along with the project requirements.
+
+Projects Defenses
+Each team member will have around 30 minutes to:
+•	Present the project overall
+•	Explain how they have contributed to the project
+•	Explain their teammates’ source code
+•	Answer some theoretical questions related to this course and all of the previous ones
+
+Give Feedback about Your Teammate
+You will be invited to provide feedback about all of your teammates, their attitude about this project, their technical skills, their team working skills, their contributions to the project, etc. The feedback is important part of the project evaluation so take it seriously and be honest.
