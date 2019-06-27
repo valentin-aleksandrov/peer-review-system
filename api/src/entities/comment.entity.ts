@@ -1,5 +1,6 @@
 import { PrimaryGeneratedColumn, Entity, Column, ManyToOne } from "typeorm";
 import { User } from "./user.entity";
+import { WorkItem } from "./work-item.entity";
 
 @Entity('comments')
 export class CommentEntity {
@@ -11,5 +12,7 @@ export class CommentEntity {
 
   @ManyToOne(type => User, user => user.comments)
   author: User;
-  // one WorkItem or one pull request??? Need more reasearch!
+  
+  @ManyToOne(type => WorkItem, workItem => workItem.commentSection)
+  workItem: WorkItem;
 }

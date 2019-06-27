@@ -1,6 +1,9 @@
-import { Entity, PrimaryGeneratedColumn, Column, ManyToOne, ManyToMany, JoinTable } from "typeorm";
+import { Entity, PrimaryGeneratedColumn, Column, ManyToOne, ManyToMany, JoinTable, OneToMany } from "typeorm";
 import { User } from "./user.entity";
 import { Status } from "./status.entity";
+import { Team } from "./team.entity";
+import { CommentEntity } from "./comment.entity";
+import { Tag } from "./tag.entity";
 
 @Entity('work_items')
 export class WorkItem {
@@ -13,8 +16,8 @@ export class WorkItem {
   @Column()
   description: string; // We must change it's column type later from varchar to text!!!
 
-  @Column()
-  tags: string; // Need more research of what tags are!
+  @ManyToMany(type => Tag, tag => tag.workItems)
+  tags: Promise<Tag[]>;
 
   @ManyToOne(type => User, user => user.workItems)
   assignee: User;
@@ -23,25 +26,12 @@ export class WorkItem {
   @JoinTable()
   reviewers: Promise<User[]>;
 
-  comments: string[];
+  @ManyToOne(type => Team, team => team.workItems)
+  team: Team;
 
-  section: string; // It needs more research what a section means!
+  @OneToMany(type => CommentEntity, comment => comment.workItem)
+  commentSection: Promise<CommentEntity>;
 
+  @ManyToOne(type => Status, status => status.workItems)
   status: Status;
-
-
-
-
-
-
-
-
-/*
-  @Column()
-  name: string;
-
-  @ManyToMany(type => User, user => user.teams)
-  @JoinTable()
-  users: Promise<User[]>;
-  */
 }

@@ -36,7 +36,7 @@ export class User {
   @Column({default: false})
   isDeleted: boolean;
 
-  @ManyToMany(type => Team, team => team.users)
+  @ManyToMany(type => Team, team => team.members)
   teams: Promise<Team[]>;
 
   @ManyToMany(type => Role, role => role.users)

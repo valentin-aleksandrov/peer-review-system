@@ -3,10 +3,12 @@ import {
     PrimaryGeneratedColumn, 
     ManyToMany, 
     JoinTable, 
-    Column
+    Column,
+    OneToMany
 } from "typeorm";
 import { User } from "./user.entity";
 import { Role } from "./role.entity";
+import { WorkItem } from "./work-item.entity";
 
 @Entity('teams')
 export class Team {
@@ -18,5 +20,8 @@ export class Team {
 
   @ManyToMany(type => User, user => user.teams)
   @JoinTable()
-  users: Promise<User[]>;
+  members: Promise<User[]>;
+
+  @OneToMany(type => WorkItem, workItem => workItem.team)
+  workItems: Promise<WorkItem>;
 }

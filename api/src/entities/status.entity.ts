@@ -1,4 +1,4 @@
-import { Entity, PrimaryGeneratedColumn, Column } from "typeorm";
+import { Entity, PrimaryGeneratedColumn, Column, OneToMany } from "typeorm";
 import { WorkItem } from "./work-item.entity";
 
 @Entity('statuses')
@@ -9,5 +9,6 @@ export class Status {
   @Column()
   state: string;
 
-  workItems: WorkItem[];
+  @OneToMany(type => WorkItem, workItem => workItem.status)
+  workItems: Promise<WorkItem[]>;
 }
