@@ -22,7 +22,7 @@
     "seed": "ts-node src/data/seed/seed.ts"
   },
   "dependencies": {
-    "@nestjs/common": "^6.0.0",
+    "@nestjs/common": "^6.4.0",
     "@nestjs/core": "^6.0.0",
     "@nestjs/jwt": "^6.0.0",
     "@nestjs/passport": "^6.0.0",
