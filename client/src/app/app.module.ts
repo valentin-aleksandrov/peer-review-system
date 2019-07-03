@@ -6,6 +6,8 @@ import { AppComponent } from './app.component';
 import { NavbarComponent } from './components/navbar/navbar.component';
 import { CoreModule } from './core/core.module';
 import { HomeComponent } from './home/home.component';
+import { RegisterComponent } from './components/register/register.component';
+import { SharedModule } from './shared/shared.module';
 
 
 @NgModule({
@@ -13,11 +15,13 @@ import { HomeComponent } from './home/home.component';
     AppComponent,
     NavbarComponent,
     HomeComponent,
+    RegisterComponent
   ],
   imports: [
     BrowserModule,
     AppRoutingModule,
     CoreModule,
+    SharedModule
   ],
   providers: [],
   bootstrap: [AppComponent]
