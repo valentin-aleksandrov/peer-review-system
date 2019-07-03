@@ -6,7 +6,12 @@ import { RegisterComponent } from './components/register/register.component';
 const routes: Routes = [
   { path: '', redirectTo: '/home', pathMatch: 'full' },
   { path: 'home', component: HomeComponent },
-  { path: 'register', component: RegisterComponent }
+  { path: 'register', component: RegisterComponent },
+  { 
+    path: 'pullRequests',
+    loadChildren: './pullRequests/pull-requests.module#PullRequestsModule',
+    //'./users/users.module#UsersModule',
+  },
 ]
 
 @NgModule({
