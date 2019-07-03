@@ -13,9 +13,6 @@ import { PullRequestsComponent } from './pull-requests.component';
       RouterModule,
       PullRequestsRoutingModule,
     ],
-    exports: [
-       PullRequestsComponent
-    ],
   })
   export class PullRequestsModule { }
   
