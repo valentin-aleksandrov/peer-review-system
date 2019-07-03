@@ -1,6 +1,7 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { JWTDecoderService } from './services/jwt-decoder.service';
+import { AuthenticationService } from './authentication.service';
 
 @NgModule({
     declarations: [],
@@ -8,7 +9,8 @@ import { JWTDecoderService } from './services/jwt-decoder.service';
         CommonModule,
     ],
     providers: [
-        JWTDecoderService
+        JWTDecoderService,
+        AuthenticationService
     ],
   })
   export class CoreModule { }

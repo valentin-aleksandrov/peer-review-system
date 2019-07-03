@@ -11,3 +11,7 @@
 .h3 {
     padding: 15px;
 }
+
+.invalid-input{
+    color:#bd0410;
+}
