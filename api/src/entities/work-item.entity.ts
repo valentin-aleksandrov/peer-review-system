@@ -11,6 +11,16 @@ export class WorkItem {
   @PrimaryGeneratedColumn('uuid')
   id: string;
 
+  @Column({default: false})
+  isReady: boolean;
+
+  @Column('nvarchar') 
+  title: string;
+
+  @Column('nvarchar') // It could be not Enough!
+  description: string;
+
+
   @ManyToOne(type => WorkItemStatus, status => status.workItems)
   workItemStatus: WorkItemStatus;
 
