@@ -1,7 +1,7 @@
 import { User } from './../../entities/user.entity';
 import { createConnection } from 'typeorm';
 import * as bcrypt from 'bcrypt';
-import { ReviewerStatus } from 'src/entities/reviewer-status.entity';
+import { ReviewerStatus } from '../../entities/reviewer-status.entity';
 
 const main = async () => {
   const connection = await createConnection();
