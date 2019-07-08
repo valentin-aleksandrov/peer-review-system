@@ -1,5 +1,3 @@
-import { Comment } from './../../entities/comment.entity';
-import { PostEntity } from './../../entities/post.entity';
 import { User } from './../../entities/user.entity';
 import { createConnection } from 'typeorm';
 import * as bcrypt from 'bcrypt';
