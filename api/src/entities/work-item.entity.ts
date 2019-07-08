@@ -2,6 +2,8 @@ import { Entity, PrimaryGeneratedColumn, Column, ManyToOne, ManyToMany, JoinTabl
 import { WorkItemStatus } from "./work-item-status.entity";
 import { Tag } from "./tag.entity";
 import { Review } from "./review.entity";
+import { Picture } from "./picture.entity";
+import { type } from "os";
 
 @Entity('work_items')
 export class WorkItem {
@@ -17,4 +19,7 @@ export class WorkItem {
 
   @OneToMany(type => Review, review => review.workItem)
   reviews: Promise<Review[]>;
+
+  @OneToMany(type => Picture, picture => picture.workItem)
+  pictures: Promise<Picture>;
 }
