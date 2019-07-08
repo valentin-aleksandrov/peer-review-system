@@ -4,6 +4,7 @@ import { Tag } from "./tag.entity";
 import { Review } from "./review.entity";
 import { Picture } from "./picture.entity";
 import { type } from "os";
+import { FileEntity } from "./file.entity";
 
 @Entity('work_items')
 export class WorkItem {
@@ -22,4 +23,7 @@ export class WorkItem {
 
   @OneToMany(type => Picture, picture => picture.workItem)
   pictures: Promise<Picture>;
+
+  @OneToMany(type => FileEntity, file => file.workItem)
+  files: Promise<FileEntity>;
 }
