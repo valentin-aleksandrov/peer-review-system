@@ -1,10 +1,7 @@
 import { Entity, PrimaryGeneratedColumn, Column } from "typeorm";
 
-@Entity('reviewer_statuses')
-export class ReviewerStatus {
+@Entity('work_items')
+export class WorkItem {
   @PrimaryGeneratedColumn('uuid')
   id: string;
-
-  @Column()
-  status: string;
 }
