@@ -10,7 +10,7 @@ export class TeamRules {
     minPercentApprovalOfItem: number;
 
     @Column()
-    minNumberOfReviewers: string;
+    minNumberOfReviewers: number;
 
     @OneToMany( type => Team, team => team.rules)
     team: Promise<Team[]>;
