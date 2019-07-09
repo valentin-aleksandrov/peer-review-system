@@ -24,7 +24,7 @@ export class UsersService {
       email: user.email,
       firstName: user.firstName,
       lastName: user.lastName,
-      role: user.role.name,
+      role: 'Where is the role???',//user.role.name,
     };
     return convertedUser;
   }
