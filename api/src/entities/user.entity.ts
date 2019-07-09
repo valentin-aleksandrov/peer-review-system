@@ -12,6 +12,7 @@ import { Role } from './role.entity';
 import { Team } from './team.entity';
 import { TeamInvitation } from './team-invitation.entity';
 import { Activity } from './activity.entity';
+import { WorkItem } from './work-item.entity';
 
 @Entity('users')
 export class User {
@@ -51,6 +52,8 @@ export class User {
 
   @OneToMany(type => Activity, activity => activity.user)
   activity: Promise<Activity[]>;
-
+  
+  @OneToMany(type => WorkItem, workItem => workItem.assignee)
+  workItems: Promise<WorkItem>;
 }
 
