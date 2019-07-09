@@ -17,4 +17,7 @@ export class ShowUserDTO {
 
   @Expose()
   lastName: string;
+
+  @Expose()
+  role: string;
 }
