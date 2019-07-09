@@ -7,6 +7,7 @@ import { CoreModule } from './core/core.module';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { ConfigModule } from './config/config.module';
 import { ConfigService } from './config/config.service';
+import { WorkItemModule } from './workItem/work-item.module';
 
 @Module({
   imports: [
@@ -26,6 +27,7 @@ import { ConfigService } from './config/config.service';
       }),
     }),
     AuthModule,
+    WorkItemModule,
     UsersModule,
     CoreModule, 
     ConfigModule,

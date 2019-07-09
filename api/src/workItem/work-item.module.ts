@@ -22,4 +22,4 @@ Module({
         WorkItemService,
     ],
   })
-  export class UsersModule {}
+  export class WorkItemModule {}
