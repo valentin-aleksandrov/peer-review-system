@@ -16,6 +16,7 @@ export class AuthService {
     const userFound = await this.usersService.findUserByEmail(user.email);
 
     const token = await this.jwtService.sign({
+      id: userFound.id,
       email: userFound.email,
       username: userFound.username,
       role: userFound.role,

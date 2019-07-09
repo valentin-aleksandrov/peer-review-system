@@ -60,9 +60,6 @@ export class UsersService {
     if (!foundUser) {
       return undefined;
     }
-
-    console.log("--- role??->",(await foundUser.role).name);
-    
     
     return this.convertToShowUserDTO(foundUser);
 
