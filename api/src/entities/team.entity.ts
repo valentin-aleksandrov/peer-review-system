@@ -1,5 +1,5 @@
 import { User } from "./user.entity";
-import { PrimaryGeneratedColumn, Column, OneToMany, Entity, ManyToOne, ManyToMany } from "typeorm";
+import { PrimaryGeneratedColumn, Column, OneToMany, Entity, ManyToOne, ManyToMany, JoinTable } from "typeorm";
 import { TeamInvitation } from "./team-invitation.entity";
 import { TeamRules } from "./team-rules.entity";
 
@@ -14,10 +14,8 @@ export class Team{
   @ManyToMany(type => User, user => user.teams,  {
     eager: true
 })
+  @JoinTable()
   users: User[];
-
-  // @ManyToMany(type => User, user => user.teams)
-  // users: Promise<User[]>;
 
   @OneToMany(type => TeamInvitation, TeamInvitation => TeamInvitation.team)
   TeamInvitation: Promise<TeamInvitation[]>;

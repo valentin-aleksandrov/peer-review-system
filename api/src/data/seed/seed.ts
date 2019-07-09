@@ -5,6 +5,7 @@ import { ReviewerStatus } from '../../entities/reviewer-status.entity';
 import { WorkItemStatus } from '../../entities/work-item-status.entity';
 import { Role } from '../../entities/role.entity';
 import { TeamInvitationStatus } from '../../entities/team-invitation-status.entity';
+import { TeamRules } from '../../entities/team-rules.entity';
 
 const main = async () => {
   const connection = await createConnection();
@@ -14,7 +15,7 @@ const main = async () => {
   const workItemStatusRepository = connection.manager.getRepository(WorkItemStatus);
   const teamInivitationStatusRepository = connection.manager.getRepository(TeamInvitationStatus);
   const roleRepository = connection.manager.getRepository(Role);
-
+  const teamRulesRepository = connection.manager.getRepository(TeamRules);
   const member: Role = await roleRepository.findOne({
     where: {
       name: 'member',
@@ -237,6 +238,21 @@ const main = async () => {
     console.log("Pending invitation status already in the DataBase");
   }
 
+  const teamRules: TeamRules = await teamRulesRepository.findOne({
+    where: {
+      minPercentApprovalOfItem: 100,
+    },
+  });
+
+  if(!teamRules){
+    const newTeamRules: TeamRules = new TeamRules();
+    newTeamRules.minPercentApprovalOfItem = 100;
+    newTeamRules.minNumberOfReviewers = 3;
+    await teamRulesRepository.save(newTeamRules);
+    console.log("Created default team rules.");
+  } else {
+    console.log("Default team rules already in the DataBase");
+  }
 
   connection.close();
 }

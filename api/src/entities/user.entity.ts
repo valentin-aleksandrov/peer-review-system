@@ -41,7 +41,6 @@ export class User {
   role: Promise<Role>;
 
   @ManyToMany(type => Team, team => team.users)
-  @JoinTable()
   teams: Promise<Team[]>;
 
   @ManyToMany(type => TeamInvitation, TeamInvitation => TeamInvitation.host)

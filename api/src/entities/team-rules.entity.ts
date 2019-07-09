@@ -1,7 +1,7 @@
 import { Entity, PrimaryGeneratedColumn, Column, OneToMany } from "typeorm";
 import { Team } from "./team.entity";
 
-@Entity()
+@Entity('team_rules')
 export class TeamRules {
     @PrimaryGeneratedColumn('uuid')
     id: string;
