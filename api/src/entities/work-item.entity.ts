@@ -3,7 +3,6 @@ import { WorkItemStatus } from "./work-item-status.entity";
 import { Tag } from "./tag.entity";
 import { Review } from "./review.entity";
 import { Picture } from "./picture.entity";
-import { type } from "os";
 import { FileEntity } from "./file.entity";
 
 @Entity('work_items')
