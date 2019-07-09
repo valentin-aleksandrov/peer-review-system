@@ -2,12 +2,14 @@ import { User } from './../../entities/user.entity';
 import { createConnection } from 'typeorm';
 import * as bcrypt from 'bcrypt';
 import { ReviewerStatus } from '../../entities/reviewer-status.entity';
+import { WorkItemStatus } from '../../entities/work-item-status.entity';
 
 const main = async () => {
   const connection = await createConnection();
 
   const userRepository = connection.manager.getRepository(User);
   const reviewerStatusRepository = connection.manager.getRepository(ReviewerStatus);
+  const workItemStatusRepository = connection.manager.getRepository(WorkItemStatus);
   // The seed script starts here:
   const valka: User = await userRepository.findOne({
     where: {
@@ -87,6 +89,36 @@ const main = async () => {
     console.log("Created rejected reviewer status.");
   } else {
     console.log("Accepted rejected status already in the DataBase");
+  }
+
+  const workItemRevPending: WorkItemStatus = await workItemStatusRepository.findOne({
+    where: {
+      status: 'pending',
+    },
+  });
+ 
+  if(!workItemRevPending){
+    const newWorkItemRevPending: WorkItemStatus = new WorkItemStatus();
+    newWorkItemRevPending.status = 'pending';
+    await workItemStatusRepository.save(newWorkItemRevPending);
+    console.log("Created pending workitem status.");
+  } else {
+    console.log("Pending workitem status already in the DataBase");
+  }
+
+  const workItemRevAccepted: WorkItemStatus = await workItemStatusRepository.findOne({
+    where: {
+      status: 'accepted',
+    },
+  });
+ 
+  if(!workItemRevAccepted){
+    const newWorkItemRevАccepted: WorkItemStatus = new WorkItemStatus();
+    newWorkItemRevАccepted.status = 'accepted';
+    await workItemStatusRepository.save(newWorkItemRevАccepted);
+    console.log("Created accepted workitem status.");
+  } else {
+    console.log("Accepted workitem status already in the DataBase");
   }
 
   connection.close();
