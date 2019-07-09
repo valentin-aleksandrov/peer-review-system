@@ -6,6 +6,7 @@ import { TeamInvitation } from 'src/entities/team-invitation.entity';
 import { TeamInvitationStatus } from 'src/entities/team-invitation-status.entity';
 import { stat } from 'fs';
 import { User } from 'src/entities/user.entity';
+import { AddTeamInvitationDTO } from './models/add-team-invitation.dto';
 
 @Injectable()
 export class TeamInvitationService {
@@ -18,7 +19,7 @@ export class TeamInvitationService {
       ) { }
 
     
-    public async createTeamInvitation(body, user: User): Promise<any> {
+    public async createTeamInvitation(body: AddTeamInvitationDTO, user: User): Promise<any> {
         const newInvitation = new TeamInvitation();
         const status = await this.teamInvitationStatusRepository.findOne({
             where: {
@@ -26,20 +27,24 @@ export class TeamInvitationService {
             },
           });
         newInvitation.status = Promise.resolve(status);
-        newInvitation.host = body.host;
+        newInvitation.host = user;
         const team = await this.teamRepository.findOne({
             where: {
               name: body.teamName,
             },
           });
-        console.log(team);
+          newInvitation.team = Promise.resolve(team);
         const invitee = await this.userRepository.findOne({
             where: {
               name: body.inviteeName,
             },
           });
-        newInvitation.team = Promise.resolve(team);
-        newInvitation.invitee = Promise.resolve(invitee);
+        console.log(invitee);
+        
+       // this.teamInvitationRepository.save(newInvitation);
+        newInvitation.invitee = Promise.resolve( await invitee);
+        console.log(newInvitation.invitee);
+        console.log(newInvitation.host);
         return await this.teamInvitationRepository.save(newInvitation);
 
     }

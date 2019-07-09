@@ -15,11 +15,11 @@ export class TeamInvitation {
   @ManyToOne(type => Team, team => team.TeamInvitation)
   team: Promise<Team>;
 
-  @ManyToMany(type => User, user => user.host)
-  @JoinTable()
-  host: Promise<User>;
+  @ManyToOne(type => User, user => user.host, {
+    eager: true
+})
+  host: User;
 
-  @ManyToMany(type => User, user => user.invitee)
-  @JoinTable()
+  @ManyToOne(type => User, user => user.invitee)
   invitee: Promise<User>;
 }
