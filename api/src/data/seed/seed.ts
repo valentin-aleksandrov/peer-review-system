@@ -12,7 +12,7 @@ const main = async () => {
   const userRepository = connection.manager.getRepository(User);
   const reviewerStatusRepository = connection.manager.getRepository(ReviewerStatus);
   const workItemStatusRepository = connection.manager.getRepository(WorkItemStatus);
-  const teamInivitationStatus = connection.manager.getRepository(TeamInvitationStatus);
+  const teamInivitationStatusRepository = connection.manager.getRepository(TeamInvitationStatus);
   const roleRepository = connection.manager.getRepository(Role);
   // The seed script starts here:
   const valka: User = await userRepository.findOne({
@@ -185,7 +185,7 @@ const main = async () => {
     console.log("Admin role already in the DataBase");
   }
 
-  const invStatusAccepted: TeamInvitationStatus = await teamInivitationStatus.findOne({
+  const invStatusAccepted: TeamInvitationStatus = await teamInivitationStatusRepository.findOne({
     where: {
       status: 'accepted',
     },
@@ -194,13 +194,13 @@ const main = async () => {
   if(!invStatusAccepted){
     const newInvStatusAccepted: TeamInvitationStatus = new TeamInvitationStatus();
     newInvStatusAccepted.status = 'accepted';
-    await reviewerStatusRepository.save(newInvStatusAccepted);
+    await teamInivitationStatusRepository.save(newInvStatusAccepted);
     console.log("Created accepted inivatation status.");
   } else {
     console.log("Accepted invitation status already in the DataBase");
   }
 
-  const invStatusRejected: TeamInvitationStatus = await teamInivitationStatus.findOne({
+  const invStatusRejected: TeamInvitationStatus = await teamInivitationStatusRepository.findOne({
     where: {
       status: 'rejected',
     },
@@ -209,13 +209,13 @@ const main = async () => {
   if(!invStatusRejected){
     const newInvStatusRejected: TeamInvitationStatus = new TeamInvitationStatus();
     newInvStatusRejected.status = 'rejected';
-    await reviewerStatusRepository.save(newInvStatusRejected);
+    await teamInivitationStatusRepository.save(newInvStatusRejected);
     console.log("Created rejected inivatation status.");
   } else {
     console.log("Rejected invitation status already in the DataBase");
   }
 
-  const invStatusPending: TeamInvitationStatus = await teamInivitationStatus.findOne({
+  const invStatusPending: TeamInvitationStatus = await teamInivitationStatusRepository.findOne({
     where: {
       status: 'pending',
     },
@@ -224,8 +224,8 @@ const main = async () => {
   if(!invStatusPending){
     const newInvStatusPending: TeamInvitationStatus = new TeamInvitationStatus();
     newInvStatusPending.status = 'pending';
-    await reviewerStatusRepository.save(newInvStatusPending);
-    console.log("Created pending inivatation status.");
+    await teamInivitationStatusRepository.save(newInvStatusPending);
+    console.log("Created pending inviatation status.");
   } else {
     console.log("Pending invitation status already in the DataBase");
   }

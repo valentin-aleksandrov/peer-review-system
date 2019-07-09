@@ -4,13 +4,13 @@ import { Team } from "./team.entity";
 import { TeamInvitationStatus } from "./team-invitation-status.entity";
 
 
-@Entity('team-invitation')
+@Entity('team_invitation')
 export class TeamInvitation {
   @PrimaryGeneratedColumn('uuid')
   id: string;
 
   @ManyToOne(type => TeamInvitationStatus, TeamInvitationStatus=> TeamInvitationStatus.status)
-  status: TeamInvitationStatus;
+  status: Promise<TeamInvitationStatus>;
 
   @ManyToOne(type => Team, team => team.TeamInvitation)
   team: Promise<Team>;
