@@ -3,6 +3,7 @@ import { AuthGuard } from '@nestjs/passport';
 import { SessionUser } from 'src/decorators/session-user.decorator';
 import { User } from 'src/entities/user.entity';
 import { TeamInvitationService } from './team-invitation.service';
+import { AddTeamInvitationDTO } from './models/add-team-invitation.dto';
 
 @Controller('api/team-invitation')
 export class TeamInvitationController {
@@ -14,7 +15,7 @@ export class TeamInvitationController {
     @UseGuards(AuthGuard())
     public async createInvitation(
     @Body(new ValidationPipe({ whitelist: true, transform: true }))
-    body: string,
+    body: AddTeamInvitationDTO,
     @SessionUser() user: User,
   ): Promise<any> {
     return await this.teamInvitationService.createTeamInvitation(body, user);
