@@ -9,7 +9,7 @@ export class TeamInvitation {
   @PrimaryGeneratedColumn('uuid')
   id: string;
 
-  @ManyToOne(type => TeamInvitationStatus, TeamInvitationStatus=> TeamInvitationStatus.status)
+  @ManyToOne(type => TeamInvitationStatus, TeamInvitationStatus => TeamInvitationStatus.status)
   status: Promise<TeamInvitationStatus>;
 
   @ManyToOne(type => Team, team => team.TeamInvitation)

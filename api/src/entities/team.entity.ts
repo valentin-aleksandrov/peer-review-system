@@ -8,8 +8,8 @@ export class Team{
   @PrimaryGeneratedColumn('uuid')
   id: string;
 
-  @Column()
-  name: string;
+  @Column('varchar')
+  teamName: string;
 
   @ManyToMany(type => User, user => user.teams,  {
     eager: true

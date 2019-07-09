@@ -7,6 +7,8 @@ import { CoreModule } from './core/core.module';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { ConfigModule } from './config/config.module';
 import { ConfigService } from './config/config.service';
+import { TeamModule } from './team/team.module';
+import { TeamInvitationModule } from './team-invitation/team-invitation.module';
 
 @Module({
   imports: [
@@ -21,14 +23,15 @@ import { ConfigService } from './config/config.service';
         password: configService.dbPassword,
         database: configService.dbName,
         entities: [__dirname + '/**/*.entity{.ts,.js}'],
+        
         migrations: [__dirname + '/migrations'],
         synchronize: true,
       }),
     }),
     AuthModule,
     UsersModule,
-    CoreModule, 
-    ConfigModule,
+    CoreModule,
+    ConfigModule, TeamModule, TeamInvitationModule,
   ],
   controllers: [AppController],
   providers: [AppService],
