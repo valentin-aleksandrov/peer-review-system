@@ -13,7 +13,9 @@ import {
 import { Role } from './role.entity';
 import { Team } from './team.entity';
 import { TeamInvitation } from './team-invitation.entity';
-import { Activity } from './activity,entity';
+import { Activity } from './activity.entity';
+
+
 
 
 @Entity('users')
@@ -54,7 +56,6 @@ export class User {
 
   @OneToMany(type => Activity, activity => activity.user)
   activity: Promise<Activity[]>;
-  
 
 }
 
