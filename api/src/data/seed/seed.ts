@@ -4,6 +4,7 @@ import * as bcrypt from 'bcrypt';
 import { ReviewerStatus } from '../../entities/reviewer-status.entity';
 import { WorkItemStatus } from '../../entities/work-item-status.entity';
 import { Role } from '../../entities/role.entity';
+import { TeamInvitationStatus } from '../../entities/team-invitation-status.entity';
 
 const main = async () => {
   const connection = await createConnection();
@@ -11,6 +12,7 @@ const main = async () => {
   const userRepository = connection.manager.getRepository(User);
   const reviewerStatusRepository = connection.manager.getRepository(ReviewerStatus);
   const workItemStatusRepository = connection.manager.getRepository(WorkItemStatus);
+  const teamInivitationStatus = connection.manager.getRepository(TeamInvitationStatus);
   const roleRepository = connection.manager.getRepository(Role);
   // The seed script starts here:
   const valka: User = await userRepository.findOne({
@@ -183,6 +185,50 @@ const main = async () => {
     console.log("Admin role already in the DataBase");
   }
 
+  const invStatusAccepted: TeamInvitationStatus = await teamInivitationStatus.findOne({
+    where: {
+      status: 'accepted',
+    },
+  });
+
+  if(!invStatusAccepted){
+    const newInvStatusAccepted: TeamInvitationStatus = new TeamInvitationStatus();
+    newInvStatusAccepted.status = 'accepted';
+    await reviewerStatusRepository.save(newInvStatusAccepted);
+    console.log("Created accepted inivatation status.");
+  } else {
+    console.log("Accepted invitation status already in the DataBase");
+  }
+
+  const invStatusRejected: TeamInvitationStatus = await teamInivitationStatus.findOne({
+    where: {
+      status: 'rejected',
+    },
+  });
+
+  if(!invStatusRejected){
+    const newInvStatusRejected: TeamInvitationStatus = new TeamInvitationStatus();
+    newInvStatusRejected.status = 'rejected';
+    await reviewerStatusRepository.save(newInvStatusRejected);
+    console.log("Created rejected inivatation status.");
+  } else {
+    console.log("Rejected invitation status already in the DataBase");
+  }
+
+  const invStatusPending: TeamInvitationStatus = await teamInivitationStatus.findOne({
+    where: {
+      status: 'pending',
+    },
+  });
+
+  if(!invStatusPending){
+    const newInvStatusPending: TeamInvitationStatus = new TeamInvitationStatus();
+    newInvStatusPending.status = 'pending';
+    await reviewerStatusRepository.save(newInvStatusPending);
+    console.log("Created pending inivatation status.");
+  } else {
+    console.log("Pending invitation status already in the DataBase");
+  }
 
 
   connection.close();
