@@ -6,12 +6,13 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { User } from '../entities/user.entity';
 import { PassportModule } from '@nestjs/passport';
 import { ReviewerStatus } from '../entities/reviewer-status.entity';
+import { Role } from '../entities/role.entity';
 
 @Module({
   imports: [
     CoreModule,
     PassportModule.register({defaultStrategy: 'jwt'}),
-    TypeOrmModule.forFeature([User,ReviewerStatus]),
+    TypeOrmModule.forFeature([User,ReviewerStatus, Role]),
   ],
   controllers: [UsersController],
   providers: [UsersService],

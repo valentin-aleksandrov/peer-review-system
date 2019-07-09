@@ -15,7 +15,12 @@ export class AuthService {
   async login(user: UserLoginDTO): Promise<{user: ShowUserDTO, token: string}> {
     const userFound = await this.usersService.findUserByEmail(user.email);
 
-    const token = await this.jwtService.sign({email: userFound.email});
+    const token = await this.jwtService.sign({
+      id: userFound.id,
+      email: userFound.email,
+      username: userFound.username,
+      role: userFound.role,
+    });
     return { user: userFound, token };
     // const payload = {email: user.email};
 
