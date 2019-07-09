@@ -5,8 +5,6 @@ import {
   Column, 
   ManyToMany, 
   OneToMany, 
-  CreateDateColumn, 
-  UpdateDateColumn, 
   JoinTable, 
   ManyToOne
 } from 'typeorm';
@@ -15,7 +13,6 @@ import { Team } from './team.entity';
 import { TeamInvitation } from './team-invitation.entity';
 import { Activity } from './activity.entity';
 import { WorkItem } from './work-item.entity';
-
 
 @Entity('users')
 export class User {
