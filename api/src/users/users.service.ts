@@ -42,6 +42,12 @@ export class UsersService {
 
     const passwordHash = await bcrypt.hash(user.password, 10);
     newUser.password = passwordHash;
+    const memberRole: Role = await this.rolesRepository.findOne({
+      where: {
+        name: 'member',
+      },
+    });
+    newUser.role = Promise.resolve(memberRole);
     const savedUser = await this.usersRepository.save(newUser);
 
     return this.convertToShowUserDTO(savedUser);
