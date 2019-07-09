@@ -15,9 +15,6 @@ import { Team } from './team.entity';
 import { TeamInvitation } from './team-invitation.entity';
 import { Activity } from './activity.entity';
 
-
-
-
 @Entity('users')
 export class User {
   @PrimaryGeneratedColumn('uuid')
