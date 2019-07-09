@@ -3,6 +3,7 @@ import { createConnection } from 'typeorm';
 import * as bcrypt from 'bcrypt';
 import { ReviewerStatus } from '../../entities/reviewer-status.entity';
 import { WorkItemStatus } from '../../entities/work-item-status.entity';
+import { Role } from '../../entities/role.entity';
 
 const main = async () => {
   const connection = await createConnection();
@@ -10,6 +11,7 @@ const main = async () => {
   const userRepository = connection.manager.getRepository(User);
   const reviewerStatusRepository = connection.manager.getRepository(ReviewerStatus);
   const workItemStatusRepository = connection.manager.getRepository(WorkItemStatus);
+  const roleRepository = connection.manager.getRepository(Role);
   // The seed script starts here:
   const valka: User = await userRepository.findOne({
     where: {
@@ -120,6 +122,68 @@ const main = async () => {
   } else {
     console.log("Accepted workitem status already in the DataBase");
   }
+
+  const workItemRevRejected: WorkItemStatus = await workItemStatusRepository.findOne({
+    where: {
+      status: 'rejected',
+    },
+  });
+ 
+  if(!workItemRevRejected){
+    const newWorkItemRevRejected: WorkItemStatus = new WorkItemStatus();
+    newWorkItemRevRejected.status = 'rejected';
+    await workItemStatusRepository.save(newWorkItemRevRejected);
+    console.log("Created rejected workitem status.");
+  } else {
+    console.log("Rejected workitem status already in the DataBase");
+  }
+
+  const workItemRevRequestChanges: WorkItemStatus = await workItemStatusRepository.findOne({
+    where: {
+      status: 'request_changes',
+    },
+  });
+ 
+  if(!workItemRevRequestChanges){
+    const newWorkItemRevRequestChanges: WorkItemStatus = new WorkItemStatus();
+    newWorkItemRevRequestChanges.status = 'request_changes';
+    await workItemStatusRepository.save(newWorkItemRevRequestChanges);
+    console.log("Created request changes workitem status.");
+  } else {
+    console.log("Request changes workitem status already in the DataBase");
+  }
+
+  const member: Role = await roleRepository.findOne({
+    where: {
+      name: 'member',
+    },
+  });
+ 
+  if (!member) {
+    const newMemberRole: Role = new Role();
+    newMemberRole.name = 'member';
+    await roleRepository.save(newMemberRole);
+    console.log("Created member role.");
+  } else {
+    console.log("Member role already in the DataBase");
+  }
+
+  const admin: Role = await roleRepository.findOne({
+    where: {
+      name: 'admin',
+    },
+  });
+ 
+  if(!admin){
+    const newAdminRole: Role = new Role();
+    newAdminRole.name = 'admin';
+    await roleRepository.save(newAdminRole);
+    console.log("Created admin role.");
+  } else {
+    console.log("Admin role already in the DataBase");
+  }
+
+
 
   connection.close();
 }
