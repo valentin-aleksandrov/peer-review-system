@@ -12,6 +12,36 @@ const main = async () => {
   const reviewerStatusRepository = connection.manager.getRepository(ReviewerStatus);
   const workItemStatusRepository = connection.manager.getRepository(WorkItemStatus);
   const roleRepository = connection.manager.getRepository(Role);
+
+  const member: Role = await roleRepository.findOne({
+    where: {
+      name: 'member',
+    },
+  });
+ 
+  if (!member) {
+    const newMemberRole: Role = new Role();
+    newMemberRole.name = 'member';
+    await roleRepository.save(newMemberRole);
+    console.log("Created member role.");
+  } else {
+    console.log("Member role already in the DataBase");
+  }
+
+  const admin: Role = await roleRepository.findOne({
+    where: {
+      name: 'admin',
+    },
+  });
+ 
+  if(!admin){
+    const newAdminRole: Role = new Role();
+    newAdminRole.name = 'admin';
+    await roleRepository.save(newAdminRole);
+    console.log("Created admin role.");
+  } else {
+    console.log("Admin role already in the DataBase");
+  }
   // The seed script starts here:
   const valka: User = await userRepository.findOne({
     where: {
@@ -26,6 +56,12 @@ const main = async () => {
     user1.password = await bcrypt.hash('aaAA$$123456789', 10);
     user1.firstName = 'Valentin';
     user1.lastName = 'Aleksandrov';
+    const user1Role = await roleRepository.findOne({
+      where: {
+        name: 'member',
+      },
+    });
+    user1.role = Promise.resolve(user1Role);
 
     await userRepository.save(user1);
     console.log('Valka created!');
@@ -153,53 +189,23 @@ const main = async () => {
     console.log("Request changes workitem status already in the DataBase");
   }
 
-  const member: Role = await roleRepository.findOne({
-    where: {
-      name: 'member',
-    },
-  });
- 
-  if (!member) {
-    const newMemberRole: Role = new Role();
-    newMemberRole.name = 'member';
-    await roleRepository.save(newMemberRole);
-    console.log("Created member role.");
-  } else {
-    console.log("Member role already in the DataBase");
-  }
-
-  const admin: Role = await roleRepository.findOne({
-    where: {
-      name: 'admin',
-    },
-  });
- 
-  if(!admin){
-    const newAdminRole: Role = new Role();
-    newAdminRole.name = 'admin';
-    await roleRepository.save(newAdminRole);
-    console.log("Created admin role.");
-  } else {
-    console.log("Admin role already in the DataBase");
-  }
-
-  const valkaRolePosition: User = await userRepository.findOne({
-    where: {
-      email: 'valentin805@gmail.com'
-    },
-  });
-  const memberRoleForValka: Role = await roleRepository.findOne({
-    where: {
-      name: 'member',
-    },
-  });
-  if(!valkaRolePosition.role){
-    valka.role = memberRoleForValka;
-    console.log("Add member role to valka");
-    await userRepository.save(valka);
-  } else {
-    console.log("valka already has member role");
-  }
+  // const valkaRolePosition: User = await userRepository.findOne({
+  //   where: {
+  //     email: 'valentin805@gmail.com'
+  //   },
+  // });
+  // const memberRoleForValka: Role = await roleRepository.findOne({
+  //   where: {
+  //     name: 'member',
+  //   },
+  // });
+  // if(!valkaRolePosition.role){
+  //   valkaRolePosition.role = memberRoleForValka;
+  //   console.log("Add member role to valka");
+  //   await userRepository.save(valka);
+  // } else {
+  //   console.log("valka already has member role");
+  // }
 
   connection.close();
 }

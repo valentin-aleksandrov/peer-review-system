@@ -38,7 +38,7 @@ export class User {
   isDeleted: boolean;
 
   @ManyToOne(type => Role, role => role.name)
-  role: Role;
+  role: Promise<Role>;
 
   @ManyToMany(type => Team, team => team.users)
   @JoinTable()

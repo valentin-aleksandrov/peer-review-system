@@ -12,13 +12,14 @@ import { JwtModule } from '@nestjs/jwt';
 import { config } from '../common/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { UsersService } from 'src/users/users.service';
+import { Role } from '../entities/role.entity';
 
 @Module({
   imports: [
     CoreModule,
     ConfigModule,
     UsersModule,
-    TypeOrmModule.forFeature([User]),
+    TypeOrmModule.forFeature([User, Role]),
     PassportModule.register({defaultStrategy: 'jwt'}),
     JwtModule.registerAsync({
       imports: [ConfigModule,],
