@@ -183,7 +183,23 @@ const main = async () => {
     console.log("Admin role already in the DataBase");
   }
 
-
+  const valkaRolePosition: User = await userRepository.findOne({
+    where: {
+      email: 'valentin805@gmail.com'
+    },
+  });
+  const memberRoleForValka: Role = await roleRepository.findOne({
+    where: {
+      name: 'member',
+    },
+  });
+  if(!valkaRolePosition.role){
+    valka.role = memberRoleForValka;
+    console.log("Add member role to valka");
+    await userRepository.save(valka);
+  } else {
+    console.log("valka already has member role");
+  }
 
   connection.close();
 }
