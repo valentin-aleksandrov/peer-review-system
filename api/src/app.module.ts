@@ -27,10 +27,10 @@ import { WorkItemModule } from './workItem/work-item.module';
       }),
     }),
     AuthModule,
-    WorkItemModule,
     UsersModule,
     CoreModule, 
     ConfigModule,
+    WorkItemModule
   ],
   controllers: [AppController],
   providers: [AppService],

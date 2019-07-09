@@ -12,7 +12,6 @@ import { Module } from "@nestjs/common";
 
 Module({
     imports: [
-      CoreModule,
       PassportModule.register({defaultStrategy: 'jwt'}),
       TypeOrmModule.forFeature([User,ReviewerStatus, Role, WorkItem]),
     ],
@@ -20,6 +19,10 @@ Module({
     providers: [
         UsersService,
         WorkItemService,
+        CoreModule,
+    ],
+    exports: [
+      WorkItemService
     ],
   })
   export class WorkItemModule {}
