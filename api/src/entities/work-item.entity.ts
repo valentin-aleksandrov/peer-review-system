@@ -4,6 +4,7 @@ import { Tag } from "./tag.entity";
 import { Review } from "./review.entity";
 import { Picture } from "./picture.entity";
 import { FileEntity } from "./file.entity";
+import { User } from "./user.entity";
 
 @Entity('work_items')
 export class WorkItem {
@@ -19,6 +20,8 @@ export class WorkItem {
   @Column('nvarchar') // It could be not Enough!
   description: string;
 
+  @ManyToOne((type) => User, (user) => user.workItems)
+  assignee: User;
 
   @ManyToOne(type => WorkItemStatus, status => status.workItems)
   workItemStatus: WorkItemStatus;
