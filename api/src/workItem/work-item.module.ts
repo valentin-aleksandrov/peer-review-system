@@ -10,7 +10,7 @@ import { UsersService } from "src/users/users.service";
 import { WorkItemService } from "./work-item.service";
 import { Module } from "@nestjs/common";
 
-Module({
+@Module({
     imports: [
       PassportModule.register({defaultStrategy: 'jwt'}),
       TypeOrmModule.forFeature([User,ReviewerStatus, Role, WorkItem]),
