@@ -43,10 +43,10 @@ export class User {
   @ManyToMany(type => Team, team => team.users)
   teams: Promise<Team[]>;
 
-  @ManyToMany(type => TeamInvitation, TeamInvitation => TeamInvitation.host)
+  @OneToMany(type => TeamInvitation, TeamInvitation => TeamInvitation.host)
   host: Promise <TeamInvitation>;
 
-  @ManyToMany(type => TeamInvitation, TeamInvitation => TeamInvitation.invitee)
+  @OneToMany(type => TeamInvitation, TeamInvitation => TeamInvitation.invitee)
   invitee: Promise<TeamInvitation>;
 
   @OneToMany(type => Activity, activity => activity.user)

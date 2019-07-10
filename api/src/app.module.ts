@@ -8,6 +8,8 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { ConfigModule } from './config/config.module';
 import { ConfigService } from './config/config.service';
 import { WorkItemModule } from './workItem/work-item.module';
+import { TeamModule } from './team/team.module';
+import { TeamInvitationModule } from './team-invitation/team-invitation.module';
 
 @Module({
   imports: [
@@ -22,6 +24,7 @@ import { WorkItemModule } from './workItem/work-item.module';
         password: configService.dbPassword,
         database: configService.dbName,
         entities: [__dirname + '/**/*.entity{.ts,.js}'],
+        
         migrations: [__dirname + '/migrations'],
         synchronize: true,
       }),
@@ -30,7 +33,10 @@ import { WorkItemModule } from './workItem/work-item.module';
     UsersModule,
     CoreModule, 
     ConfigModule,
-    WorkItemModule
+    WorkItemModule,
+    ConfigModule, 
+    TeamModule, 
+    TeamInvitationModule,
   ],
   controllers: [AppController],
   providers: [AppService],
