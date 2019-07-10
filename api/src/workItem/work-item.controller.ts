@@ -3,6 +3,8 @@ import { AuthGuard } from "@nestjs/passport";
 import { WorkItemService } from "./work-item.service";
 import { CreateWorkItemDTO } from "./models/create-work-item.dto";
 import { ShowWorkItemDTO } from "./models/show-work-item.dto";
+import { User } from "../entities/user.entity";
+import { SessionUser } from "../decorators/session-user.decorator";
 
 @UseGuards(AuthGuard())
 @Controller('test')
@@ -14,13 +16,13 @@ export class WorkItemController {
   @Post()
   async create(
     @Body(new ValidationPipe({ whitelist: true, transform: true })) createWorkItemDTO: CreateWorkItemDTO,
-    @Req() request,
+    @SessionUser() user: User
     ): Promise<ShowWorkItemDTO> {
       console.log("Create work item works :D");
       
       console.log(createWorkItemDTO);
 
-      console.log(request);
+      console.log(user);
       
       
       const newWorkItem = new ShowWorkItemDTO();
