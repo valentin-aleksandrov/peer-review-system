@@ -4,7 +4,7 @@ import { Repository } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
 import { User } from 'src/entities/user.entity';
 import { TeamRules } from 'src/entities/team-rules.entity';
-import { CreateTeamDTO } from './create-team.dto';
+import { CreateTeamDTO } from './models/create-team.dto';
 
 @Injectable()
 export class TeamService {

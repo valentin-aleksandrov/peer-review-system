@@ -3,7 +3,7 @@ import { AuthGuard } from '@nestjs/passport';
 import { TeamService } from './team.service';
 import { SessionUser } from 'src/decorators/session-user.decorator';
 import { User } from 'src/entities/user.entity';
-import { CreateTeamDTO } from './create-team.dto';
+import { CreateTeamDTO } from './models/create-team.dto';
 
 @Controller('api/team')
 export class TeamController {

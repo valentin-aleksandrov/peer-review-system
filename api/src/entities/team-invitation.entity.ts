@@ -9,17 +9,23 @@ export class TeamInvitation {
   @PrimaryGeneratedColumn('uuid')
   id: string;
 
-  @ManyToOne(type => TeamInvitationStatus, TeamInvitationStatus => TeamInvitationStatus.status)
-  status: Promise<TeamInvitationStatus>;
+  @ManyToOne(type => TeamInvitationStatus, TeamInvitationStatus => TeamInvitationStatus.status,{
+    eager: true
+})
+  status: TeamInvitationStatus;
 
-  @ManyToOne(type => Team, team => team.TeamInvitation)
-  team: Promise<Team>;
+  @ManyToOne(type => Team, team => team.TeamInvitation, {
+    eager: true
+})
+  team: Team;
 
   @ManyToOne(type => User, user => user.host, {
     eager: true
 })
   host: User;
 
-  @ManyToOne(type => User, user => user.invitee)
-  invitee: Promise<User>;
+  @ManyToOne(type => User, user => user.invitee, {
+    eager: true
+})
+  invitee: User;
 }

@@ -1,4 +1,5 @@
 import { Expose } from 'class-transformer';
+import { Role } from 'src/entities/role.entity';
 
 export class ShowUserDTO {
 
@@ -19,5 +20,5 @@ export class ShowUserDTO {
   lastName: string;
 
   @Expose()
-  role: string;
+  role: Role;
 }

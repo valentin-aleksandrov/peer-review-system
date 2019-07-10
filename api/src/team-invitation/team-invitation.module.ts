@@ -14,6 +14,7 @@ import { AuthModule } from 'src/auth/auth.module';
     AuthModule,
   ],
   controllers: [TeamInvitationController],
-  providers: [TeamInvitationService]
+  providers: [TeamInvitationService],
+  exports: [TeamInvitationService],
 })
 export class TeamInvitationModule {}
