@@ -71,6 +71,109 @@ const main = async () => {
   } else {
     console.log('Valka is already in the Database!');
   }
+  const valka2: User = await userRepository.findOne({
+    where: {
+      email: 'valentin2805@gmail.com'
+    },
+  });
+
+  if (!valka2) {
+    const user1:User = new User();
+    user1.username = 'Valka2';
+    user1.email = 'valentin2805@gmail.com';
+    user1.password = await bcrypt.hash('aaAA$$123456789', 10);
+    user1.firstName = 'Valentin2';
+    user1.lastName = 'Aleksandrov2';
+    const user1Role = await roleRepository.findOne({
+      where: {
+        name: 'member',
+      },
+    });
+    user1.role = Promise.resolve(user1Role);
+
+    await userRepository.save(user1);
+    console.log('Valka2 created!');
+  } else {
+    console.log('Valka2 is already in the Database!');
+  }
+
+  const valka3: User = await userRepository.findOne({
+    where: {
+      email: 'valentin3805@gmail.com'
+    },
+  });
+
+  if (!valka3) {
+    const user1:User = new User();
+    user1.username = 'Valka3';
+    user1.email = 'valentin3805@gmail.com';
+    user1.password = await bcrypt.hash('aaAA$$123456789', 10);
+    user1.firstName = 'Valentin3';
+    user1.lastName = 'Aleksandrov3';
+    const user1Role = await roleRepository.findOne({
+      where: {
+        name: 'member',
+      },
+    });
+    user1.role = Promise.resolve(user1Role);
+
+    await userRepository.save(user1);
+    console.log('Valka3 created!');
+  } else {
+    console.log('Valka3 is already in the Database!');
+  }
+
+  const valka4: User = await userRepository.findOne({
+    where: {
+      email: 'valentin4805@gmail.com'
+    },
+  });
+
+  if (!valka4) {
+    const user1:User = new User();
+    user1.username = 'Valka4';
+    user1.email = 'valentin4805@gmail.com';
+    user1.password = await bcrypt.hash('aaAA$$123456789', 10);
+    user1.firstName = 'Valentin4';
+    user1.lastName = 'Aleksandrov4';
+    const user1Role = await roleRepository.findOne({
+      where: {
+        name: 'member',
+      },
+    });
+    user1.role = Promise.resolve(user1Role);
+
+    await userRepository.save(user1);
+    console.log('Valka4 created!');
+  } else {
+    console.log('Valka4 is already in the Database!');
+  }
+
+  const valka5: User = await userRepository.findOne({
+    where: {
+      email: 'valentin5805@gmail.com'
+    },
+  });
+
+  if (!valka5) {
+    const user1:User = new User();
+    user1.username = 'Valka5';
+    user1.email = 'valentin5805@gmail.com';
+    user1.password = await bcrypt.hash('aaAA$$123456789', 10);
+    user1.firstName = 'Valentin5';
+    user1.lastName = 'Aleksandrov5';
+    const user1Role = await roleRepository.findOne({
+      where: {
+        name: 'member',
+      },
+    });
+    user1.role = Promise.resolve(user1Role);
+
+    await userRepository.save(user1);
+    console.log('Valka5 created!');
+  } else {
+    console.log('Valka5 is already in the Database!');
+  }
 
   const revPending: ReviewerStatus = await reviewerStatusRepository.findOne({
     where: {
