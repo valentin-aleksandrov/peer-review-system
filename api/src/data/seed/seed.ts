@@ -368,14 +368,17 @@ const main = async () => {
 
   if(!team1){
     const newTeam: Team = new Team();
-    newTeam.rules = Promise.resolve(
-      await teamRulesRepository.findOne({
+    const rule: TeamRules = await teamRulesRepository.findOne({
         where: {
           minPercentApprovalOfItem: 100,
         },
       })
-    );
+    await (newTeam.rules = Promise.resolve(rule));
+    
+    
     newTeam.teamName = 'team1';
+   
+   
     const user1 = await userRepository.findOne({
       where: {
         email: 'valentin805@gmail.com'
@@ -391,16 +394,18 @@ const main = async () => {
         email: 'valentin3805@gmail.com'
       },
     });
+    const users: User[] = [];
     if(!user1){
-      newTeam.users.push(user1);
+      users.push(user1);
     }
     if(!user2){
-      newTeam.users.push(user2);
+      users.push(user2);
     }
     if(!user3){
-      newTeam.users.push(user3);
+      users.push(user3);
     }
-    await teamRepository.create(newTeam);
+    // newTeam.users = users;
+    await teamRepository.save(newTeam);
     console.log("Created team1");
     
   } else {
