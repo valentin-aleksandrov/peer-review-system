@@ -6,6 +6,7 @@ import { WorkItemStatus } from '../../entities/work-item-status.entity';
 import { Role } from '../../entities/role.entity';
 import { TeamInvitationStatus } from '../../entities/team-invitation-status.entity';
 import { TeamRules } from '../../entities/team-rules.entity';
+import { Team } from '../../entities/team.entity';
 
 const main = async () => {
   const connection = await createConnection();
@@ -16,6 +17,8 @@ const main = async () => {
   const teamInivitationStatusRepository = connection.manager.getRepository(TeamInvitationStatus);
   const roleRepository = connection.manager.getRepository(Role);
   const teamRulesRepository = connection.manager.getRepository(TeamRules);
+  const teamRepository = connection.manager.getRepository(Team)
+
   const member: Role = await roleRepository.findOne({
     where: {
       name: 'member',
@@ -356,6 +359,54 @@ const main = async () => {
   } else {
     console.log("Default team rules already in the DataBase");
   }
+
+  const team1: Team = await teamRepository.findOne({
+    where: {
+      teamName: 'team1',
+    }
+  });
+
+  if(!team1){
+    const newTeam: Team = new Team();
+    newTeam.rules = Promise.resolve(
+      await teamRulesRepository.findOne({
+        where: {
+          minPercentApprovalOfItem: 100,
+        },
+      })
+    );
+    newTeam.teamName = 'team1';
+    const user1 = await userRepository.findOne({
+      where: {
+        email: 'valentin805@gmail.com'
+      },
+    });
+    const user2 = await userRepository.findOne({
+      where: {
+        email: 'valentin2805@gmail.com'
+      },
+    });
+    const user3 = await userRepository.findOne({
+      where: {
+        email: 'valentin3805@gmail.com'
+      },
+    });
+    if(!user1){
+      newTeam.users.push(user1);
+    }
+    if(!user2){
+      newTeam.users.push(user2);
+    }
+    if(!user3){
+      newTeam.users.push(user3);
+    }
+    await teamRepository.create(newTeam);
+    console.log("Created team1");
+    
+  } else {
+    console.log('team1 already in the DataBase.');
+  }
+
 
   connection.close();
 }
