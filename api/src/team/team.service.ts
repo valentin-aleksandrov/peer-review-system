@@ -27,4 +27,25 @@ export class TeamService {
     newTeam.rules = Promise.resolve(rules);
     return await this.teamRepository.save(newTeam);
     }
+
+    public async leaveTeam(id: string, user: User): Promise<any> {
+    const team: Team = await this.teamRepository.findOne({
+      where: {
+        id: id,
+      },
+    });
+    const members = team.users;
+    function leaveTeam (members, user) {
+
+      return members.filter(function(ele){
+          return ele.id !== user.id;
+      });
+   }
+   var res = leaveTeam (members, user);
+   team.users = res;
+   await this.teamRepository.save(team);
+   return await res;
+
+    }
+    
 }

@@ -1,4 +1,4 @@
-import { Controller, Post, UseGuards, Body, ValidationPipe } from '@nestjs/common';
+import { Controller, Post, UseGuards, Body, ValidationPipe, Delete } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
 import { TeamService } from './team.service';
 import { SessionUser } from 'src/decorators/session-user.decorator';
@@ -19,6 +19,15 @@ export class TeamController {
     @SessionUser() user: User,
   ): Promise<any> {
     return await this.teamService.createTeam(body, user);
+  }
+    @Delete(':id')
+    @UseGuards(AuthGuard())
+    public async leaveTeam(
+    @Body(new ValidationPipe({ whitelist: true, transform: true }))
+    name: CreateTeamDTO,
+    @SessionUser() user: User,
+  ): Promise<any> {
+    return await this.teamService.leaveTeam(name, user);
   }
 
 }
