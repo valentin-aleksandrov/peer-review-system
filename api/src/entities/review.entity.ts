@@ -2,6 +2,7 @@ import { Entity, PrimaryGeneratedColumn, Column, OneToMany, ManyToOne } from "ty
 import { WorkItem } from "./work-item.entity";
 import { ReviewerStatus } from "./reviewer-status.entity";
 import { CommentEntity } from "./comment.entity";
+import { User } from "./user.entity";
 
 @Entity('reviews')
 export class Review {
@@ -16,4 +17,7 @@ export class Review {
 
   @OneToMany((type) => CommentEntity, (comment) => comment.review)
   comments: Promise<CommentEntity>;
+
+  @ManyToOne((type) => User, (user) => user.reviews)
+  user: Promise<User>;
 }
