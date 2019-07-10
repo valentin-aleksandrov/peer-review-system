@@ -20,7 +20,7 @@ export class WorkItemController {
     ): Promise<ShowWorkItemDTO> {
       console.log("Create work item works :D");
       
-      console.log(createWorkItemDTO);
+      console.log(createWorkItemDTO.);
 
       console.log(user);
       

@@ -7,5 +7,5 @@ export class AddReviwerDTO {
   
     @IsString()
     @Length(4, 60)
-    email: string;
+    username: string;
   }
