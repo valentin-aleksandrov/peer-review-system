@@ -7,6 +7,7 @@ import { CoreModule } from './core/core.module';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { ConfigModule } from './config/config.module';
 import { ConfigService } from './config/config.service';
+import { WorkItemModule } from './workItem/work-item.module';
 import { TeamModule } from './team/team.module';
 import { TeamInvitationModule } from './team-invitation/team-invitation.module';
 
@@ -30,8 +31,12 @@ import { TeamInvitationModule } from './team-invitation/team-invitation.module';
     }),
     AuthModule,
     UsersModule,
-    CoreModule,
-    ConfigModule, TeamModule, TeamInvitationModule,
+    CoreModule, 
+    ConfigModule,
+    WorkItemModule,
+    ConfigModule, 
+    TeamModule, 
+    TeamInvitationModule,
   ],
   controllers: [AppController],
   providers: [AppService],
