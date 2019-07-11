@@ -35,22 +35,10 @@ export class WorkItemService {
     newWorkItem.assignee = loggedUser;
     newWorkItem.title = createWorkItemDTO.title;
     newWorkItem.description = createWorkItemDTO.description;
-    // attached reviews to workItem
-    const workItemReviewEntities: Review[] = await this.createReviews(reviewerEntities);
-    console.log('after create review');
-    console.log('after create review');
-    console.log('after create review');
-    console.log('after create review');
-    console.log('after create review');
-    console.log('after create review');
-    console.log('after create review');
-    console.log('after create review');
-    console.log('after create review');
 
+    const workItemReviewEntities: Review[] = await this.createReviews(reviewerEntities);
 
     newWorkItem.reviews = workItemReviewEntities;
-    // // console.log('before save:', newWorkItem);
-     console.log('before save:', newWorkItem.reviews);
     const pendingWorkItemStatus: WorkItemStatus = await this.workItemStatusRepository
       .findOne({
         where: {
@@ -60,7 +48,7 @@ export class WorkItemService {
     newWorkItem.workItemStatus = pendingWorkItemStatus;
     const createdWorkItem = await this.workItemRepository.save(newWorkItem);
 
-     console.log('after save -->>>',createdWorkItem.reviews);
+
     
     return this.convertToShowWorkItemDTO(createdWorkItem);
   }
@@ -74,8 +62,7 @@ export class WorkItemService {
         }
       });
 
-
-
+    // reviewers.foreach will not work, because we have a async call to a repository!
     for (const currentReviwer of reviewers) {
       const newReview: Review = new Review();
       newReview.user = currentReviwer;
@@ -85,14 +72,6 @@ export class WorkItemService {
       
       reviews = [...reviews, saveRev];
     }
-
-
-
-
-
-
-     console.log('reviews',reviews);
-    
     
     return reviews;
   }
