@@ -12,7 +12,9 @@ export class Review {
   @ManyToOne(type => WorkItem, workItem => workItem.reviews)
   workItem: Promise<WorkItem>;
 
-  @ManyToOne(type => ReviewerStatus, status => status.reviews)
+  @ManyToOne(type => ReviewerStatus, status => status.reviews, {
+    eager: true,
+  })
   reviewerStatus: ReviewerStatus;
 
   @OneToMany((type) => CommentEntity, (comment) => comment.review)
