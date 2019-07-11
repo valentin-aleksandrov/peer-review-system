@@ -73,18 +73,7 @@ export class WorkItemService {
           status: 'pending'
         }
       });
-    // reviewers.forEach(async (currentReviwer)=>{
-    //   const newReview: Review = new Review();
-    //   newReview.user = currentReviwer;
-    //   newReview.reviewerStatus = pendingReviewerStatus;
-    //   console.log('before save rev',newReview);
-      
-    //   const saveRev = await this.reviewsRepository.save(newReview);
-    //   console.log('after save',saveRev);
-      
-    //   reviews = [...reviews, saveRev];
-    //   // reviews[0].user
-    // });
+
 
 
     for (const currentReviwer of reviewers) {
