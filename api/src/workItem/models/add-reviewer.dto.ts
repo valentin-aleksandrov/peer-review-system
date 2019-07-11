@@ -2,10 +2,6 @@ import { IsString, Length } from "class-validator";
 
 export class AddReviwerDTO {
     @IsString()
-    @Length(1, 100)
-    id: string;
-  
-    @IsString()
-    @Length(4, 60)
+    @Length(1, 60)
     username: string;
   }

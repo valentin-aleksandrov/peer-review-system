@@ -7,7 +7,7 @@ import { User } from "../entities/user.entity";
 import { SessionUser } from "../decorators/session-user.decorator";
 
 @UseGuards(AuthGuard())
-@Controller('test')
+@Controller('work-item')
 export class WorkItemController {
   constructor(
     private readonly workItemService: WorkItemService,
@@ -15,15 +15,16 @@ export class WorkItemController {
 
   @Post()
   async create(
-    @Body(new ValidationPipe({ whitelist: true, transform: true })) createWorkItemDTO: CreateWorkItemDTO,
+    @Body(new ValidationPipe({ whitelist: false, transform: true })) createWorkItemDTO: CreateWorkItemDTO,
     @SessionUser() user: User
     ): Promise<ShowWorkItemDTO> {
-      console.log("Create work item works :D");
-      
-      console.log(createWorkItemDTO.);
+     
 
-      console.log(user);
-      
+      this.workItemService.createWorkItem(user,createWorkItemDTO);
+
+
+
+
       
       const newWorkItem = new ShowWorkItemDTO();
     return await Promise.resolve(newWorkItem);

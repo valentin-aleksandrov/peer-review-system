@@ -14,7 +14,7 @@ export class WorkItem {
   @Column({default: false})
   isReady: boolean;
 
-  @Column('nvarchar') 
+  @Column('nvarchar')
   title: string;
 
   @Column('nvarchar') // It could be not Enough!
