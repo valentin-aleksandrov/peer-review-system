@@ -7,6 +7,7 @@ import { Role } from '../../entities/role.entity';
 import { TeamInvitationStatus } from '../../entities/team-invitation-status.entity';
 import { TeamRules } from '../../entities/team-rules.entity';
 import { Team } from '../../entities/team.entity';
+import { Tag } from '../../entities/tag.entity';
 
 const main = async () => {
   const connection = await createConnection();
@@ -17,7 +18,8 @@ const main = async () => {
   const teamInivitationStatusRepository = connection.manager.getRepository(TeamInvitationStatus);
   const roleRepository = connection.manager.getRepository(Role);
   const teamRulesRepository = connection.manager.getRepository(TeamRules);
-  const teamRepository = connection.manager.getRepository(Team)
+  const teamRepository = connection.manager.getRepository(Team);
+  const tagRepository = connection.manager.getRepository(Tag);
 
   const member: Role = await roleRepository.findOne({
     where: {
@@ -412,7 +414,52 @@ const main = async () => {
     console.log('team1 already in the DataBase.');
   }
 
-  const tag1 = 
+  const tag1 = await tagRepository.findOne({
+    where: {
+      name: "tag1",
+    }
+  });
+
+  if(!tag1){
+    const newTag: Tag = new Tag();
+    newTag.name = 'tag1';
+    await tagRepository.save(newTag);
+    console.log('Created tag1.');
+  } else {
+    console.log('Tag1 already exists in the DataBase.');
+    
+  }
+  const tag2 = await tagRepository.findOne({
+    where: {
+      name: "tag2",
+    }
+  });
+
+  if(!tag2){
+    const newTag: Tag = new Tag();
+    newTag.name = 'tag2';
+    await tagRepository.save(newTag);
+    console.log('Created tag2.');
+  } else {
+    console.log('Tag2 already exists in the DataBase.');
+    
+  }
+  const tag3 = await tagRepository.findOne({
+    where: {
+      name: "tag3",
+    }
+  });
+
+  if(!tag3){
+    const newTag: Tag = new Tag();
+    newTag.name = 'tag3';
+    await tagRepository.save(newTag);
+    console.log('Created tag3.');
+  } else {
+    console.log('Tag3 already exists in the DataBase.');
+    
+  }
+
 
   connection.close();
 }
