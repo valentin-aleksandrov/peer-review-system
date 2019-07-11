@@ -14,5 +14,5 @@ export class ShowWorkItemDTO {
   
     workItemStatus: string;
   
-    reviews: Promise<ShowReviewerDTO[]>;
+    reviews: ShowReviewerDTO[];
 }

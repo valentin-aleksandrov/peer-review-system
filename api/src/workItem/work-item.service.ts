@@ -10,6 +10,7 @@ import { Review } from "../entities/review.entity";
 import { ShowWorkItemDTO } from "./models/show-work-item.dto";
 import { ShowReviewerDTO } from "./models/show-reviewer.dto";
 import { ShowAssigneeDTO } from "./models/show-assignee.dto";
+import { WorkItemStatus } from "../entities/work-item-status.entity";
 
 @Injectable()
 export class WorkItemService {
@@ -20,41 +21,96 @@ export class WorkItemService {
     private readonly userRepository: Repository<User>,
     @InjectRepository(ReviewerStatus)
     private readonly reviewerStatusRepository: Repository<ReviewerStatus>,
+    @InjectRepository(WorkItemStatus)
+    private readonly workItemStatusRepository: Repository<WorkItemStatus>,
+    @InjectRepository(Review)
+    private readonly reviewsRepository: Repository<Review>,
     
   ) {}
   async createWorkItem(loggedUser: User, createWorkItemDTO: CreateWorkItemDTO)
     : Promise<ShowWorkItemDTO>{
     const reviewerDTOs: AddReviwerDTO[] = createWorkItemDTO.reviewers;
-    const reviewerEntities: User[] = this.getReviewerEntities(reviewerDTOs);
+    const reviewerEntities: User[] = await this.getReviewerEntities(reviewerDTOs);
     const newWorkItem: WorkItem = new WorkItem();
     newWorkItem.assignee = loggedUser;
     newWorkItem.title = createWorkItemDTO.title;
     newWorkItem.description = createWorkItemDTO.description;
-    newWorkItem.reviews = Promise.resolve( await this.createReviews(reviewerEntities));
+    // attached reviews to workItem
+    const workItemReviewEntities: Review[] = await this.createReviews(reviewerEntities);
+    console.log('after create review');
+    console.log('after create review');
+    console.log('after create review');
+    console.log('after create review');
+    console.log('after create review');
+    console.log('after create review');
+    console.log('after create review');
+    console.log('after create review');
+    console.log('after create review');
+
+
+    newWorkItem.reviews = workItemReviewEntities;
+    // // console.log('before save:', newWorkItem);
+     console.log('before save:', newWorkItem.reviews);
+    const pendingWorkItemStatus: WorkItemStatus = await this.workItemStatusRepository
+      .findOne({
+        where: {
+          status: 'pending',
+        }
+      });
+    newWorkItem.workItemStatus = pendingWorkItemStatus;
     const createdWorkItem = await this.workItemRepository.save(newWorkItem);
+
+     console.log('after save -->>>',createdWorkItem.reviews);
+    
     return this.convertToShowWorkItemDTO(createdWorkItem);
   }
 
   private async createReviews(reviewers: User[]) :Promise<Review[]>{
-    const reviews: Review[] = [];
+    let reviews: Review[] = [];
     const pendingReviewerStatus = await this.reviewerStatusRepository
       .findOne({
         where: {
           status: 'pending'
         }
       });
-    reviewers.forEach((currentReviwer)=>{
+    // reviewers.forEach(async (currentReviwer)=>{
+    //   const newReview: Review = new Review();
+    //   newReview.user = currentReviwer;
+    //   newReview.reviewerStatus = pendingReviewerStatus;
+    //   console.log('before save rev',newReview);
+      
+    //   const saveRev = await this.reviewsRepository.save(newReview);
+    //   console.log('after save',saveRev);
+      
+    //   reviews = [...reviews, saveRev];
+    //   // reviews[0].user
+    // });
+
+
+    for (const currentReviwer of reviewers) {
       const newReview: Review = new Review();
-      newReview.user = Promise.resolve(currentReviwer);
+      newReview.user = currentReviwer;
       newReview.reviewerStatus = pendingReviewerStatus;
-      reviews.push(newReview);
-    });
+      
+      const saveRev = await this.reviewsRepository.save(newReview);
+      
+      reviews = [...reviews, saveRev];
+    }
+
+
+
+
+
+
+     console.log('reviews',reviews);
+    
+    
     return reviews;
   }
 
-  private getReviewerEntities(reviewerDTOs: AddReviwerDTO[]) :User[]{
+  private getReviewerEntities(reviewerDTOs: AddReviwerDTO[]) :Promise<User[]>{
     if(!reviewerDTOs){
-      return [];
+      return Promise.resolve([]);
     }
     const reviewerEntities: User[] = [];
     reviewerDTOs.forEach(async (currentReviewerDTO: AddReviwerDTO)=>{
@@ -66,7 +122,7 @@ export class WorkItemService {
       });
       reviewerEntities.push(foundReviewerEntity);
     });
-    return reviewerEntities;
+    return Promise.resolve(reviewerEntities);
   }
   private async convertToShowReviewerDTO(reviewer: Review): Promise<ShowReviewerDTO> {
     const userEntity: User = await reviewer.user;
@@ -96,8 +152,8 @@ export class WorkItemService {
       title: workItem.title,
       description: workItem.description,
       assignee: assigneeDTO,
-      reviews: Promise.resolve(showReviewersDTO),
-      workItemStatus: null, //workItem.workItemStatus.status,
+      reviews: showReviewersDTO,
+      workItemStatus: workItem.workItemStatus.status,
     };
     return convertedWorkItem;
   }

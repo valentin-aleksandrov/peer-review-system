@@ -18,6 +18,8 @@ export class Review {
   @OneToMany((type) => CommentEntity, (comment) => comment.review)
   comments: Promise<CommentEntity>;
 
-  @ManyToOne((type) => User, (user) => user.reviews)
-  user: Promise<User>;
+  @ManyToOne((type) => User, (user) => user.reviews, {
+    eager: true,
+  })
+  user: User;
 }
