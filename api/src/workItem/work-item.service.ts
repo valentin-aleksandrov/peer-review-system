@@ -34,8 +34,6 @@ export class WorkItemService {
   ) {}
   async createWorkItem(loggedUser: User, createWorkItemDTO: CreateWorkItemDTO)
     : Promise<ShowWorkItemDTO>{
-    console.log('tags',createWorkItemDTO.tags);
-    
     const reviewerDTOs: AddReviwerDTO[] = createWorkItemDTO.reviewers;
     const reviewerEntities: User[] = await this.getReviewerEntities(reviewerDTOs);
     const newWorkItem: WorkItem = new WorkItem();

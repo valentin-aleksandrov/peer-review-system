@@ -416,47 +416,47 @@ const main = async () => {
 
   const tag1 = await tagRepository.findOne({
     where: {
-      name: "tag1",
+      name: "computers",
     }
   });
 
   if(!tag1){
     const newTag: Tag = new Tag();
-    newTag.name = 'tag1';
+    newTag.name = 'computers';
     await tagRepository.save(newTag);
-    console.log('Created tag1.');
+    console.log('Created computers tag.');
   } else {
-    console.log('Tag1 already exists in the DataBase.');
+    console.log('computers tag already exists in the DataBase.');
     
   }
   const tag2 = await tagRepository.findOne({
     where: {
-      name: "tag2",
+      name: "sports",
     }
   });
 
   if(!tag2){
     const newTag: Tag = new Tag();
-    newTag.name = 'tag2';
+    newTag.name = 'sports';
     await tagRepository.save(newTag);
-    console.log('Created tag2.');
+    console.log('Created sports tag.');
   } else {
-    console.log('Tag2 already exists in the DataBase.');
+    console.log('sports tag already exists in the DataBase.');
     
   }
   const tag3 = await tagRepository.findOne({
     where: {
-      name: "tag3",
+      name: "cooking",
     }
   });
 
   if(!tag3){
     const newTag: Tag = new Tag();
-    newTag.name = 'tag3';
+    newTag.name = 'cooking';
     await tagRepository.save(newTag);
-    console.log('Created tag3.');
+    console.log('Created cooking tag tag3.');
   } else {
-    console.log('Tag3 already exists in the DataBase.');
+    console.log('cooking tag already exists in the DataBase.');
     
   }
 
