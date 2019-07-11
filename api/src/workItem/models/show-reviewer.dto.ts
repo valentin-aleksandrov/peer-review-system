@@ -4,4 +4,5 @@ export class ShowReviewerDTO{
     id: string;
     email: string;
     status: string;
+    username: string;
 }

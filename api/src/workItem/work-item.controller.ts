@@ -18,16 +18,7 @@ export class WorkItemController {
     @Body(new ValidationPipe({ whitelist: false, transform: true })) createWorkItemDTO: CreateWorkItemDTO,
     @SessionUser() user: User
     ): Promise<ShowWorkItemDTO> {
-     
-
-      this.workItemService.createWorkItem(user,createWorkItemDTO);
-
-
-
-
-      
-      const newWorkItem = new ShowWorkItemDTO();
-    return await Promise.resolve(newWorkItem);
+     return await this.workItemService.createWorkItem(user,createWorkItemDTO);
   }
   
   @Get()
