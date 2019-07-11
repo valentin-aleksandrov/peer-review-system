@@ -1,5 +1,6 @@
 import { IsString, Length } from "class-validator";
 import { AddReviwerDTO } from "./add-reviewer.dto";
+import { AddTagDTO } from "./add-tag.dto";
 
 export class CreateWorkItemDTO {
     @IsString()
@@ -11,5 +12,7 @@ export class CreateWorkItemDTO {
     description: string;
 
     reviewers: AddReviwerDTO[];
+
+    tags: AddTagDTO[];
   }
   

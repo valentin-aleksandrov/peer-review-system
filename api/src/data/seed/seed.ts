@@ -412,6 +412,7 @@ const main = async () => {
     console.log('team1 already in the DataBase.');
   }
 
+  const tag1 = 
 
   connection.close();
 }
