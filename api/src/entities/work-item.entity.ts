@@ -20,10 +20,14 @@ export class WorkItem {
   @Column('nvarchar') // It could be not Enough!
   description: string;
 
-  @ManyToOne((type) => User, (user) => user.workItems)
+  @ManyToOne((type) => User, (user) => user.workItems, {
+    eager: true,
+  })
   assignee: User;
 
-  @ManyToOne(type => WorkItemStatus, status => status.workItems)
+  @ManyToOne(type => WorkItemStatus, status => status.workItems, {
+    eager: true,
+  })
   workItemStatus: WorkItemStatus;
 
   @ManyToMany(type => Tag, tag => tag.workItems)
