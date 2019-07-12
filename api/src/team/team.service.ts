@@ -5,6 +5,8 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { User } from 'src/entities/user.entity';
 import { TeamRules } from 'src/entities/team-rules.entity';
 import { CreateTeamDTO } from './models/create-team.dto';
+import { ShowTeamDTO } from './models/show-team.dto';
+import { plainToClass } from 'class-transformer';
 
 @Injectable()
 export class TeamService {
@@ -14,7 +16,7 @@ export class TeamService {
       ) { }
 
 
-    public async createTeam(body: CreateTeamDTO, user: User): Promise<any> {
+    public async createTeam(body: CreateTeamDTO, user: User): Promise<ShowTeamDTO> {
     const newTeam = new Team();
     newTeam.teamName = body.teamName;
     const newUser = user;
@@ -25,6 +27,28 @@ export class TeamService {
         },
       });
     newTeam.rules = Promise.resolve(rules);
-    return await this.teamRepository.save(newTeam);
+    const savedTeam = await this.teamRepository.save(newTeam);
+    const TeamToShow = plainToClass(ShowTeamDTO, savedTeam, { excludeExtraneousValues: true });
+    return TeamToShow;
     }
+
+    public async leaveTeam(teamId: string, user: User): Promise<ShowTeamDTO> {
+    const team: Team = await this.teamRepository.findOne({
+      where: {
+        id: teamId,
+      },
+    });
+    const members = team.users;
+    const leave = (members, user) => {
+
+      return members.filter((ele) => {
+          return ele.id !== user.id;
+      });
+   };
+   const result = leave (members, user);
+   team.users = result;
+   const updatedTeam: Team = await this.teamRepository.save(team);
+   const updatedTeamToShow = plainToClass(ShowTeamDTO, updatedTeam, { excludeExtraneousValues: true });
+   return await updatedTeamToShow;
+  }
 }
