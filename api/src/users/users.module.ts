@@ -15,6 +15,7 @@ import { Review } from '../entities/review.entity';
 import { Picture } from '../entities/picture.entity';
 import { FileEntity } from '../entities/file.entity';
 import { WorkItemService } from '../workItem/work-item.service';
+import { Team } from '../entities/team.entity';
 
 @Module({
   imports: [
@@ -29,7 +30,8 @@ import { WorkItemService } from '../workItem/work-item.service';
       Tag, 
       Review, 
       Picture, 
-      FileEntity
+      FileEntity,
+      Team,
   ]),
     WorkItemModule,
   ],

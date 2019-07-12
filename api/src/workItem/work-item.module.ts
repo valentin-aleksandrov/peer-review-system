@@ -14,6 +14,7 @@ import { Tag } from "../entities/tag.entity";
 import { Review } from "../entities/review.entity";
 import { Picture } from "../entities/picture.entity";
 import { FileEntity } from "../entities/file.entity";
+import { Team } from "src/entities/team.entity";
 
 @Module({
     imports: [
@@ -27,7 +28,8 @@ import { FileEntity } from "../entities/file.entity";
         Tag, 
         Review, 
         Picture, 
-        FileEntity
+        FileEntity,
+        Team,
       ]),
     ],
     controllers: [WorkItemController],

@@ -14,5 +14,7 @@ export class CreateWorkItemDTO {
     reviewers: AddReviwerDTO[];
 
     tags: AddTagDTO[];
+
+    team: string;
   }
   

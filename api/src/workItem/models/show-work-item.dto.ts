@@ -18,4 +18,6 @@ export class ShowWorkItemDTO {
     reviews: ShowReviewerDTO[];
 
     tags: ShowTagDTO[];
+
+    team: string;
 }

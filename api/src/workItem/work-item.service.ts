@@ -14,6 +14,7 @@ import { WorkItemStatus } from "../entities/work-item-status.entity";
 import { AddTagDTO } from "./models/add-tag.dto";
 import { Tag } from "../entities/tag.entity";
 import { ShowTagDTO } from "./models/show-tag.dto";
+import { Team } from "../entities/team.entity";
 
 @Injectable()
 export class WorkItemService {
@@ -30,6 +31,8 @@ export class WorkItemService {
     private readonly reviewsRepository: Repository<Review>,
     @InjectRepository(Tag)
     private readonly tagsRepository: Repository<Tag>,
+    @InjectRepository(Team)
+    private readonly teamsRepository: Repository<Team>,
     
   ) {}
   async createWorkItem(loggedUser: User, createWorkItemDTO: CreateWorkItemDTO)
@@ -53,6 +56,13 @@ export class WorkItemService {
     newWorkItem.workItemStatus = pendingWorkItemStatus;
     const tags = await this.findTagsByNames(createWorkItemDTO.tags);
     newWorkItem.tags = Promise.resolve(tags);
+    const team: Team = await this.teamsRepository
+      .findOne({
+        where: {
+          teamName: createWorkItemDTO.team,
+        }
+      });
+    newWorkItem.team = team;
     const createdWorkItem: WorkItem = await this.workItemRepository.save(newWorkItem);
     
     return this.convertToShowWorkItemDTO(createdWorkItem);
@@ -162,6 +172,7 @@ export class WorkItemService {
       reviews: showReviewersDTO,
       workItemStatus: workItem.workItemStatus.status,
       tags: tagDTOs,
+      team: workItem.team.teamName,
     };
     return convertedWorkItem;
   }
