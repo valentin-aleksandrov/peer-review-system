@@ -429,7 +429,9 @@ const main = async () => {
       //users.push(user3);
       users = [...users, user3];
     }
-    // newTeam.users = users;
+    let users2: User[] = [user1,user2,user3];
+    
+    newTeam.users = users2;
     await teamRepository.save(newTeam);
     console.log("Created team1");
     
@@ -485,7 +487,10 @@ const main = async () => {
       // users.push(user3);
       users = [...users, user3];
     }
-    // newTeam.users = users;
+    let users2: User[] = [user1,user2,user3];
+   
+
+    newTeam.users = users2;
     await teamRepository.save(newTeam);
     console.log("Created team2");
     
