@@ -8,6 +8,7 @@ import {
 } from '@nestjs/common';
 import { UsersService } from './users.service';
 import { WorkItemService } from '../workItem/work-item.service';
+import { ShowWorkItemDTO } from '../workItem/models/show-work-item.dto';
 
 @UseGuards(AuthGuard())
 @Controller('api/users')
@@ -35,8 +36,10 @@ export class UsersController {
     ): Promise<undefined> {
       
       console.log(userId);
-      
+      const result: Promise<ShowWorkItemDTO[]> = this.workItemService.getWorkItemsByUserId(userId);
 
+      console.log(await result);
+      
 
       return Promise.resolve(undefined);
     }
