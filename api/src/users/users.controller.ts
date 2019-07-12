@@ -29,4 +29,15 @@ export class UsersController {
       return this.userService.findSingleUser(userId);
     }
 
+    @Get('/work-item/:userId')
+    async findUserWorkItems(
+      @Param('userId') userId: string,
+    ): Promise<undefined> {
+      
+      console.log(userId);
+      
+
+
+      return Promise.resolve(undefined);
+    }
 }
