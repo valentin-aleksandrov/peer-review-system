@@ -8,6 +8,8 @@ import { TeamInvitationStatus } from '../../entities/team-invitation-status.enti
 import { TeamRules } from '../../entities/team-rules.entity';
 import { Team } from '../../entities/team.entity';
 import { Tag } from '../../entities/tag.entity';
+import { WorkItem } from '../../entities/work-item.entity';
+import { Review } from '../../entities/review.entity';
 
 const main = async () => {
   const connection = await createConnection();
@@ -20,6 +22,8 @@ const main = async () => {
   const teamRulesRepository = connection.manager.getRepository(TeamRules);
   const teamRepository = connection.manager.getRepository(Team);
   const tagRepository = connection.manager.getRepository(Tag);
+  const workItemRepository = connection.manager.getRepository(WorkItem);
+  const reviewRepository = connection.manager.getRepository(Review);
 
   const member: Role = await roleRepository.findOne({
     where: {
@@ -460,7 +464,88 @@ const main = async () => {
     
   }
 
+  const workItem1: WorkItem = await workItemRepository
+    .findOne({
+      where: {
+        title: 'title1',
+      }
+    });
 
+  if(!workItem1){
+    const newWorkItem: WorkItem = new WorkItem();
+    const user: User = await userRepository
+      .findOne({
+        where: {
+          email: 'valentin805@gmail.com',
+        }
+      });
+    newWorkItem.assignee = user;
+    newWorkItem.isReady = false;
+    newWorkItem.title = "title1";
+    newWorkItem.description = 'This is a description for workitem with a title -> title1';
+    const workItemStatus = await workItemStatusRepository
+      .findOne({
+        where: {
+          status: 'pending',
+        }
+      });
+    newWorkItem.workItemStatus = workItemStatus;
+    const tags: Tag[] = await tagRepository.find();
+    newWorkItem.tags = Promise.resolve(tags);
+    const foundTeam: Team = await teamRepository.findOne({
+      where: {
+        teamName: 'team1',
+      }
+    });
+    newWorkItem.team = foundTeam;
+
+    const newReview1: Review = new Review();
+
+    const foundUser1 : User = await userRepository.findOne({
+      where: {
+        email: 'valentin2805@gmail.com'
+      },
+    });
+    newReview1.user = foundUser1;
+  
+    newReview1.reviewerStatus = await reviewerStatusRepository.findOne({
+      where: {
+        status: 'pending',
+      },
+    });
+    
+    await reviewRepository.save(newReview1);
+    
+    const newReview2: Review = new Review();
+
+    const foundUser2 : User = await userRepository.findOne({
+      where: {
+        email: 'valentin3805@gmail.com'
+      },
+    });
+    newReview2.user = foundUser2;
+  
+    newReview2.reviewerStatus = await reviewerStatusRepository.findOne({
+      where: {
+        status: 'pending',
+      },
+    });
+    
+    await reviewRepository.save(newReview2);
+
+    const reviews: Review[] = await reviewRepository
+      .find({
+        take: 10,
+      })
+    newWorkItem.reviews = reviews;
+
+    await workItemRepository.save(newWorkItem);
+    console.log("Created WorkItem1.");
+    
+  } else {
+    console.log("WorkItem1 already exists in the DataBase.");
+    
+  }
   connection.close();
 }
 
