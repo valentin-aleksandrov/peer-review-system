@@ -5,6 +5,7 @@ import { Review } from "./review.entity";
 import { Picture } from "./picture.entity";
 import { FileEntity } from "./file.entity";
 import { User } from "./user.entity";
+import { Team } from "./team.entity";
 
 @Entity('work_items')
 export class WorkItem {
@@ -44,4 +45,9 @@ export class WorkItem {
 
   @OneToMany(type => FileEntity, file => file.workItem)
   files: Promise<FileEntity>;
+
+  @ManyToOne((type) => Team, (team) => team.workItems, {
+    eager: true,
+  })
+  team: Team;
 }
