@@ -416,15 +416,18 @@ const main = async () => {
         email: 'valentin3805@gmail.com'
       },
     });
-    const users: User[] = [];
+    let users: User[] = [];
     if(!user1){
-      users.push(user1);
+     // users.push(user1);
+      users = [...users, user1];
     }
     if(!user2){
-      users.push(user2);
+      //users.push(user2);
+      users = [...users, user2];
     }
     if(!user3){
-      users.push(user3);
+      //users.push(user3);
+      users = [...users, user3];
     }
     // newTeam.users = users;
     await teamRepository.save(newTeam);
@@ -456,28 +459,31 @@ const main = async () => {
    
     const user1 = await userRepository.findOne({
       where: {
-        email: 'valentin805@gmail.com'
+        email: 'valentin3805@gmail.com'
       },
     });
     const user2 = await userRepository.findOne({
       where: {
-        email: 'valentin2805@gmail.com'
+        email: 'valentin4805@gmail.com'
       },
     });
     const user3 = await userRepository.findOne({
       where: {
-        email: 'valentin3805@gmail.com'
+        email: 'valentin5805@gmail.com'
       },
     });
-    const users: User[] = [];
+    let users: User[] = [];
     if(!user1){
-      users.push(user1);
+      // users.push(user1);
+      users = [...users, user1];
     }
     if(!user2){
-      users.push(user2);
+      // users.push(user2);
+      users = [...users, user2];
     }
     if(!user3){
-      users.push(user3);
+      // users.push(user3);
+      users = [...users, user3];
     }
     // newTeam.users = users;
     await teamRepository.save(newTeam);
