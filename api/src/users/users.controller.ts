@@ -33,14 +33,7 @@ export class UsersController {
     @Get('/work-item/:userId')
     async findUserWorkItems(
       @Param('userId') userId: string,
-    ): Promise<undefined> {
-      
-      console.log(userId);
-      const result: Promise<ShowWorkItemDTO[]> = this.workItemService.getWorkItemsByUserId(userId);
-
-      console.log(await result);
-      
-
-      return Promise.resolve(undefined);
+    ): Promise<ShowWorkItemDTO[]> {
+      return this.workItemService.getWorkItemsByUserId(userId);
     }
 }

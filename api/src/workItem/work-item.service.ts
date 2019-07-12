@@ -59,22 +59,24 @@ export class WorkItemService {
   }
 
   async getWorkItemsByUserId(userId: string): Promise<ShowWorkItemDTO[]> {
-    const foundUser: User = await this.userRepository.findOne({
+    const foundUser: User = await this.userRepository
+      .findOne({
+        where: {
+          id: userId,
+        }
+      });
+    const workItems: WorkItem[] = await this.workItemRepository.find({
       where: {
-        id: userId,
+        assignee: foundUser,
       }
-    });
-    console.log('--found--User>',foundUser);
-    
-    const workItems: WorkItem[] = await this.workItemRepository
-      .createQueryBuilder("work_items")// name of the table
-      .innerJoinAndSelect("work_items.reviews","reviews")
-      .getMany();
-    console.log("workitems ->",workItems);
-    
-    return null;
+    }
+    );
+    return this.convertToShowWorkItemDTOs(workItems);
   }
 
+  private async convertToShowWorkItemDTOs(workItems: WorkItem[]): Promise<ShowWorkItemDTO[]> {
+    return Promise.all(workItems.map(async (entity: WorkItem) => this.convertToShowWorkItemDTO(entity)));
+}
   private async createReviews(reviewers: User[]) :Promise<Review[]>{
     let reviews: Review[] = [];
     const pendingReviewerStatus = await this.reviewerStatusRepository
