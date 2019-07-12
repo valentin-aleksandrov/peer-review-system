@@ -366,6 +366,22 @@ const main = async () => {
     console.log("Default team rules already in the DataBase");
   }
 
+  const teamRules80: TeamRules = await teamRulesRepository.findOne({
+    where: {
+      minPercentApprovalOfItem: 80,
+    },
+  });
+
+  if(!teamRules80){
+    const newTeamRules: TeamRules = new TeamRules();
+    newTeamRules.minPercentApprovalOfItem = 80;
+    newTeamRules.minNumberOfReviewers = 2;
+    await teamRulesRepository.save(newTeamRules);
+    console.log("Created 80% team rules.");
+  } else {
+    console.log("80% team rules already in the DataBase");
+  }
+
   const team1: Team = await teamRepository.findOne({
     where: {
       teamName: 'team1',
@@ -417,6 +433,60 @@ const main = async () => {
   } else {
     console.log('team1 already in the DataBase.');
   }
+
+  // team2
+  const team2: Team = await teamRepository.findOne({
+    where: {
+      teamName: 'team2',
+    }
+  });
+
+  if(!team2){
+    const newTeam: Team = new Team();
+    const rule: TeamRules = await teamRulesRepository.findOne({
+        where: {
+          minPercentApprovalOfItem: 80,
+        },
+      })
+    await (newTeam.rules = Promise.resolve(rule));
+    
+    
+    newTeam.teamName = 'team2';
+   
+   
+    const user1 = await userRepository.findOne({
+      where: {
+        email: 'valentin805@gmail.com'
+      },
+    });
+    const user2 = await userRepository.findOne({
+      where: {
+        email: 'valentin2805@gmail.com'
+      },
+    });
+    const user3 = await userRepository.findOne({
+      where: {
+        email: 'valentin3805@gmail.com'
+      },
+    });
+    const users: User[] = [];
+    if(!user1){
+      users.push(user1);
+    }
+    if(!user2){
+      users.push(user2);
+    }
+    if(!user3){
+      users.push(user3);
+    }
+    // newTeam.users = users;
+    await teamRepository.save(newTeam);
+    console.log("Created team2");
+    
+  } else {
+    console.log('team2 already in the DataBase.');
+  }
+  // end of team2
 
   const tag1 = await tagRepository.findOne({
     where: {
@@ -532,6 +602,24 @@ const main = async () => {
     });
     
     await reviewRepository.save(newReview2);
+
+    const newReview3: Review = new Review();
+
+    const foundUser3 : User = await userRepository.findOne({
+      where: {
+        email: 'valentin5805@gmail.com'
+      },
+    });
+    newReview3.user = foundUser3;
+  
+    newReview3.reviewerStatus = await reviewerStatusRepository.findOne({
+      where: {
+        status: 'pending',
+      },
+    });
+    
+    await reviewRepository.save(newReview3);
+
 
     const reviews: Review[] = await reviewRepository
       .find({
