@@ -83,6 +83,30 @@ export class WorkItemService {
     );
     return this.convertToShowWorkItemDTOs(workItems);
   }
+  async findWorkItemsByTeam(teamId: string): Promise<undefined>{
+    const team: Team = await this.teamsRepository
+      .findOne({
+        where: {
+          id: teamId,
+        }
+      })
+
+    console.log('The team',team.users);
+    
+
+
+
+
+
+
+
+
+
+
+
+
+    return null;
+  }
 
   private async convertToShowWorkItemDTOs(workItems: WorkItem[]): Promise<ShowWorkItemDTO[]> {
     return Promise.all(workItems.map(async (entity: WorkItem) => this.convertToShowWorkItemDTO(entity)));

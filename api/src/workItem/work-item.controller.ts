@@ -22,11 +22,11 @@ export class WorkItemController {
   }
   
     @Get("team/:teamId")
-    findWorkItemsByTeam(@Param('teamId') teamId: string,): string {
+    async findWorkItemsByTeam(@Param('teamId') teamId: string,): Promise<string> {
 
       console.log(teamId);
       
-
+        await this.workItemService.findWorkItemsByTeam(teamId);
 
       
         return "findAll is not ready.";
