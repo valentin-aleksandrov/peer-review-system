@@ -1,4 +1,4 @@
-import { UseGuards, Controller, Post, Body, ValidationPipe, Req, Get } from "@nestjs/common";
+import { UseGuards, Controller, Post, Body, ValidationPipe, Req, Get, Param } from "@nestjs/common";
 import { AuthGuard } from "@nestjs/passport";
 import { WorkItemService } from "./work-item.service";
 import { CreateWorkItemDTO } from "./models/create-work-item.dto";
@@ -21,8 +21,14 @@ export class WorkItemController {
      return await this.workItemService.createWorkItem(user,createWorkItemDTO);
   }
   
-  @Get()
-    findAll(): string {
+    @Get("team/:teamId")
+    findWorkItemsByTeam(@Param('teamId') teamId: string,): string {
+
+      console.log(teamId);
+      
+
+
+      
         return "findAll is not ready.";
     }
 
