@@ -7,7 +7,7 @@ import { User } from "../entities/user.entity";
 import { SessionUser } from "../decorators/session-user.decorator";
 
 @UseGuards(AuthGuard())
-@Controller('work-item')
+@Controller('api/work-item')
 export class WorkItemController {
   constructor(
     private readonly workItemService: WorkItemService,
