@@ -15,6 +15,7 @@ import { AddTagDTO } from "./models/add-tag.dto";
 import { Tag } from "../entities/tag.entity";
 import { ShowTagDTO } from "./models/show-tag.dto";
 import { Team } from "../entities/team.entity";
+import { ShowTeamDTO } from "src/team/models/show-team.dto";
 
 @Injectable()
 export class WorkItemService {
@@ -83,31 +84,84 @@ export class WorkItemService {
     );
     return this.convertToShowWorkItemDTOs(workItems);
   }
-  async findWorkItemsByTeam(teamId: string): Promise<undefined>{
+  async findWorkItemsByTeam(teamId: string): Promise<ShowWorkItemDTO[]>{
     const team: Team = await this.teamsRepository
       .findOne({
         where: {
           id: teamId,
         }
       })
+    console.log('The team **************->',team);
+    if(!team){
+      return undefined;
+    }
+    // const teamWorkItems: WorkItem[] = [];
+    const teamWorkItems: Set<WorkItem> = new Set<WorkItem>();
+    const users: User[] = team.users;
+    const createWorkItems: WorkItem[] = []; // we need a method
+    console.log('Users if a team /////////////////->',users);
 
-    console.log('The team',team.users);
+    const createdWorkItems: WorkItem[] = await this.getWorkItemsCreatedByUsers(users);
+    console.log('createdWorkItems->@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@',createdWorkItems);
     
+    const workItemsForReviewConnectedToTeam: WorkItem[] = await this.getWokrItemReviewByUsers(users);
+    console.log('workItems that are being under review -> !!!!!!!!!!!!!!!!!!!!!!!!!!!',workItemsForReviewConnectedToTeam);
+    
+    for (const workItem of createWorkItems) {
+      teamWorkItems.add(workItem);
+    }
+    for (const workItem of workItemsForReviewConnectedToTeam) {
+      teamWorkItems.add(workItem);
+    }
 
-
-
-
-
-
-
-
-
-
-
-
-    return null;
+    console.log('work items for the result ->(((((((((((((((((((((((',teamWorkItems);
+    
+    return this.convertToShowWorkItemDTOs([...teamWorkItems]);
   }
 
+  private async getWokrItemReviewByUsers(users: User[]): Promise<WorkItem[]>{
+    const workItems: WorkItem[] = [];
+    for (const user of users) {
+      const usersWorkItemsHeIsReviewing: WorkItem[] = await this.getWorkItemsByUserHisReviewing(user);
+      workItems.push(...usersWorkItemsHeIsReviewing);
+    }
+    return workItems;
+  }
+
+  private async getWorkItemsByUserHisReviewing(user: User): Promise<WorkItem[]> {
+    const workItems: WorkItem[] = [];
+    const reviews: Review[] = await this.reviewsRepository
+      .find({
+        where: {
+          user: user,
+        }
+      });
+    for (const review of reviews) {
+      const workItem: WorkItem = await review.workItem;
+      console.log('single workItem of a reviewer----- -----    ------->',review);
+      console.log('his workistem tha he is being reviewing (assignee TESTING-> ~~~~~~~~~~~~~~~~~~~~~~',workItem.assignee);
+      
+      workItems.push(workItem);
+    }
+    return workItems;
+  }
+  private async getWorkItemsCreatedByUsers(users: User[]): Promise<WorkItem[]> {
+    const workItems: WorkItem[] = [];
+    for (const user of users) {
+      const currentUserWorkItems: WorkItem[] = await this.workItemRepository
+        .find({
+          where: {
+            assignee: user,
+          }
+        });
+      console.log('Work items for user%%%%%%%%%%%%%%%%%%%%:',user);
+      console.log('His workItems: #########################',currentUserWorkItems);
+     
+      workItems.push(...currentUserWorkItems);
+      
+    }
+    return workItems;
+  }
   private async convertToShowWorkItemDTOs(workItems: WorkItem[]): Promise<ShowWorkItemDTO[]> {
     return Promise.all(workItems.map(async (entity: WorkItem) => this.convertToShowWorkItemDTO(entity)));
 }
@@ -176,11 +230,25 @@ export class WorkItemService {
     return Promise.resolve(convertedReviewer);
   }
   private async convertToShowReviewerDTOArray(reviewers: Review[]): Promise<ShowReviewerDTO[]> {
+    if(!reviewers){
+      return [];
+    }
     return Promise.all(reviewers.map(async (entity: Review) => this.convertToShowReviewerDTO(entity)));
 }
 
   private async convertToShowWorkItemDTO(workItem: WorkItem): Promise<ShowWorkItemDTO> {
+    if(!workItem){
+      return new ShowWorkItemDTO();
+    }
     const showReviewersDTO: ShowReviewerDTO[] = await this.convertToShowReviewerDTOArray(await workItem.reviews);
+    if(!showReviewersDTO){
+      return new ShowWorkItemDTO();
+    }
+    console.log('workitem assignee ->}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}',workItem.assignee);
+    if(!workItem.assignee) {
+      return new ShowWorkItemDTO();
+    }
+    
     const assigneeDTO: ShowAssigneeDTO = {
       id: workItem.assignee.id,
       email: workItem.assignee.email,
