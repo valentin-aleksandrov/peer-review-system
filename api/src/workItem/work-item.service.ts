@@ -47,7 +47,7 @@ export class WorkItemService {
 
     const workItemReviewEntities: Review[] = await this.createReviews(reviewerEntities);
 
-    newWorkItem.reviews = workItemReviewEntities;
+    newWorkItem.reviews = Promise.resolve(workItemReviewEntities);
     const pendingWorkItemStatus: WorkItemStatus = await this.workItemStatusRepository
       .findOne({
         where: {
@@ -91,32 +91,35 @@ export class WorkItemService {
           id: teamId,
         }
       })
-    console.log('The team **************->',team);
     if(!team){
       return undefined;
     }
-    // const teamWorkItems: WorkItem[] = [];
-    const teamWorkItems: Set<WorkItem> = new Set<WorkItem>();
+    const teamWorkItemsIds: Set<string> = new Set<string>();
     const users: User[] = team.users;
-    const createWorkItems: WorkItem[] = []; // we need a method
-    console.log('Users if a team /////////////////->',users);
 
     const createdWorkItems: WorkItem[] = await this.getWorkItemsCreatedByUsers(users);
-    console.log('createdWorkItems->@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@',createdWorkItems[0].reviews[0].workItem);
     
     const workItemsForReviewConnectedToTeam: WorkItem[] = await this.getWokrItemReviewByUsers(users);
-    console.log('workItems that are being under review -> !!!!!!!!!!!!!!!!!!!!!!!!!!!',workItemsForReviewConnectedToTeam);
     
-    for (const workItem of createWorkItems) {
-      teamWorkItems.add(workItem);
+    for (const workItem of createdWorkItems) {
+      teamWorkItemsIds.add(workItem.id);
     }
     for (const workItem of workItemsForReviewConnectedToTeam) {
-      teamWorkItems.add(workItem);
+      teamWorkItemsIds.add(workItem.id);
     }
 
-    console.log('work items for the result ->(((((((((((((((((((((((',teamWorkItems);
+    const workItems: WorkItem[] = [];
+    for (const currentId of teamWorkItemsIds) {
+      const foundWorkItem: WorkItem = await this.workItemRepository
+        .findOne({
+          where: {
+            id: currentId,
+          }
+        })
+      workItems.push(foundWorkItem);
+    }
     
-    return this.convertToShowWorkItemDTOs([...teamWorkItems]);
+    return this.convertToShowWorkItemDTOs([...workItems]);
   }
 
   private async getWokrItemReviewByUsers(users: User[]): Promise<WorkItem[]>{
@@ -138,9 +141,13 @@ export class WorkItemService {
       });
     for (const review of reviews) {
       const workItem: WorkItem = review.workItem;
-      console.log('single workItem of a reviewer----- -----    ------->',review);
-      console.log('his workistem tha he is being reviewing (assignee TESTING-> ~~~~~~~~~~~~~~~~~~~~~~',workItem);
-      
+      const currentReviewid: string = (await workItem.reviews)[0].id;
+      const review2: Review = await this.reviewsRepository
+        .findOne({
+          where: {
+            id: currentReviewid,
+          }
+        });
       workItems.push(workItem);
     }
     return workItems;
@@ -154,9 +161,6 @@ export class WorkItemService {
             assignee: user,
           }
         });
-      console.log('Work items for user%%%%%%%%%%%%%%%%%%%%:',user);
-      console.log('His workItems: #########################',currentUserWorkItems);
-      console.log('reviewer of ##########################,',currentUserWorkItems[0]);
      
       workItems.push(...currentUserWorkItems);
       
@@ -220,12 +224,22 @@ export class WorkItemService {
     return Promise.resolve(reviewerEntities);
   }
   private async convertToShowReviewerDTO(reviewer: Review): Promise<ShowReviewerDTO> {
-    const userEntity: User = await reviewer.user;
-
+    const userEntity: User = await this.userRepository
+      .findOne({
+        where: {
+          reviews: reviewer,
+        }
+      })
+    const reviewerStatus: ReviewerStatus = await this.reviewerStatusRepository
+      .findOne({
+        where: {
+          reviews: reviewer,
+        }
+      })
     const convertedReviewer: ShowReviewerDTO = {
       id: userEntity.id,
       email: userEntity.email,
-      status: reviewer.reviewerStatus.status,
+      status: reviewerStatus.status, 
       username: userEntity.username,
     };
     return Promise.resolve(convertedReviewer);
@@ -245,7 +259,6 @@ export class WorkItemService {
     if(!showReviewersDTO){
       return new ShowWorkItemDTO();
     }
-    console.log('workitem assignee ->}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}}',workItem.assignee);
     if(!workItem.assignee) {
       return new ShowWorkItemDTO();
     }

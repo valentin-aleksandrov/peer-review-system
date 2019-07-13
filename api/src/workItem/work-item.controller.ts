@@ -1,4 +1,4 @@
-import { UseGuards, Controller, Post, Body, ValidationPipe, Req, Get, Param } from "@nestjs/common";
+import { UseGuards, Controller, Post, Body, ValidationPipe, Req, Get, Param, BadRequestException } from "@nestjs/common";
 import { AuthGuard } from "@nestjs/passport";
 import { WorkItemService } from "./work-item.service";
 import { CreateWorkItemDTO } from "./models/create-work-item.dto";
@@ -24,12 +24,9 @@ export class WorkItemController {
   
     @Get("team/:teamId")
     async findWorkItemsByTeam(@Param('teamId') teamId: string,): Promise<ShowWorkItemDTO[]> {
-
-      console.log(teamId);
-      
         const workItemsDTOs: ShowWorkItemDTO[] = await this.workItemService.findWorkItemsByTeam(teamId);
         if(!workItemsDTOs){
-          console.log("You need a http exception!!!");
+          throw new BadRequestException('No such team!');
         } else {
           return workItemsDTOs;
         }

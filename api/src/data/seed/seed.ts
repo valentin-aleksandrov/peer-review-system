@@ -636,7 +636,7 @@ const main = async () => {
       .find({
         take: 10,
       })
-    newWorkItem.reviews = reviews;
+    newWorkItem.reviews = Promise.resolve(reviews);
 
     await workItemRepository.save(newWorkItem);
     console.log("Created WorkItem1.");

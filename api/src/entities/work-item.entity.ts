@@ -35,10 +35,8 @@ export class WorkItem {
   @JoinTable()
   tags: Promise<Tag[]>;
 
-  @OneToMany(type => Review, review => review.workItem, {
-    eager: true,
-  })
-  reviews: Review[];
+  @OneToMany(type => Review, review => review.workItem)
+  reviews: Promise<Review[]>;
 
   @OneToMany(type => Picture, picture => picture.workItem)
   pictures: Promise<Picture>;
