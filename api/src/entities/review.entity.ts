@@ -10,7 +10,7 @@ export class Review {
   id: string;
 
   @ManyToOne(type => WorkItem, workItem => workItem.reviews)
-  workItem: Promise<WorkItem>;
+  workItem: WorkItem;
 
   @ManyToOne(type => ReviewerStatus, status => status.reviews, {
     eager: true,

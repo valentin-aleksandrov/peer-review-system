@@ -102,7 +102,7 @@ export class WorkItemService {
     console.log('Users if a team /////////////////->',users);
 
     const createdWorkItems: WorkItem[] = await this.getWorkItemsCreatedByUsers(users);
-    console.log('createdWorkItems->@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@',createdWorkItems);
+    console.log('createdWorkItems->@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@',createdWorkItems[0].reviews[0].workItem);
     
     const workItemsForReviewConnectedToTeam: WorkItem[] = await this.getWokrItemReviewByUsers(users);
     console.log('workItems that are being under review -> !!!!!!!!!!!!!!!!!!!!!!!!!!!',workItemsForReviewConnectedToTeam);
@@ -137,9 +137,9 @@ export class WorkItemService {
         }
       });
     for (const review of reviews) {
-      const workItem: WorkItem = await review.workItem;
+      const workItem: WorkItem = review.workItem;
       console.log('single workItem of a reviewer----- -----    ------->',review);
-      console.log('his workistem tha he is being reviewing (assignee TESTING-> ~~~~~~~~~~~~~~~~~~~~~~',workItem.assignee);
+      console.log('his workistem tha he is being reviewing (assignee TESTING-> ~~~~~~~~~~~~~~~~~~~~~~',workItem);
       
       workItems.push(workItem);
     }
@@ -156,6 +156,7 @@ export class WorkItemService {
         });
       console.log('Work items for user%%%%%%%%%%%%%%%%%%%%:',user);
       console.log('His workItems: #########################',currentUserWorkItems);
+      console.log('reviewer of ##########################,',currentUserWorkItems[0]);
      
       workItems.push(...currentUserWorkItems);
       
