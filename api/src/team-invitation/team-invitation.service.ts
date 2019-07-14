@@ -116,6 +116,7 @@ export class TeamInvitationService {
       const activeInvitations: TeamInvitation[] = [];
       invitations.forEach(element => {
         const status = element.status.status;
+        
         if (status === 'pending') {
           activeInvitations.push(element);
         }
