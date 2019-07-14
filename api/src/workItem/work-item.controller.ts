@@ -1,4 +1,4 @@
-import { UseGuards, Controller, Post, Body, ValidationPipe, Req, Get, Param, BadRequestException, NotFoundException } from "@nestjs/common";
+import { UseGuards, Controller, Post, Body, ValidationPipe, Req, Get, Param, BadRequestException, NotFoundException, Query } from "@nestjs/common";
 import { AuthGuard } from "@nestjs/passport";
 import { WorkItemService } from "./work-item.service";
 import { CreateWorkItemDTO } from "./models/create-work-item.dto";
@@ -23,7 +23,7 @@ export class WorkItemController {
   }
   
     @Get("team/:teamId")
-    async findWorkItemsByTeam(@Param('teamId') teamId: string,): Promise<ShowWorkItemDTO[]> {
+    async findWorkItemsByTeam(@Query() query: Object,@Param('teamId') teamId: string,): Promise<ShowWorkItemDTO[]> {
         const workItemsDTOs: ShowWorkItemDTO[] = await this.workItemService.findWorkItemsByTeam(teamId);
         if(!workItemsDTOs){
           throw new NotFoundException("No such team found");
