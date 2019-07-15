@@ -11,6 +11,7 @@ import { WorkItemModule } from './workItem/work-item.module';
 import { TeamModule } from './team/team.module';
 import { TeamInvitationModule } from './team-invitation/team-invitation.module';
 import { Review } from './entities/review.entity';
+import { ReviewRequestsModule } from './review-requests/review-requests.module';
 
 @Module({
   imports: [
@@ -37,7 +38,7 @@ import { Review } from './entities/review.entity';
     WorkItemModule,
     ConfigModule, 
     TeamModule, 
-    TeamInvitationModule,
+    TeamInvitationModule, ReviewRequestsModule,
   ],
   controllers: [AppController],
   providers: [AppService],

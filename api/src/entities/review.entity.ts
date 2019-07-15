@@ -17,8 +17,8 @@ export class Review {
   })
   reviewerStatus: ReviewerStatus;
 
-  @OneToMany((type) => CommentEntity, (comment) => comment.review)
-  comments: Promise<CommentEntity>;
+  // @OneToMany((type) => CommentEntity, (comment) => comment.review)
+  // comments: Promise<CommentEntity>;
 
   @ManyToOne((type) => User, (user) => user.reviews, {
     eager: true,
