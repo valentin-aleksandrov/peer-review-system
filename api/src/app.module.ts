@@ -10,6 +10,7 @@ import { ConfigService } from './config/config.service';
 import { WorkItemModule } from './workItem/work-item.module';
 import { TeamModule } from './team/team.module';
 import { TeamInvitationModule } from './team-invitation/team-invitation.module';
+import { Review } from './entities/review.entity';
 
 @Module({
   imports: [

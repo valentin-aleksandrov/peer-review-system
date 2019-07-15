@@ -1,5 +1,6 @@
 import { ShowAssigneeDTO } from "./show-assignee.dto";
 import { ShowReviewerDTO } from "./show-reviewer.dto";
+import { ShowTagDTO } from "./show-tag.dto";
 
 export class ShowWorkItemDTO {
     id: string;
@@ -14,7 +15,9 @@ export class ShowWorkItemDTO {
   
     workItemStatus: string;
   
-    reviews: Promise<ShowReviewerDTO[]>;
+    reviews: ShowReviewerDTO[];
 
-    status: string;
+    tags: ShowTagDTO[];
+
+    team: string;
 }

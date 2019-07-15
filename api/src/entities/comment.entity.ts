@@ -9,6 +9,8 @@ export class CommentEntity { // 'Comment' is not a free indentifiactor.
   @Column('nvarchar') 
   content: string;
 
-  @ManyToOne((type) => Review, (review) => review.comments)
-  review: Promise<Review>;
+  @ManyToOne((type) => Review, (review) => review.comments, {
+    eager: true,
+  })
+  review: Review;
 }

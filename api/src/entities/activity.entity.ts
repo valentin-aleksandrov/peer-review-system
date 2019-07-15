@@ -18,8 +18,10 @@ export class Activity {
     @CreateDateColumn()
     dateCreated: Date;
 
-    @ManyToOne(type => User, user => user.activity)
-    user: Promise<User>;
+    @ManyToOne(type => User, user => user.activity, {
+        eager: true,
+      })
+    user: User;
 
 
 }

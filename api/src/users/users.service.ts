@@ -72,7 +72,6 @@ export class UsersService {
     // return plainToClass(ShowUserDTO, foundUser, { excludeExtraneousValues: true });
   }
 
-
   async validateUserPassword(user: UserLoginDTO): Promise<boolean> {
     const userEntity = await this.usersRepository.findOne({
       where: {

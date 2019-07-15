@@ -9,11 +9,28 @@ import { CoreModule } from "src/core/core.module";
 import { UsersService } from "src/users/users.service";
 import { WorkItemService } from "./work-item.service";
 import { Module } from "@nestjs/common";
+import { WorkItemStatus } from "../entities/work-item-status.entity";
+import { Tag } from "../entities/tag.entity";
+import { Review } from "../entities/review.entity";
+import { Picture } from "../entities/picture.entity";
+import { FileEntity } from "../entities/file.entity";
+import { Team } from "src/entities/team.entity";
 
 @Module({
     imports: [
       PassportModule.register({defaultStrategy: 'jwt'}),
-      TypeOrmModule.forFeature([User,ReviewerStatus, Role, WorkItem]),
+      TypeOrmModule.forFeature([
+        User,
+        ReviewerStatus, 
+        Role, 
+        WorkItem, 
+        WorkItemStatus, 
+        Tag, 
+        Review, 
+        Picture, 
+        FileEntity,
+        Team,
+      ]),
     ],
     controllers: [WorkItemController],
     providers: [

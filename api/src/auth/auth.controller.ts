@@ -26,7 +26,9 @@ export class AuthController {
   @Post('session')
   async login(@Body() user: UserLoginDTO): Promise<{user: ShowUserDTO, token: string}> {
     const authObject = await this.authService.login(user);
-
+    if(!authObject){
+      throw new BadRequestException('User with such email does not exist!');
+    }
     if (!(await this.authService.validateIfUserExists(user.email))) {
       throw new BadRequestException('User with such email does not exist!');
     }
