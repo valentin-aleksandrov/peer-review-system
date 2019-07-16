@@ -15,6 +15,7 @@ import { AddTagDTO } from "./models/add-tag.dto";
 import { Tag } from "../entities/tag.entity";
 import { ShowTagDTO } from "./models/show-tag.dto";
 import { Team } from "../entities/team.entity";
+import { ShowTeamDTO } from "src/team/models/show-team.dto";
 
 @Injectable()
 export class WorkItemService {
@@ -46,7 +47,7 @@ export class WorkItemService {
 
     const workItemReviewEntities: Review[] = await this.createReviews(reviewerEntities);
 
-    newWorkItem.reviews = workItemReviewEntities;
+    newWorkItem.reviews = Promise.resolve(workItemReviewEntities);
     const pendingWorkItemStatus: WorkItemStatus = await this.workItemStatusRepository
       .findOne({
         where: {
@@ -83,31 +84,89 @@ export class WorkItemService {
     );
     return this.convertToShowWorkItemDTOs(workItems);
   }
-  async findWorkItemsByTeam(teamId: string): Promise<undefined>{
+  async findWorkItemsByTeam(teamId: string): Promise<ShowWorkItemDTO[]>{
     const team: Team = await this.teamsRepository
       .findOne({
         where: {
           id: teamId,
         }
       })
+    if(!team){
+      return undefined;
+    }
+    const teamWorkItemsIds: Set<string> = new Set<string>();
+    const users: User[] = team.users;
 
-    console.log('The team',team.users);
+    const createdWorkItems: WorkItem[] = await this.getWorkItemsCreatedByUsers(users);
     
+    const workItemsForReviewConnectedToTeam: WorkItem[] = await this.getWokrItemReviewByUsers(users);
+    
+    for (const workItem of createdWorkItems) {
+      teamWorkItemsIds.add(workItem.id);
+    }
+    for (const workItem of workItemsForReviewConnectedToTeam) {
+      teamWorkItemsIds.add(workItem.id);
+    }
 
-
-
-
-
-
-
-
-
-
-
-
-    return null;
+    const workItems: WorkItem[] = [];
+    for (const currentId of teamWorkItemsIds) {
+      const foundWorkItem: WorkItem = await this.workItemRepository
+        .findOne({
+          where: {
+            id: currentId,
+          }
+        })
+      workItems.push(foundWorkItem);
+    }
+    
+    return this.convertToShowWorkItemDTOs([...workItems]);
   }
 
+  private async getWokrItemReviewByUsers(users: User[]): Promise<WorkItem[]>{
+    const workItems: WorkItem[] = [];
+    for (const user of users) {
+      const usersWorkItemsHeIsReviewing: WorkItem[] = await this.getWorkItemsByUserHisReviewing(user);
+      workItems.push(...usersWorkItemsHeIsReviewing);
+    }
+    return workItems;
+  }
+
+  private async getWorkItemsByUserHisReviewing(user: User): Promise<WorkItem[]> {
+    const workItems: WorkItem[] = [];
+    const reviews: Review[] = await this.reviewsRepository
+      .find({
+        where: {
+          user: user,
+        }
+      });
+    for (const review of reviews) {
+      const workItem: WorkItem = review.workItem;
+      const currentReviewid: string = (await workItem.reviews)[0].id;
+      const review2: Review = await this.reviewsRepository
+        .findOne({
+          where: {
+            id: currentReviewid,
+          }
+        });
+      workItems.push(workItem);
+    }
+    return workItems;
+  }
+  private async getWorkItemsCreatedByUsers(users: User[]): Promise<WorkItem[]> {
+    const workItems: WorkItem[] = [];
+    for (const user of users) {
+      const currentUserWorkItems: WorkItem[] = await this.workItemRepository
+        .find({
+          where: {
+            assignee: user,
+          }
+        });
+     
+      workItems.push(...currentUserWorkItems);
+      
+    }
+    return workItems;
+  }
   private async convertToShowWorkItemDTOs(workItems: WorkItem[]): Promise<ShowWorkItemDTO[]> {
     return Promise.all(workItems.map(async (entity: WorkItem) => this.convertToShowWorkItemDTO(entity)));
 }
@@ -165,22 +224,45 @@ export class WorkItemService {
     return Promise.resolve(reviewerEntities);
   }
   private async convertToShowReviewerDTO(reviewer: Review): Promise<ShowReviewerDTO> {
-    const userEntity: User = await reviewer.user;
-
+    const userEntity: User = await this.userRepository
+      .findOne({
+        where: {
+          reviews: reviewer,
+        }
+      })
+    const reviewerStatus: ReviewerStatus = await this.reviewerStatusRepository
+      .findOne({
+        where: {
+          reviews: reviewer,
+        }
+      })
     const convertedReviewer: ShowReviewerDTO = {
       id: userEntity.id,
       email: userEntity.email,
-      status: reviewer.reviewerStatus.status,
+      status: reviewerStatus.status, 
       username: userEntity.username,
     };
     return Promise.resolve(convertedReviewer);
   }
   private async convertToShowReviewerDTOArray(reviewers: Review[]): Promise<ShowReviewerDTO[]> {
+    if(!reviewers){
+      return [];
+    }
     return Promise.all(reviewers.map(async (entity: Review) => this.convertToShowReviewerDTO(entity)));
 }
 
   private async convertToShowWorkItemDTO(workItem: WorkItem): Promise<ShowWorkItemDTO> {
+    if(!workItem){
+      return new ShowWorkItemDTO();
+    }
     const showReviewersDTO: ShowReviewerDTO[] = await this.convertToShowReviewerDTOArray(await workItem.reviews);
+    if(!showReviewersDTO){
+      return new ShowWorkItemDTO();
+    }
+    if(!workItem.assignee) {
+      return new ShowWorkItemDTO();
+    }
+    
     const assigneeDTO: ShowAssigneeDTO = {
       id: workItem.assignee.id,
       email: workItem.assignee.email,

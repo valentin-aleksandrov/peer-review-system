@@ -9,8 +9,10 @@ export class Review {
   @PrimaryGeneratedColumn('uuid')
   id: string;
 
-  @ManyToOne(type => WorkItem, workItem => workItem.reviews)
-  workItem: Promise<WorkItem>;
+  @ManyToOne(type => WorkItem, workItem => workItem.reviews, {
+    eager: true,
+  })
+  workItem: WorkItem;
 
   @ManyToOne(type => ReviewerStatus, status => status.reviews, {
     eager: true,
