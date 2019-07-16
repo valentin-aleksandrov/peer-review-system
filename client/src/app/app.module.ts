@@ -8,6 +8,7 @@ import { CoreModule } from './core/core.module';
 import { HomeComponent } from './home/home.component';
 import { RegisterComponent } from './components/register/register.component';
 import { SharedModule } from './shared/shared.module';
+import { LoginComponent } from './components/login/login.component';
 
 
 @NgModule({
@@ -15,7 +16,8 @@ import { SharedModule } from './shared/shared.module';
     AppComponent,
     NavbarComponent,
     HomeComponent,
-    RegisterComponent
+    RegisterComponent,
+    LoginComponent
   ],
   imports: [
     BrowserModule,
