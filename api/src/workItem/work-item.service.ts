@@ -16,6 +16,7 @@ import { Tag } from "../entities/tag.entity";
 import { ShowTagDTO } from "./models/show-tag.dto";
 import { Team } from "../entities/team.entity";
 import { ShowTeamDTO } from "src/team/models/show-team.dto";
+import { SearchWorkItemDTO } from "./models/search-work-item.dto";
 
 @Injectable()
 export class WorkItemService {
@@ -84,7 +85,9 @@ export class WorkItemService {
     );
     return this.convertToShowWorkItemDTOs(workItems);
   }
-  async findWorkItemsByTeam(teamId: string): Promise<ShowWorkItemDTO[]>{
+  async findWorkItemsByTeam(teamId: string, searchOptions: SearchWorkItemDTO): Promise<ShowWorkItemDTO[]>{
+    
+    
     const team: Team = await this.teamsRepository
       .findOne({
         where: {
@@ -99,12 +102,44 @@ export class WorkItemService {
 
     const createdWorkItems: WorkItem[] = await this.getWorkItemsCreatedByUsers(users);
     
-    const workItemsForReviewConnectedToTeam: WorkItem[] = await this.getWokrItemReviewByUsers(users);
     
-    for (const workItem of createdWorkItems) {
-      teamWorkItemsIds.add(workItem.id);
+
+    let filterCreatedWorkItems: WorkItem[] = createdWorkItems
+      .filter((workItem:WorkItem)=>{
+        if(!searchOptions.title){
+          return true;
+        }
+        return workItem.title.toLocaleLowerCase().includes(searchOptions.title.toLowerCase());
+      });
+      
+    if(!!searchOptions.tag) {
+      filterCreatedWorkItems = await this.filterByTag(filterCreatedWorkItems,searchOptions.tag);
     }
-    for (const workItem of workItemsForReviewConnectedToTeam) {
+    if(!!searchOptions.reviewerName){
+      filterCreatedWorkItems = await this.filterByReviewerName(filterCreatedWorkItems,searchOptions.reviewerName);
+    }
+
+    const workItemsForReviewConnectedToTeam: WorkItem[] = await this.getWokrItemReviewByUsers(users);
+
+    let filterReviewWorkItems: WorkItem[] = workItemsForReviewConnectedToTeam
+      .filter((workItem:WorkItem)=>{
+      if(!searchOptions.title){
+        return true;
+      }
+      return workItem.title.toLocaleLowerCase().includes(searchOptions.title.toLowerCase());
+    });
+    if(!!searchOptions.tag) {
+      filterReviewWorkItems = await this.filterByTag(filterReviewWorkItems,searchOptions.tag);
+    }
+    if(!!searchOptions.reviewerName){
+      filterReviewWorkItems = await this.filterByReviewerName(filterReviewWorkItems,searchOptions.reviewerName);
+    }
+    
+    for (const workItem of filterCreatedWorkItems) {
+      teamWorkItemsIds.add(workItem.id); 
+    }
+    
+    for (const workItem of filterReviewWorkItems) {
       teamWorkItemsIds.add(workItem.id);
     }
 
@@ -120,6 +155,42 @@ export class WorkItemService {
     }
     
     return this.convertToShowWorkItemDTOs([...workItems]);
+  }
+  private async filterByReviewerName(workItems: WorkItem[], searchReviewer: string): Promise<WorkItem[]> {
+    let result: WorkItem[] = [];
+    for (const currentWorkItem of workItems) {
+      const reviewers: Review[] = await this.reviewsRepository.find({
+        where: {
+          workItem: currentWorkItem,
+        }
+      });
+      const userNames: string[] = reviewers.map((rev: Review)=>rev.user.username);
+      if(userNames.some((username)=>username.toLowerCase().includes(searchReviewer.toLowerCase()))){
+        result.push(currentWorkItem);
+      }
+    }
+    return result;
+  }
+  private async filterByTag(workItems: WorkItem[], searchedTag: string): Promise<WorkItem[]>{
+    let result:WorkItem[] = [];
+    for (const currentWorkItem of workItems) {
+      const tags: Tag[] = await  this.tagsRepository.find({
+        where: {
+          workItems: currentWorkItem,
+        }
+      })
+      for (const currentTag of tags) {
+        if(currentTag.name.toLowerCase().includes(searchedTag.toLowerCase())){
+          result.push(currentWorkItem);
+          break;
+        }
+      } 
+    }
+    console.log('arr',workItems);
+    
+    console.log('sss',result);
+    
+    return result;
   }
 
   private async getWokrItemReviewByUsers(users: User[]): Promise<WorkItem[]>{
