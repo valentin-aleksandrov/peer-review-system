@@ -6,6 +6,7 @@ import { Picture } from "./picture.entity";
 import { FileEntity } from "./file.entity";
 import { User } from "./user.entity";
 import { Team } from "./team.entity";
+import { CommentEntity } from "./comment.entity";
 
 @Entity('work_items')
 export class WorkItem {
@@ -37,6 +38,11 @@ export class WorkItem {
 
   @OneToMany(type => Review, review => review.workItem)
   reviews: Promise<Review[]>;
+
+  @OneToMany((type) => CommentEntity, (comments) => comments.workItem, {
+    eager: true,
+  })
+  comments: CommentEntity[];
 
   @OneToMany(type => Picture, picture => picture.workItem)
   pictures: Promise<Picture>;

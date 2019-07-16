@@ -14,6 +14,7 @@ import { TeamInvitation } from './team-invitation.entity';
 import { Activity } from './activity.entity';
 import { WorkItem } from './work-item.entity';
 import { Review } from './review.entity';
+import { CommentEntity } from './comment.entity';
 
 @Entity('users')
 export class User {
@@ -58,6 +59,9 @@ export class User {
 
   @OneToMany((type) => Review, (review) => review.user)
   reviews: Promise<Review[]>;
+
+  @OneToMany((type) => CommentEntity, (comment) => comment.author)
+  comments: Promise<CommentEntity[]>;
 
 }
 
