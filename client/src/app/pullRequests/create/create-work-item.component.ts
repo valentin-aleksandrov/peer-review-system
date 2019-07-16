@@ -7,7 +7,7 @@ import { FormGroup, FormControl } from '@angular/forms';
   })
   export class CreateWorkItemComponent {
     public options: Object = {
-      placeholderText: 'Edit Your Content Here!',
+      placeholderText: 'Write description',
       charCounterCount: false,
       events : {
         'froalaEditor.focus' : function(e, editor) {

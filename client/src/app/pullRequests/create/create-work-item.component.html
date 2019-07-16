@@ -7,6 +7,17 @@
     <div class="form-group">
         <div [froalaEditor]='options' [(froalaModel)]="editorContent"></div>
     </div>
-    <button class="btn btn-success" (click)="showValue()">Show Value!</button>
+    <div class="form-group"> 
+        <div class="btn-group" ngbDropdown role="group" aria-label="Button group with nested dropdown">
+            <button class="btn btn-outline-primary" ngbDropdownToggle>Choose a team</button>
+            <div class="dropdown-menu" ngbDropdownMenu>
+            <button ngbDropdownItem>Team1</button>
+            <button ngbDropdownItem>Team2</button>
+        </div>
+        </div>
+    </div>
+    <div>
+        <button class="btn btn-success" (click)="showValue()">Show Values</button>
+    </div>
 </form>
 
