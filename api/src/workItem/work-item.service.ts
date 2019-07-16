@@ -186,10 +186,6 @@ export class WorkItemService {
         }
       } 
     }
-    console.log('arr',workItems);
-    
-    console.log('sss',result);
-    
     return result;
   }
 
