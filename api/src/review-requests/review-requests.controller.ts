@@ -6,6 +6,7 @@ import { ShowCommentDTO } from './models/show-comment.dto';
 import { AuthGuard } from '@nestjs/passport';
 import { SessionUser } from 'src/decorators/session-user.decorator';
 import { ChangeReviewStatusDTO } from './models/change-review-status.dto';
+import { CombinedReviewDTO } from './models/combined-review.dto';
 
 @Controller('api/work-item/:id/review-requests')
 export class ReviewRequestsController {
@@ -34,7 +35,7 @@ export class ReviewRequestsController {
     @Body(new ValidationPipe({ whitelist: true, transform: true }))
     newStatus: ChangeReviewStatusDTO,
     @SessionUser() user: User,
-  ): Promise<ShowCommentDTO> {
+  ): Promise<CombinedReviewDTO> {
     return await this.reviewRequestService.changeReviewStatus(id, reviewId, newStatus, user);
   }
 

@@ -11,6 +11,8 @@ import { User } from 'src/entities/user.entity';
 import { ReviewerStatus } from 'src/entities/reviewer-status.entity';
 import { ChangeReviewStatusDTO } from './models/change-review-status.dto';
 import { Review } from 'src/entities/review.entity';
+import { ShowReviewDTO } from './models/show-review.dto';
+import { CombinedReviewDTO } from './models/combined-review.dto';
 
 @Injectable()
 export class ReviewRequestsService {
@@ -25,8 +27,6 @@ public async createReviewRequestComment(workItemId: string, commentContent: AddC
     const commentEntity: CommentEntity = new CommentEntity();
     commentEntity.content = commentContent.content;
     commentEntity.author = user;
-    console.log(user);
-    console.log(commentEntity.author);
     const commentWorkItem = await this.workItemRepository.findOne ({ where: { id: workItemId } });
     commentEntity.workItem = Promise.resolve(commentWorkItem);
     const newComment: CommentEntity = await this.commentRepository.save(commentEntity);
@@ -34,19 +34,24 @@ public async createReviewRequestComment(workItemId: string, commentContent: AddC
     return await commentToShow;
 }
 
-public async changeReviewStatus(workItemId: string, reviewId: string, status: ChangeReviewStatusDTO, user: User): Promise<any> {
+public async changeReviewStatus(workItemId: string, reviewId: string, status: ChangeReviewStatusDTO, user: User): Promise<CombinedReviewDTO> {
     const newStatus: ReviewerStatus = await this.reviewStatusRepository.findOne({ where: { status: status.status } });
-    console.log(user)
     const review: Review = await this.reviewRepository.findOne({ where: { id: reviewId } });
     const commentContent: AddCommentDTO = {
         content: status.content,
     }
+    let commentEntity: ShowCommentDTO = null;
     if (newStatus.status !== 'pending') {
-        const commentEntity: ShowCommentDTO = await  this.createReviewRequestComment(workItemId, commentContent, user);
-        
+        commentEntity = await  this.createReviewRequestComment(workItemId, commentContent, user);
     }
     review.reviewerStatus = newStatus;
-    const newReview = this.reviewRepository.save(review);
-    return await newReview;
+    const newReview = await this.reviewRepository.save(review);
+    const reviewToShow: ShowReviewDTO = plainToClass(ShowReviewDTO, newReview, { excludeExtraneousValues: true });
+    const combined: CombinedReviewDTO = {
+        review: reviewToShow,
+        comment: commentEntity,
+
+    }
+    return await combined;
 }
 }
