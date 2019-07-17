@@ -400,7 +400,7 @@ const main = async () => {
           minPercentApprovalOfItem: 100,
         },
       })
-    await (newTeam.rules = Promise.resolve(rule));
+    newTeam.rules = rule;
     
     
     newTeam.teamName = 'team1';
@@ -458,7 +458,7 @@ const main = async () => {
           minPercentApprovalOfItem: 80,
         },
       })
-    await (newTeam.rules = Promise.resolve(rule));
+    newTeam.rules = rule;
     
     
     newTeam.teamName = 'team2';

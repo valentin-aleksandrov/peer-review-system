@@ -12,6 +12,7 @@ export class ProfileComponent implements OnInit {
 
   public currentUser: User;
   public subscription: Subscription;
+  public sendInvite: boolean = false;
   constructor(
     private readonly authenticationService: AuthenticationService
   ) {
@@ -20,6 +21,10 @@ export class ProfileComponent implements OnInit {
    }
 
   ngOnInit() {
+  }
+
+  public toggleInvitation() {
+    this.sendInvite = true;
   }
 
 }

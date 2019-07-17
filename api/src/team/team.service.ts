@@ -16,19 +16,31 @@ export class TeamService {
       ) { }
 
 
-    public async createTeam(body: CreateTeamDTO, user: User): Promise<ShowTeamDTO> {
+    public async createTeam(body: CreateTeamDTO, user: User): Promise<ShowTeamDTO> { 
     const newTeam = new Team();
     newTeam.teamName = body.teamName;
     const newUser = user;
     newTeam.users = [newUser];
-    const rules = await this.teamRulesRepository.findOne({
+    let rules;
+    rules = await this.teamRulesRepository.findOne({
         where: {
-          minPercentApprovalOfItem: 100,
+          minPercentApprovalOfItem: body.rule.minPercentApprovalOfItem,
+          minNumberOfReviewers: body.rule.minNumberOfReviewers,
+
         },
       });
-    newTeam.rules = Promise.resolve(rules);
+    if (!rules)  {
+      const newRules = new TeamRules();
+      newRules.minNumberOfReviewers = body.rule.minNumberOfReviewers;
+      newRules.minPercentApprovalOfItem = body.rule.minPercentApprovalOfItem;
+      const savedNewRules = await this.teamRulesRepository.save(newRules);
+      newTeam.rules = savedNewRules;
+    } else {
+      newTeam.rules = rules;
+    }
     const savedTeam = await this.teamRepository.save(newTeam);
-    const TeamToShow = plainToClass(ShowTeamDTO, savedTeam, { excludeExtraneousValues: true });
+    const TeamToShow: ShowTeamDTO = plainToClass(ShowTeamDTO, savedTeam, { excludeExtraneousValues: true });
+    TeamToShow.rules = await savedTeam.rules;
     return TeamToShow;
     }
 
