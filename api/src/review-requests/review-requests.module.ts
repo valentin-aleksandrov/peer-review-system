@@ -3,12 +3,14 @@ import { ReviewRequestsService } from './review-requests.service';
 import { ReviewRequestsController } from './review-requests.controller';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { CommentEntity } from 'src/entities/comment.entity';
-import { WorkItem } from 'src/entities/work-item.entity';
-import { AuthModule } from 'src/auth/auth.module';
+import { WorkItem } from '../entities/work-item.entity';
+import { AuthModule } from '../auth/auth.module';
+import { ReviewerStatus } from '../entities/reviewer-status.entity';
+import { Review } from '../entities/review.entity';
 
 @Module({
   imports: [
-    TypeOrmModule.forFeature([CommentEntity, WorkItem]),
+    TypeOrmModule.forFeature([CommentEntity, WorkItem, ReviewerStatus,Review]),
     AuthModule,
   ],
   providers: [ReviewRequestsService],
