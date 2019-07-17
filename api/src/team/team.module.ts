@@ -6,10 +6,12 @@ import { Team } from 'src/entities/team.entity';
 import { TeamRules } from '../entities/team-rules.entity';
 import { AuthModule } from 'src/auth/auth.module';
 import { User } from '../entities/user.entity';
+import { PassportModule } from '@nestjs/passport';
 
 
 @Module({
   imports: [
+    PassportModule.register({defaultStrategy: 'jwt'}),
     TypeOrmModule.forFeature([Team, TeamRules, User]),
     AuthModule,
   ],

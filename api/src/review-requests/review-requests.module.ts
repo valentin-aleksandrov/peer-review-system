@@ -7,9 +7,11 @@ import { WorkItem } from '../entities/work-item.entity';
 import { AuthModule } from '../auth/auth.module';
 import { ReviewerStatus } from '../entities/reviewer-status.entity';
 import { Review } from '../entities/review.entity';
+import { PassportModule } from '@nestjs/passport';
 
 @Module({
   imports: [
+    PassportModule.register({defaultStrategy: 'jwt'}),
     TypeOrmModule.forFeature([CommentEntity, WorkItem, ReviewerStatus,Review]),
     AuthModule,
   ],

@@ -32,7 +32,7 @@ export class TeamController {
   }
 
   @Get('/user/:id')
-  //@UseGuards(AuthGuard())
+  @UseGuards(AuthGuard())
   public async getUserTeams(
   @Param('id') userId: string,
   ): Promise<SimpleTeamInfoDTO[]> {
