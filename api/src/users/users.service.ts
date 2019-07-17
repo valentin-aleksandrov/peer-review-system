@@ -29,6 +29,7 @@ export class UsersService {
       firstName: user.firstName,
       lastName: user.lastName,
       role: (await user.role).name,
+      avatarURL: user.avatarURL,
     };
     return convertedUser;
   }
@@ -48,6 +49,7 @@ export class UsersService {
       },
     });
     newUser.role = Promise.resolve(memberRole);
+    newUser.avatarURL = 'https://img2.freepng.ru/20180520/iug/kisspng-computer-icons-user-profile-synonyms-and-antonyms-5b013f455c55c1.0171283215268083893782.jpg';
     const savedUser = await this.usersRepository.save(newUser);
 
     return this.convertToShowUserDTO(savedUser);

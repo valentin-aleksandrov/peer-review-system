@@ -23,6 +23,9 @@ export class AuthService {
       email: userFound.email,
       username: userFound.username,
       role: userFound.role,
+      firstName: userFound.firstName,
+      lastName: userFound.lastName,
+      avatarURL: userFound.avatarURL,
     });
     return { user: userFound, token };
     // const payload = {email: user.email};

@@ -21,4 +21,7 @@ export class ShowUserDTO {
 
   @Expose()
   role: string;
+
+  @Expose()
+  avatarURL: string;
 }
