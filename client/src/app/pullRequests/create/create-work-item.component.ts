@@ -108,12 +108,9 @@ const statesWithFlags: {name: string, flag: string}[] = [
     
     public editorContent: string;
     public model: any;
-    public addedUsernames: any[] = [];
+    public addedUsernames: UserDetails[] = [];
 
-    public addUsername(){
-      this.addedUsernames.push(this.model);
-      this.model = {};
-    }
+    
     
     search = (text$: Observable<string>) =>
     text$.pipe(
@@ -133,8 +130,28 @@ const statesWithFlags: {name: string, flag: string}[] = [
     public showValue(){
       console.log(this.editorContent);
       console.log('maybe a user', this.model);
-
-      
     }
+
+  public addUsername(){
+    const index = this.findIndex(this.users,this.model);
+    this.addedUsernames.push(this.model);
+    this.users.splice(index,1);
+    this.model = {};
+  }
+
+  public removeReviewer(event: UserDetails){
+    const index = this.findIndex(this.addedUsernames,event);
+    this.addedUsernames.splice(index,1);
+    this.users.push(event);
+  }
+  private findIndex(arr, user: UserDetails): number{
+    for (let i = 0; i < arr.length; i++) {
+      const element = arr[i];
+      if(element.id === user.id){
+        return i;
+      }
+    }
+    return -1;
+  }
 
   }

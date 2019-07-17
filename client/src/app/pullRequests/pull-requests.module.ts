@@ -6,10 +6,12 @@ import { PullRequestsComponent } from './pull-requests.component';
 import { CreateWorkItemComponent } from './create/create-work-item.component';
 import { FroalaEditorModule, FroalaViewModule } from 'angular-froala-wysiwyg';
 import { NgMultiSelectDropDownModule } from 'ng-multiselect-dropdown';
+import { ReviewerItemComponent } from './reviewerItem/reviewer-item-component';
 @NgModule({
     declarations: [
         PullRequestsComponent,
         CreateWorkItemComponent,
+        ReviewerItemComponent,
     ],
     imports: [
       SharedModule,

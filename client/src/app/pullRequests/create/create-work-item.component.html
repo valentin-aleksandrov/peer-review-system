@@ -26,9 +26,16 @@
           <input id="typeahead-template" type="text" class="form-control" name="username-search" [(ngModel)]="model" [ngbTypeahead]="search" [resultTemplate]="rt"
             [inputFormatter]="formatter" />
           <hr>
-          <pre>Model: {{ model | json }}</pre>
-          <button class="btn btn-success" (click)="addUsername()">Add user</button>
-          <pre> added users: {{ addedUsernames | json}}</pre>
+          <button class="btn btn-success" (click)="addUsername()">Add Reviwer</button>
+         
+
+          <reviewer-item 
+            *ngFor="let currentReviewer of addedUsernames"
+            [reviewer]="currentReviewer"
+            (removeUser)="removeReviewer($event)"
+            >
+          </reviewer-item>
+         
     </div>
     <div>
         <ng-multiselect-dropdown
