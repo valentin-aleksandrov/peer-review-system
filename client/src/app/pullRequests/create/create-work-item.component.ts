@@ -9,6 +9,8 @@ import { User } from 'src/app/models/user';
 import { Tag } from 'src/app/models/tag';
 import { TeamService } from 'src/app/core/services/team.service';
 import { SimpleTeamInfo } from 'src/app/models/simple-team-info';
+import { FormGroup, FormBuilder, Validators } from '@angular/forms';
+import { CreateWorkItem } from 'src/app/models/create-work-item';
 
 
 
@@ -30,6 +32,7 @@ const statesWithFlags: {name: string, flag: string}[] = [
     providers: [NgbTypeaheadConfig] // add NgbTypeaheadConfig to the component providers
   })
   export class CreateWorkItemComponent implements OnInit{
+    public createWorkItemForm: FormGroup;
     title: string;
     chosenTeam: string = 'Choose a team.';
     loggedUser: UserDetails = new UserDetails();
@@ -37,7 +40,7 @@ const statesWithFlags: {name: string, flag: string}[] = [
     tags: Tag[] = [];
     userTeams: SimpleTeamInfo[] = [];
     dropdownList = [];
-  selectedItems = [];
+  selectedItems: Tag[] = [];
   dropdownSettings = {};
   ngOnInit() {
     this.workItemDataService.getUsers().subscribe((users:UserDetails[])=>{
@@ -81,16 +84,22 @@ const statesWithFlags: {name: string, flag: string}[] = [
       itemsShowLimit: 3,
       allowSearchFilter: true
     };
+    this.createWorkItemForm = this.formBuilder.group ({
+      title: ['', [Validators.required]],
+      reviwer: ['', []],
+      tagControl: ['', []]
+     // password: ['', [Validators.required, Validators.pattern("(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)(?=.*[@$!%*?&])[A-Za-z\\d@$!%*?&]{6,}")]]
+    });
   }
 
   constructor(
     private readonly workItemDataService: WorkItemDataService,
     private readonly authenticationService: AuthenticationService,
     private readonly teamService: TeamService,
-    ){
-    
+    private readonly formBuilder: FormBuilder,
+    ){ }
 
-  }
+      public get formControls() { return this.createWorkItemForm.controls; }
   onItemSelect(item: any) {
     console.log(item);
   }
@@ -170,5 +179,30 @@ const statesWithFlags: {name: string, flag: string}[] = [
     }
     return -1;
   }
+  public createWorkItem(){
+    console.log("Create work-item.");
+    console.log('description ->',this.editorContent);
+    // console.log('maybe a user', this.model);
+    console.log('title ---->',this.title);
+    console.log('reviewers ->',this.addedUsernames);
+    console.log('tags-->',this.selectedItems);
+    console.log("team -->",this.chosenTeam);
+    const reviewers: {username: string}[] = this.addedUsernames.map((reviewer)=>({username: reviewer.username}));
+    const tags: {name: string}[] = this.selectedItems.map((tag: Tag)=>({name: tag.name}))
+  
 
+    const createdWorkItem: CreateWorkItem = {
+      description: this.editorContent,
+      reviewers: reviewers,
+      team: this.chosenTeam,
+      title: this.title,
+      tags: tags,
+    };
+    
+    console.log('--------------------------------------------');
+    console.log(createdWorkItem);
+    this.workItemDataService.createWorkItem(createdWorkItem).subscribe((data)=>{
+      console.log(data);
+    });
   }
+}

@@ -3,6 +3,7 @@ import { Observable } from 'rxjs';
 import { HttpClient } from '@angular/common/http';
 import { UserDetails } from 'src/app/models/user-details';
 import { Tag } from 'src/app/models/tag';
+import { CreateWorkItem } from 'src/app/models/create-work-item';
 
 @Injectable({
     providedIn: 'root'
@@ -17,5 +18,9 @@ import { Tag } from 'src/app/models/tag';
 
       public getTags(): Observable<Tag[]> {
           return this.http.get<Tag[]>(`http://localhost:3000/api/work-item/tags`)
+      }
+
+      public createWorkItem(workItem: CreateWorkItem): Observable<any> {
+          return this.http.post<any>('http://localhost:3000/api/work-item',workItem);
       }
   }

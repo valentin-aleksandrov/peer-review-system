@@ -1,8 +1,8 @@
 <h2>Create new Work Item</h2>
 
-<form>
+<form [formGroup]="createWorkItemForm" (ngSubmit)="createWorkItem()">
     <div class="form-group">
-        <input type="text" class="form-control" id="exampleInputEmail1" name="title" [(ngModel)]="title" placeholder="Work item title">
+        <input formControlName="title" type="text" class="form-control" id="exampleInputEmail1" name="title" [(ngModel)]="title" placeholder="Work item title">
     </div>
     <div class="form-group">
         <div [froalaEditor]='options' [(froalaModel)]="editorContent"></div>
@@ -22,7 +22,7 @@
           </ng-template>
           
           <label for="typeahead-template">Search for a state:</label>
-          <input id="typeahead-template" type="text" class="form-control" name="username-search" [(ngModel)]="model" [ngbTypeahead]="search" [resultTemplate]="rt"
+          <input id="typeahead-template" formControlName="reviwer" type="text" class="form-control" name="username-search" [(ngModel)]="model" [ngbTypeahead]="search" [resultTemplate]="rt"
             [inputFormatter]="formatter" />
           <hr>
           <button class="btn btn-success" (click)="addUsername()">Add Reviwer</button>
@@ -36,8 +36,9 @@
           </reviewer-item>
          
     </div>
-    <div>
+    <div class="form-group">
         <ng-multiselect-dropdown
+            formControlName="tagControl"
             name="search-tag"
             [placeholder]="'Add tags'"
             [data]="tags"
@@ -48,11 +49,11 @@
             >
         </ng-multiselect-dropdown>
     </div>
-    <div>
+    <!-- <div>
         <button class="btn btn-success" (click)="showValue()">Show Values</button>
-    </div>
-    <div>
-        <button class="btn btn-success" (click)="createWorkItem">Create</button>
+    </div> -->
+    <div class="form-group">
+        <button class="btn btn-success" type="submit" name="submit">create a Work Item</button>
     </div>
 </form>
 
