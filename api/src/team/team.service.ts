@@ -7,12 +7,14 @@ import { TeamRules } from 'src/entities/team-rules.entity';
 import { CreateTeamDTO } from './models/create-team.dto';
 import { ShowTeamDTO } from './models/show-team.dto';
 import { plainToClass } from 'class-transformer';
+import { SimpleTeamInfoDTO } from './models/simple-team-info.dto';
 
 @Injectable()
 export class TeamService {
     public constructor(
         @InjectRepository(Team) private teamRepository: Repository<Team>,
         @InjectRepository(TeamRules) private teamRulesRepository: Repository<TeamRules>,
+        @InjectRepository(User) private userRepository: Repository<User>,
       ) { }
 
 
@@ -62,5 +64,23 @@ export class TeamService {
    const updatedTeam: Team = await this.teamRepository.save(team);
    const updatedTeamToShow = plainToClass(ShowTeamDTO, updatedTeam, { excludeExtraneousValues: true });
    return await updatedTeamToShow;
+  }
+
+  public async getUserTeams(userId: string): Promise<SimpleTeamInfoDTO[]> {
+    const foundUser: User = await this.userRepository.findOne({
+      where: {
+        id: userId,
+      }
+    })
+    const teams: Team[] = await foundUser.teams;
+    const foundTeams: SimpleTeamInfoDTO[] = [];
+    for (const currentTeam of teams){
+      const simpleInfo: SimpleTeamInfoDTO = {
+        id: currentTeam.id,
+        teamName: currentTeam.teamName,
+      }
+      foundTeams.push(simpleInfo);
+    }
+    return await foundTeams;
   }
 }

@@ -5,11 +5,12 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { Team } from 'src/entities/team.entity';
 import { TeamRules } from '../entities/team-rules.entity';
 import { AuthModule } from 'src/auth/auth.module';
+import { User } from '../entities/user.entity';
 
 
 @Module({
   imports: [
-    TypeOrmModule.forFeature([Team, TeamRules]),
+    TypeOrmModule.forFeature([Team, TeamRules, User]),
     AuthModule,
   ],
 
