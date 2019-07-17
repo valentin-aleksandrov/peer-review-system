@@ -9,9 +9,9 @@
     </div>
     <div class="form-group"> 
         <div class="btn-group" ngbDropdown role="group" aria-label="Button group with nested dropdown">
-            <button #ref class="btn btn-outline-primary" ngbDropdownToggle>{{this.chosenTeam}}</button>
+            <button type='button' #ref class="btn btn-outline-primary" ngbDropdownToggle>{{this.chosenTeam}}</button>
             <div class="dropdown-menu" ngbDropdownMenu>
-                <button *ngFor="let team of userTeams" ngbDropdownItem (click)="changeTeam(team,ref)">{{team.teamName}}</button>
+                <button type='button' *ngFor="let team of userTeams" ngbDropdownItem (click)="changeTeam(team,ref)">{{team.teamName}}</button>
             </div>
         </div>
     </div>
@@ -25,7 +25,7 @@
           <input id="typeahead-template" formControlName="reviwer" type="text" class="form-control" name="username-search" [(ngModel)]="model" [ngbTypeahead]="search" [resultTemplate]="rt"
             [inputFormatter]="formatter" />
           <hr>
-          <button class="btn btn-success" (click)="addUsername()">Add Reviwer</button>
+          <button type='button' class="btn btn-success" (click)="addUsername()">Add Reviwer</button>
          
 
           <reviewer-item 

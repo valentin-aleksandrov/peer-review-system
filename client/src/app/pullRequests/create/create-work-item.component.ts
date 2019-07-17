@@ -45,23 +45,20 @@ const statesWithFlags: {name: string, flag: string}[] = [
   ngOnInit() {
     this.workItemDataService.getUsers().subscribe((users:UserDetails[])=>{
       this.users = users;
-      console.log('users',this.users);
     });
 
 
     this.loggedUser = this.authenticationService.currentUserValue.user;
 
-    console.log("user -> ",this.loggedUser);
     
     this.teamService.getTeamsByUserId(this.loggedUser.id).subscribe(
       (teams: SimpleTeamInfo[])=> {
         this.userTeams = teams;
-        console.log('teams ->',this.userTeams);
       });
     
     this.workItemDataService.getTags().subscribe((data)=>{
       this.tags = data;
-      console.log('tags -> ',this.tags);
+    
       
     });
     
@@ -101,18 +98,14 @@ const statesWithFlags: {name: string, flag: string}[] = [
 
       public get formControls() { return this.createWorkItemForm.controls; }
   onItemSelect(item: any) {
-    console.log(item);
+
   }
   onSelectAll(items: any) {
-    console.log(items);
+ 
   }
 
-  public changeTeam(team: SimpleTeamInfo,ref){
-    console.log(team);
-    
+  public changeTeam(team: SimpleTeamInfo){
     this.chosenTeam = team.teamName;
-    console.log(this.chosenTeam);
-    
   }
 
   
@@ -122,7 +115,6 @@ const statesWithFlags: {name: string, flag: string}[] = [
       charCounterCount: false,
       events : {
         'froalaEditor.focus' : function(e, editor) {
-          console.log(editor.selection.get());
         }
       }
     }
@@ -147,17 +139,6 @@ const statesWithFlags: {name: string, flag: string}[] = [
 
   formatter = (x: {username: string}) => x.username;
 
-
-    public showValue(){
-      console.log('description ->',this.editorContent);
-      // console.log('maybe a user', this.model);
-      console.log('title ---->',this.title);
-      console.log('reviewers ->',this.addedUsernames);
-      console.log('tags-->',this.selectedItems);
-      console.log("team -->",this.chosenTeam);
-      
-    }
-
   public addUsername(){
     const index = this.findIndex(this.users,this.model);
     this.addedUsernames.push(this.model);
@@ -180,13 +161,6 @@ const statesWithFlags: {name: string, flag: string}[] = [
     return -1;
   }
   public createWorkItem(){
-    console.log("Create work-item.");
-    console.log('description ->',this.editorContent);
-    // console.log('maybe a user', this.model);
-    console.log('title ---->',this.title);
-    console.log('reviewers ->',this.addedUsernames);
-    console.log('tags-->',this.selectedItems);
-    console.log("team -->",this.chosenTeam);
     const reviewers: {username: string}[] = this.addedUsernames.map((reviewer)=>({username: reviewer.username}));
     const tags: {name: string}[] = this.selectedItems.map((tag: Tag)=>({name: tag.name}))
   
@@ -199,8 +173,6 @@ const statesWithFlags: {name: string, flag: string}[] = [
       tags: tags,
     };
     
-    console.log('--------------------------------------------');
-    console.log(createdWorkItem);
     this.workItemDataService.createWorkItem(createdWorkItem).subscribe((data)=>{
       console.log(data);
     });
