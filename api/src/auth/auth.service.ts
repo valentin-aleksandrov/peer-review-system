@@ -12,7 +12,7 @@ export class AuthService {
     private readonly usersService: UsersService,
   ) {}
 
-  async login(user: UserLoginDTO): Promise<{token: string}>{
+  async login(user: UserLoginDTO): Promise<{user: ShowUserDTO, token: string}>{
     const userFound = await this.usersService.findUserByEmail(user.email);
 
     if(!userFound){
@@ -27,7 +27,7 @@ export class AuthService {
       lastName: userFound.lastName,
       avatarURL: userFound.avatarURL,
     });
-    return { token };
+    return { user: userFound, token };
     // const payload = {email: user.email};
 
     // return await this.jwtService.signAsync(payload);
