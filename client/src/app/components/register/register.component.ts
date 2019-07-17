@@ -39,7 +39,6 @@ registerUser() {
     return;
   }
   this.authenticationService.register(this.registerForm.value).pipe(first()).subscribe(data => {
-    console.log(data);
     this.router.navigate(['/login']);
   })
 }

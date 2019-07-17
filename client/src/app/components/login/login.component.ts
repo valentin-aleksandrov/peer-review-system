@@ -1,8 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
-import { AuthenticationService } from 'src/app/core/authentication.service';
 import { first } from 'rxjs/operators';
+import { AuthenticationService } from 'src/app/core/services/authentication.service';
 
 @Component({
   selector: 'app-login',
@@ -28,12 +28,11 @@ export class LoginComponent implements OnInit {
 
   logInUser () {
     if (this.loginForm.invalid) {
-      return;
+      this.isSubmitted = true;
     }
     this.authenticationService.login(this.loginForm.value).pipe(first()).subscribe(data => {
-      this.router.navigate(['/']);
+      this.router.navigate(['/home']);
     })
-
   }
 
 }

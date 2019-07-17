@@ -2,9 +2,13 @@
     <div class="row">
         <div class="col-4">
                 <i class="fas fa-user-circle fa-7x"></i>
-                <div>Username</div>
-                <div>Name</div>
-                <div>Email</div>
+                <div>{{currentUser.user.username}}</div>
+                <div>
+                  <span>{{currentUser.user.firstName}}</span>
+                  &nbsp;
+                  <span>{{currentUser.user.lastName}}</span>
+                </div>
+                <div>{{currentUser.user.email}}</div>
         </div>
         <div class="col-8">
                 <ngb-tabset>
@@ -21,12 +25,31 @@
                           </ng-template>
                         </ngb-tab>
                         <ngb-tab title= "Teams">
-                          <ng-template ngbTabContent>Team1</p>
+                          <ng-template ngbTabContent>gfc truck fixie locavore, accusamus mcsweeney's marfa nulla single-origin coffee squid.
+                            <p>Exercitation +1 labore velit, blog sartorial PBR leggings next level wes anderson artisan four loko farm-to-table
+                            craft beer twee. Qui photo booth letterpress, commodo enim craft beer mlkshk aliquip jean shorts ullamco ad vinyl
+                            cillum PBR. Homo nostrud organic, assumenda labore aesthetic magna delectus mollit. Keytar helvetica VHS salvia
+                            yr, vero magna velit sapiente labore stumptown. Vegan fanny pack odio cillum wes anderson 8-bit, sustainable jean
+                            shorts beard ut DIY ethical culpa terry richardson biodiesel. Art party scenester stumptown, tumblr butcher vero
+                            sint qui sapiente accusamus tattooed echo park.</p>
                           </ng-template>
                         </ngb-tab>
                         <ngb-tab title="Make New Team">
                           <ng-template ngbTabContent>
-                            <p>Sed commodo, leo at suscipit dictum, quam est porttitor sapien, eget sodales nibh elit id diam. Nulla facilisi. Donec egestas ligula vitae odio interdum aliquet. Duis lectus turpis, luctus eget tincidunt eu, congue et odio. Duis pharetra et nisl at faucibus. Quisque luctus pulvinar arcu, et molestie lectus ultrices et. Sed diam urna, egestas ut ipsum vel, volutpat volutpat neque. Praesent fringilla tortor arcu. Vivamus faucibus nisl enim, nec tristique ipsum euismod facilisis. Morbi ut bibendum est, eu tincidunt odio. Orci varius natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Mauris aliquet odio ac lorem aliquet ultricies in eget neque. Phasellus nec tortor vel tellus pulvinar feugiat.</p>
+                              <div class="form-group">
+                                  <label for="formGroupName">Name</label>
+                                  <input type="text" formControlName="name" class="form-control" id="formGroupName" placeholder="Team Name...">
+                                </div>
+                                <div class="form-group">
+                                    <label for="formGroupRule">Team Rules</label>
+                                    <input type="text" formControlName="minPercentApprovalOfItem" class="form-control" id="formGroupPercent" placeholder="Minimum Approval Rate...">
+                                    <input type="text" formControlName="minNumberOfReviewers" class="form-control" id="formGroupReviewers" placeholder="Minimal number of reviewers...">
+                                    <div class="form-check">
+                                        <input type="checkbox" class="form-check-input" id="exampleCheck1">
+                                        <label class="form-check-label" for="exampleCheck1">Default rule</label>
+                                      </div>
+                                      <button type="submit" class="btn btn-primary">Create</button>
+                                  </div>
                           </ng-template>
                         </ngb-tab>
                       </ngb-tabset>
