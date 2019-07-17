@@ -4,6 +4,7 @@ import { HttpClient } from '@angular/common/http';
 import { UserDetails } from 'src/app/models/user-details';
 import { Tag } from 'src/app/models/tag';
 import { CreateWorkItem } from 'src/app/models/create-work-item';
+import { WorkItem } from 'src/app/models/work-item';
 
 @Injectable({
     providedIn: 'root'
@@ -22,5 +23,9 @@ import { CreateWorkItem } from 'src/app/models/create-work-item';
 
       public createWorkItem(workItem: CreateWorkItem): Observable<any> {
           return this.http.post<any>('http://localhost:3000/api/work-item',workItem);
+      }
+
+      public getWorkItemsByUserId(userId: string): Observable<WorkItem[]> {
+          return this.http.get<WorkItem[]>(`http://localhost:3000/api/users/work-item/${userId}`);
       }
   }

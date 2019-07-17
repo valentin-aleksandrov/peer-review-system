@@ -11,6 +11,7 @@ import { TeamService } from 'src/app/core/services/team.service';
 import { SimpleTeamInfo } from 'src/app/models/simple-team-info';
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 import { CreateWorkItem } from 'src/app/models/create-work-item';
+import { Router } from '@angular/router';
 
 
 
@@ -43,13 +44,12 @@ const statesWithFlags: {name: string, flag: string}[] = [
   selectedItems: Tag[] = [];
   dropdownSettings = {};
   ngOnInit() {
+    this.loggedUser = this.authenticationService.currentUserValue.user;
+    console.log(this.loggedUser);
+    
     this.workItemDataService.getUsers().subscribe((users:UserDetails[])=>{
       this.users = users;
     });
-
-
-    this.loggedUser = this.authenticationService.currentUserValue.user;
-
     
     this.teamService.getTeamsByUserId(this.loggedUser.id).subscribe(
       (teams: SimpleTeamInfo[])=> {
@@ -94,6 +94,7 @@ const statesWithFlags: {name: string, flag: string}[] = [
     private readonly authenticationService: AuthenticationService,
     private readonly teamService: TeamService,
     private readonly formBuilder: FormBuilder,
+    private readonly router: Router,
     ){ }
 
       public get formControls() { return this.createWorkItemForm.controls; }
@@ -175,6 +176,7 @@ const statesWithFlags: {name: string, flag: string}[] = [
     
     this.workItemDataService.createWorkItem(createdWorkItem).subscribe((data)=>{
       console.log(data);
+      this.router.navigate(['/home']);
     });
   }
 }

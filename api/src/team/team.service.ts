@@ -73,6 +73,10 @@ export class TeamService {
       }
     })
     const teams: Team[] = await foundUser.teams;
+    console.log('foundUser',foundUser);
+    console.log('foundTeams',teams);
+    
+    
     const foundTeams: SimpleTeamInfoDTO[] = [];
     for (const currentTeam of teams){
       const simpleInfo: SimpleTeamInfoDTO = {
