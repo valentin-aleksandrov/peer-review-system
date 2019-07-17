@@ -25,13 +25,18 @@
                           </ng-template>
                         </ngb-tab>
                         <ngb-tab title= "Teams">
-                          <ng-template ngbTabContent>gfc truck fixie locavore, accusamus mcsweeney's marfa nulla single-origin coffee squid.
-                            <p>Exercitation +1 labore velit, blog sartorial PBR leggings next level wes anderson artisan four loko farm-to-table
-                            craft beer twee. Qui photo booth letterpress, commodo enim craft beer mlkshk aliquip jean shorts ullamco ad vinyl
-                            cillum PBR. Homo nostrud organic, assumenda labore aesthetic magna delectus mollit. Keytar helvetica VHS salvia
-                            yr, vero magna velit sapiente labore stumptown. Vegan fanny pack odio cillum wes anderson 8-bit, sustainable jean
-                            shorts beard ut DIY ethical culpa terry richardson biodiesel. Art party scenester stumptown, tumblr butcher vero
-                            sint qui sapiente accusamus tattooed echo park.</p>
+                          <ng-template ngbTabContent>
+                            <h6>TeamName
+                                <button type="button" class="btn btn-outline-success" (click)="toggleInvitation()">Invite Members</button>
+                                <button type="button" class="btn btn-outline-danger">Leave</button>
+                                <div *ngIf="sendInvite === true" class="Invitation">
+                                  <div class="form-group">
+                                    <label for="formGroupUserName">Name</label>
+                                    <input type="text" formControlName="member" class="form-control" id="formGroupMember" placeholder="Username...">
+                                  </div>
+                                  <button type="button" class="btn btn-outline-success">Send Invite</button>
+                                </div>
+                            </h6>
                           </ng-template>
                         </ngb-tab>
                         <ngb-tab title="Make New Team">

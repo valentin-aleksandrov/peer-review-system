@@ -21,8 +21,9 @@ export class Team{
   @OneToMany(type => TeamInvitation, TeamInvitation => TeamInvitation.team)
   TeamInvitation: Promise<TeamInvitation[]>;
 
-  @ManyToOne(type => TeamRules, teamRules => teamRules.team)
-  rules: Promise<TeamRules>;
+  @ManyToOne(type => TeamRules, teamRules => teamRules.team, {
+    eager: true})
+  rules: TeamRules;
 
   @OneToMany((type) => WorkItem, (workItem) => workItem.team)
   workItems: Promise<WorkItem[]>;
