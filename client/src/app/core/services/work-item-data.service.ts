@@ -14,10 +14,7 @@ import { UserDetails } from 'src/app/models/user-details';
           return this.http.get<UserDetails[]>(`http://localhost:3000/api/users`);
       }
 
-/*
-      public createNewTeam(team): Observable<any> {
-        return this.http.post<any>('http://localhost:3000/api/team', team);
-    }
-      
-*/
+      public getTags(): Observable<any> {
+          return this.http.get<any[]>(`http://localhost:3000/api/work-item/tags`)
+      }
   }

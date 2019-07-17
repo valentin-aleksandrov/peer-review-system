@@ -156,6 +156,10 @@ export class WorkItemService {
     
     return this.convertToShowWorkItemDTOs([...workItems]);
   }
+  public async findAllTags(): Promise<ShowTagDTO[]>{
+    const tags: Tag[] = await this.tagsRepository.find();
+    return await this.convertTagstoDTOs(tags);
+  }
   private async filterByReviewerName(workItems: WorkItem[], searchReviewer: string): Promise<WorkItem[]> {
     let result: WorkItem[] = [];
     for (const currentWorkItem of workItems) {

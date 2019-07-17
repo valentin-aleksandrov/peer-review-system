@@ -5,6 +5,7 @@ import {debounceTime, distinctUntilChanged, map} from 'rxjs/operators';
 import { WorkItemDataService } from 'src/app/core/services/work-item-data.service';
 import { UserDetails } from 'src/app/models/user-details';
 import { AuthenticationService } from 'src/app/core/services/authentication.service';
+import { User } from 'src/app/models/user';
 
 
 
@@ -37,8 +38,21 @@ const statesWithFlags: {name: string, flag: string}[] = [
       console.log(this.users);
     });
 
-    // this.loggedUser = this.authenticationService.currentUserValue;
+    const user: User = this.authenticationService.currentUserValue;
+    this.loggedUser = {
+      id: user.id,
+      avatarURL: null,
+      email: user.email,
+      firstName: user.firstName,
+      lastName: user.lastName,
+      role: null,
+      username: user.username,
+    };
     
+    this.workItemDataService.getTags().subscribe((data)=>{
+      console.log('tags -> ',data);
+      
+    });
     
 
     this.dropdownList = [

@@ -6,6 +6,7 @@ import { ShowWorkItemDTO } from "./models/show-work-item.dto";
 import { User } from "../entities/user.entity";
 import { SessionUser } from "../decorators/session-user.decorator";
 import { SearchWorkItemDTO } from "./models/search-work-item.dto";
+import { ShowTagDTO } from "./models/show-tag.dto";
 
 @UseGuards(AuthGuard())
 @Controller('api/work-item')
@@ -31,5 +32,10 @@ export class WorkItemController {
         } else {
           return workItemsDTOs;
         }
+    }
+
+    @Get("tags")
+    async findAllTags(): Promise<ShowTagDTO[]>{
+      return this.workItemService.findAllTags();
     }
 }
