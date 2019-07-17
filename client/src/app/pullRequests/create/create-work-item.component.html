@@ -11,7 +11,7 @@
         <div class="btn-group" ngbDropdown role="group" aria-label="Button group with nested dropdown">
             <button class="btn btn-outline-primary" ngbDropdownToggle>Choose a team</button>
             <div class="dropdown-menu" ngbDropdownMenu>
-                <button ngbDropdownItem>Team1</button>
+                <button *ngFor="let team of userTeams" ngbDropdownItem>{{team.teamName}}</button>
                 <button ngbDropdownItem>Team2</button>
             </div>
         </div>

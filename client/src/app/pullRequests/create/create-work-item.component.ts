@@ -7,6 +7,8 @@ import { UserDetails } from 'src/app/models/user-details';
 import { AuthenticationService } from 'src/app/core/services/authentication.service';
 import { User } from 'src/app/models/user';
 import { Tag } from 'src/app/models/tag';
+import { TeamService } from 'src/app/core/services/team.service';
+import { SimpleTeamInfo } from 'src/app/models/simple-team-info';
 
 
 
@@ -31,6 +33,7 @@ const statesWithFlags: {name: string, flag: string}[] = [
     loggedUser: UserDetails = new UserDetails();
     users: UserDetails[] = [];
     tags: Tag[] = [];
+    userTeams: SimpleTeamInfo[] = [];
     dropdownList = [];
   selectedItems = [];
   dropdownSettings = {};
@@ -40,16 +43,16 @@ const statesWithFlags: {name: string, flag: string}[] = [
       console.log('users',this.users);
     });
 
-    const user: User = this.authenticationService.currentUserValue;
-    this.loggedUser = {
-      id: user.id,
-      avatarURL: null,
-      email: user.email,
-      firstName: user.firstName,
-      lastName: user.lastName,
-      role: null,
-      username: user.username,
-    };
+
+    this.loggedUser = this.authenticationService.currentUserValue.user;
+
+    console.log("user -> ",this.loggedUser);
+    
+    this.teamService.getTeamsByUserId(this.loggedUser.id).subscribe(
+      (teams: SimpleTeamInfo[])=> {
+        this.userTeams = teams;
+        console.log('teams ->',this.userTeams);
+      });
     
     this.workItemDataService.getTags().subscribe((data)=>{
       this.tags = data;
@@ -80,7 +83,8 @@ const statesWithFlags: {name: string, flag: string}[] = [
 
   constructor(
     private readonly workItemDataService: WorkItemDataService,
-    private authenticationService: AuthenticationService,
+    private readonly authenticationService: AuthenticationService,
+    private readonly teamService: TeamService,
     ){
     
 
