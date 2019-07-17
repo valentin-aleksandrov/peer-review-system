@@ -6,6 +6,7 @@ import { WorkItemDataService } from 'src/app/core/services/work-item-data.servic
 import { UserDetails } from 'src/app/models/user-details';
 import { AuthenticationService } from 'src/app/core/services/authentication.service';
 import { User } from 'src/app/models/user';
+import { Tag } from 'src/app/models/tag';
 
 
 
@@ -29,13 +30,14 @@ const statesWithFlags: {name: string, flag: string}[] = [
   export class CreateWorkItemComponent implements OnInit{
     loggedUser: UserDetails = new UserDetails();
     users: UserDetails[] = [];
+    tags: Tag[] = [];
     dropdownList = [];
   selectedItems = [];
   dropdownSettings = {};
   ngOnInit() {
     this.workItemDataService.getUsers().subscribe((users:UserDetails[])=>{
       this.users = users;
-      console.log(this.users);
+      console.log('users',this.users);
     });
 
     const user: User = this.authenticationService.currentUserValue;
@@ -50,7 +52,8 @@ const statesWithFlags: {name: string, flag: string}[] = [
     };
     
     this.workItemDataService.getTags().subscribe((data)=>{
-      console.log('tags -> ',data);
+      this.tags = data;
+      console.log('tags -> ',this.tags);
       
     });
     
@@ -106,6 +109,7 @@ const statesWithFlags: {name: string, flag: string}[] = [
     public editorContent: string;
     public model: any;
     public addedUsernames: any[] = [];
+    
     public addUsername(){
       this.addedUsernames.push(this.model);
       this.model = {};
