@@ -109,7 +109,7 @@ const statesWithFlags: {name: string, flag: string}[] = [
     public editorContent: string;
     public model: any;
     public addedUsernames: any[] = [];
-    
+
     public addUsername(){
       this.addedUsernames.push(this.model);
       this.model = {};
@@ -119,11 +119,15 @@ const statesWithFlags: {name: string, flag: string}[] = [
     text$.pipe(
       debounceTime(200),
       map(term => term === '' ? []
+        : this.users.filter(v => v.username.toLowerCase()
+        .indexOf(term.toLowerCase()) > -1).slice(0, 10))
+     /* debounceTime(200),
+      map(term => term === '' ? []
         : statesWithFlags.filter(v => v.name.toLowerCase()
-          .indexOf(term.toLowerCase()) > -1).slice(0, 10))
+          .indexOf(term.toLowerCase()) > -1).slice(0, 10))*/
     )
 
-  formatter = (x: {name: string}) => x.name;
+  formatter = (x: {username: string}) => x.username;
 
 
     public showValue(){
