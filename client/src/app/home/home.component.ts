@@ -11,7 +11,7 @@ import { WorkItemDataService } from '../core/services/work-item-data.service';
       
     }
     ngOnInit(): void {
-      this.workItemDataService.getUserWorkItems('no-yet').subscribe((data)=>console.log(data));
+      
     }
 
   }

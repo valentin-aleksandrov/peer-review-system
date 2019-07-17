@@ -2,6 +2,10 @@ import { Component, OnInit } from '@angular/core';
 import { NgbTypeaheadConfig } from '@ng-bootstrap/ng-bootstrap';
 import { Observable } from 'rxjs';
 import {debounceTime, distinctUntilChanged, map} from 'rxjs/operators';
+import { WorkItemDataService } from 'src/app/core/services/work-item-data.service';
+import { UserDetails } from 'src/app/models/user-details';
+import { AuthenticationService } from 'src/app/core/services/authentication.service';
+
 
 
 
@@ -22,10 +26,21 @@ const statesWithFlags: {name: string, flag: string}[] = [
     providers: [NgbTypeaheadConfig] // add NgbTypeaheadConfig to the component providers
   })
   export class CreateWorkItemComponent implements OnInit{
+    loggedUser: UserDetails = new UserDetails();
+    users: UserDetails[] = [];
     dropdownList = [];
   selectedItems = [];
   dropdownSettings = {};
   ngOnInit() {
+    this.workItemDataService.getUsers().subscribe((users:UserDetails[])=>{
+      this.users = users;
+      console.log(this.users);
+    });
+
+    // this.loggedUser = this.authenticationService.currentUserValue;
+    
+    
+
     this.dropdownList = [
       { item_id: 1, item_text: 'Mumbai' },
       { item_id: 2, item_text: 'Bangaluru' },
@@ -44,6 +59,14 @@ const statesWithFlags: {name: string, flag: string}[] = [
       itemsShowLimit: 3,
       allowSearchFilter: true
     };
+  }
+
+  constructor(
+    private readonly workItemDataService: WorkItemDataService,
+    private authenticationService: AuthenticationService,
+    ){
+    
+
   }
   onItemSelect(item: any) {
     console.log(item);
