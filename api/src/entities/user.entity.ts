@@ -21,12 +21,15 @@ export class User {
   @PrimaryGeneratedColumn('uuid')
   id: string;
 
-  @Column('nvarchar')
+  @Column('nvarchar', {unique: true})
   username: string;
 
   @Column('nvarchar', {unique: true})
   email: string;
 
+  @Column('nvarchar')
+  avatarURL: string;
+  
   @Column('nvarchar')
   password: string;
 
