@@ -1,11 +1,61 @@
-import { Component } from '@angular/core';
-import { FormGroup, FormControl } from '@angular/forms';
+import { Component, OnInit } from '@angular/core';
+import { NgbTypeaheadConfig } from '@ng-bootstrap/ng-bootstrap';
+import { Observable } from 'rxjs';
+import {debounceTime, distinctUntilChanged, map} from 'rxjs/operators';
+
+
+
+const states = ['valentin','valka1','valka2','valka3','valka4','valka5'];
+const tags = ['computers','sports','cooking','bikes'];
+const statesWithFlags: {name: string, flag: string}[] = [
+  {'name': 'Alabama', 'flag': '5/5c/Flag_of_Alabama.svg/45px-Flag_of_Alabama.svg.png'},
+  {'name': 'Alaska', 'flag': 'e/e6/Flag_of_Alaska.svg/43px-Flag_of_Alaska.svg.png'},
+  {'name': 'Arizona', 'flag': '9/9d/Flag_of_Arizona.svg/45px-Flag_of_Arizona.svg.png'},
+  {'name': 'Arkansas', 'flag': '9/9d/Flag_of_Arkansas.svg/45px-Flag_of_Arkansas.svg.png'},
+  {'name': 'California', 'flag': '0/01/Flag_of_California.svg/45px-Flag_of_California.svg.png'},
+];
+
 @Component({
     selector: 'create-work-item',
     templateUrl: './create-work-item.component.html',
-    styleUrls: ['./create-work-item.component.css']
+    styleUrls: ['./create-work-item.component.css'],
+    providers: [NgbTypeaheadConfig] // add NgbTypeaheadConfig to the component providers
   })
-  export class CreateWorkItemComponent {
+  export class CreateWorkItemComponent implements OnInit{
+    dropdownList = [];
+  selectedItems = [];
+  dropdownSettings = {};
+  ngOnInit() {
+    this.dropdownList = [
+      { item_id: 1, item_text: 'Mumbai' },
+      { item_id: 2, item_text: 'Bangaluru' },
+      { item_id: 3, item_text: 'Pune' },
+      { item_id: 4, item_text: 'Navsari' },
+      { item_id: 5, item_text: 'New Delhi' }
+    ];
+    this.selectedItems = [
+    ];
+    this.dropdownSettings = {
+      singleSelection: false,
+      idField: 'item_id',
+      textField: 'item_text',
+      selectAllText: 'Select All',
+      unSelectAllText: 'UnSelect All',
+      itemsShowLimit: 3,
+      allowSearchFilter: true
+    };
+  }
+  onItemSelect(item: any) {
+    console.log(item);
+  }
+  onSelectAll(items: any) {
+    console.log(items);
+  }
+
+
+
+  
+
     public options: Object = {
       placeholderText: 'Write description',
       charCounterCount: false,
@@ -17,14 +67,29 @@ import { FormGroup, FormControl } from '@angular/forms';
     }
     
     public editorContent: string;
-
-    constructor(){
-      console.log(this.options);
-      
+    public model: any;
+    public addedUsernames: any[] = [];
+    public addUsername(){
+      this.addedUsernames.push(this.model);
+      this.model = {};
     }
+    
+    search = (text$: Observable<string>) =>
+    text$.pipe(
+      debounceTime(200),
+      map(term => term === '' ? []
+        : statesWithFlags.filter(v => v.name.toLowerCase()
+          .indexOf(term.toLowerCase()) > -1).slice(0, 10))
+    )
+
+  formatter = (x: {name: string}) => x.name;
+
 
     public showValue(){
       console.log(this.editorContent);
+      console.log('maybe a user', this.model);
+
+      
     }
 
   }

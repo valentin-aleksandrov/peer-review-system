@@ -5,6 +5,7 @@ import { NgModule } from '@angular/core';
 import { PullRequestsComponent } from './pull-requests.component';
 import { CreateWorkItemComponent } from './create/create-work-item.component';
 import { FroalaEditorModule, FroalaViewModule } from 'angular-froala-wysiwyg';
+import { NgMultiSelectDropDownModule } from 'ng-multiselect-dropdown';
 @NgModule({
     declarations: [
         PullRequestsComponent,
@@ -15,7 +16,8 @@ import { FroalaEditorModule, FroalaViewModule } from 'angular-froala-wysiwyg';
       RouterModule,
       PullRequestsRoutingModule,
       FroalaEditorModule.forRoot(), 
-      FroalaViewModule.forRoot()
+      FroalaViewModule.forRoot(),
+      NgMultiSelectDropDownModule.forRoot(),
     ],
   })
   export class PullRequestsModule { }
