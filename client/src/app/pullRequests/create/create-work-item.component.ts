@@ -30,6 +30,8 @@ const statesWithFlags: {name: string, flag: string}[] = [
     providers: [NgbTypeaheadConfig] // add NgbTypeaheadConfig to the component providers
   })
   export class CreateWorkItemComponent implements OnInit{
+    title: string;
+    chosenTeam: string = 'Choose a team.';
     loggedUser: UserDetails = new UserDetails();
     users: UserDetails[] = [];
     tags: Tag[] = [];
@@ -96,7 +98,13 @@ const statesWithFlags: {name: string, flag: string}[] = [
     console.log(items);
   }
 
-
+  public changeTeam(team: SimpleTeamInfo,ref){
+    console.log(team);
+    
+    this.chosenTeam = team.teamName;
+    console.log(this.chosenTeam);
+    
+  }
 
   
 
@@ -132,8 +140,13 @@ const statesWithFlags: {name: string, flag: string}[] = [
 
 
     public showValue(){
-      console.log(this.editorContent);
-      console.log('maybe a user', this.model);
+      console.log('description ->',this.editorContent);
+      // console.log('maybe a user', this.model);
+      console.log('title ---->',this.title);
+      console.log('reviewers ->',this.addedUsernames);
+      console.log('tags-->',this.selectedItems);
+      console.log("team -->",this.chosenTeam);
+      
     }
 
   public addUsername(){

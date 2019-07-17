@@ -2,17 +2,16 @@
 
 <form>
     <div class="form-group">
-        <input type="text" class="form-control" id="exampleInputEmail1" placeholder="Work item title">
+        <input type="text" class="form-control" id="exampleInputEmail1" name="title" [(ngModel)]="title" placeholder="Work item title">
     </div>
     <div class="form-group">
         <div [froalaEditor]='options' [(froalaModel)]="editorContent"></div>
     </div>
     <div class="form-group"> 
         <div class="btn-group" ngbDropdown role="group" aria-label="Button group with nested dropdown">
-            <button class="btn btn-outline-primary" ngbDropdownToggle>Choose a team</button>
+            <button #ref class="btn btn-outline-primary" ngbDropdownToggle>{{this.chosenTeam}}</button>
             <div class="dropdown-menu" ngbDropdownMenu>
-                <button *ngFor="let team of userTeams" ngbDropdownItem>{{team.teamName}}</button>
-                <button ngbDropdownItem>Team2</button>
+                <button *ngFor="let team of userTeams" ngbDropdownItem (click)="changeTeam(team,ref)">{{team.teamName}}</button>
             </div>
         </div>
     </div>
@@ -51,6 +50,9 @@
     </div>
     <div>
         <button class="btn btn-success" (click)="showValue()">Show Values</button>
+    </div>
+    <div>
+        <button class="btn btn-success" (click)="createWorkItem">Create</button>
     </div>
 </form>
 
