@@ -1,40 +1,47 @@
 <h2>Create new Work Item</h2>
 
-<form>
+<form [formGroup]="createWorkItemForm" (ngSubmit)="createWorkItem()">
     <div class="form-group">
-        <input type="text" class="form-control" id="exampleInputEmail1" placeholder="Work item title">
+        <input formControlName="title" type="text" class="form-control" id="exampleInputEmail1" name="title" [(ngModel)]="title" placeholder="Work item title">
     </div>
     <div class="form-group">
         <div [froalaEditor]='options' [(froalaModel)]="editorContent"></div>
     </div>
     <div class="form-group"> 
         <div class="btn-group" ngbDropdown role="group" aria-label="Button group with nested dropdown">
-            <button class="btn btn-outline-primary" ngbDropdownToggle>Choose a team</button>
+            <button type='button' #ref class="btn btn-outline-primary" ngbDropdownToggle>{{this.chosenTeam}}</button>
             <div class="dropdown-menu" ngbDropdownMenu>
-                <button ngbDropdownItem>Team1</button>
-                <button ngbDropdownItem>Team2</button>
+                <button type='button' *ngFor="let team of userTeams" ngbDropdownItem (click)="changeTeam(team,ref)">{{team.teamName}}</button>
             </div>
         </div>
     </div>
     <div class="form-group">
         <ng-template #rt let-r="result" let-t="term">
-            <img [src]="'https://upload.wikimedia.org/wikipedia/commons/thumb/' + r['flag']" class="mr-1" style="width: 16px">
-            <ngb-highlight [result]="r.name" [term]="t"></ngb-highlight>
+            <img [src]="r.avatarURL" class="mr-1" style="width: 16px">
+            <ngb-highlight [result]="r.username" [term]="t"></ngb-highlight>
           </ng-template>
           
           <label for="typeahead-template">Search for a state:</label>
-          <input id="typeahead-template" type="text" class="form-control" name="username-search" [(ngModel)]="model" [ngbTypeahead]="search" [resultTemplate]="rt"
+          <input id="typeahead-template" formControlName="reviwer" type="text" class="form-control" name="username-search" [(ngModel)]="model" [ngbTypeahead]="search" [resultTemplate]="rt"
             [inputFormatter]="formatter" />
           <hr>
-          <pre>Model: {{ model | json }}</pre>
-          <button class="btn btn-success" (click)="addUsername()">Add user</button>
-          <pre> added users: {{ addedUsernames | json}}</pre>
+          <button type='button' class="btn btn-success" (click)="addUsername()">Add Reviwer</button>
+         
+
+          <reviewer-item 
+            *ngFor="let currentReviewer of addedUsernames"
+            [reviewer]="currentReviewer"
+            (removeUser)="removeReviewer($event)"
+            >
+          </reviewer-item>
+         
     </div>
-    <div>
+    <div class="form-group">
         <ng-multiselect-dropdown
+            formControlName="tagControl"
             name="search-tag"
             [placeholder]="'Add tags'"
-            [data]="dropdownList"
+            [data]="tags"
             [(ngModel)]="selectedItems"
             [settings]="dropdownSettings"
             (onSelect)="onItemSelect($event)"
@@ -42,8 +49,11 @@
             >
         </ng-multiselect-dropdown>
     </div>
-    <div>
+    <!-- <div>
         <button class="btn btn-success" (click)="showValue()">Show Values</button>
+    </div> -->
+    <div class="form-group">
+        <button class="btn btn-success" type="submit" name="submit">create a Work Item</button>
     </div>
 </form>
 

@@ -85,13 +85,14 @@ export class UsersService {
     return await bcrypt.compare(user.password, userEntity.password);
   }
 
-  async findAllUsers(): Promise<ShowUserDTO[]>{
+  async findAllUsers(loggedUser: User): Promise<ShowUserDTO[]>{
     const userEntities:User[] = await this.usersRepository.find({
       where: {
         isDeleted: false,
       },
     });
-    return this.convertToShowUserDTOArray(userEntities);
+
+    return this.convertToShowUserDTOArray(userEntities.filter((user)=>user.id !== loggedUser.id));
   }
 
   async findSingleUser(userId: string): Promise<ShowUserDTO>{

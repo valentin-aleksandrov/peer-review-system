@@ -5,11 +5,14 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { Team } from 'src/entities/team.entity';
 import { TeamRules } from '../entities/team-rules.entity';
 import { AuthModule } from 'src/auth/auth.module';
+import { User } from '../entities/user.entity';
+import { PassportModule } from '@nestjs/passport';
 
 
 @Module({
   imports: [
-    TypeOrmModule.forFeature([Team, TeamRules]),
+    PassportModule.register({defaultStrategy: 'jwt'}),
+    TypeOrmModule.forFeature([Team, TeamRules, User]),
     AuthModule,
   ],
 
