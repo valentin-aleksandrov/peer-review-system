@@ -15,7 +15,7 @@ export class ProfileComponent implements OnInit {
 
   public createTeamForm: FormGroup;
   public currentUser: User;
-  public isSubmitted: boolean = true;
+  public isSubmitted: boolean = false;
   public subscription: Subscription;
   public sendInvite: boolean = false;
   myCheckbox: FormControl = new FormControl();

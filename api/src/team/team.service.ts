@@ -63,4 +63,13 @@ export class TeamService {
    const updatedTeamToShow = plainToClass(ShowTeamDTO, updatedTeam, { excludeExtraneousValues: true });
    return await updatedTeamToShow;
   }
+
+  // public async getTeamsByUserId(user: User): Promise<ShowTeamDTO[]> {
+  //   const team: Team = await this.teamRepository.find({
+  //     where: {
+  //       users: teamId,
+  //     },
+  //   });
+  //   return await
+  // }
 }
