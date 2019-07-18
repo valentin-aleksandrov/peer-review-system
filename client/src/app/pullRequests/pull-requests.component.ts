@@ -12,6 +12,7 @@ import { WorkItem } from '../models/work-item';
   })
   export class PullRequestsComponent implements OnInit{
     public loggedUser: UserDetails = new UserDetails();
+    public workItems: WorkItem[] = [];
   
     constructor(
       private readonly workItemDataService: WorkItemDataService,
@@ -21,10 +22,10 @@ import { WorkItem } from '../models/work-item';
     }
     ngOnInit(): void {
       this.loggedUser = this.authenticationService.currentUserValue.user;
-      console.log(this.loggedUser.id);
+     
       
       this.workItemDataService.getWorkItemsByUserId(this.loggedUser.id).subscribe((workItems: WorkItem[])=>{
-        console.log(workItems);
+        this.workItems = workItems;
       })
     }
 
