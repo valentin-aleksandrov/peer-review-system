@@ -28,4 +28,8 @@ import { WorkItem } from 'src/app/models/work-item';
       public getWorkItemsByUserId(userId: string): Observable<WorkItem[]> {
           return this.http.get<WorkItem[]>(`http://localhost:3000/api/users/work-item/${userId}`);
       }
+
+      public getWorkItemById(workItemId: string): Observable<WorkItem> {
+          return this.http.get<WorkItem>(`http://localhost:3000/api/work-item/${workItemId}`);
+      }
   }

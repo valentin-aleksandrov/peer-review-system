@@ -7,6 +7,7 @@ import { User } from "../entities/user.entity";
 import { SessionUser } from "../decorators/session-user.decorator";
 import { SearchWorkItemDTO } from "./models/search-work-item.dto";
 import { ShowTagDTO } from "./models/show-tag.dto";
+import { async } from "rxjs/internal/scheduler/async";
 
 @UseGuards(AuthGuard())
 @Controller('api/work-item')
@@ -28,7 +29,7 @@ export class WorkItemController {
         
         const workItemsDTOs: ShowWorkItemDTO[] = await this.workItemService.findWorkItemsByTeam(teamId,searchOptions);
         if(!workItemsDTOs){
-          throw new NotFoundException("No such team found");
+          throw new NotFoundException("No such team found.");
         } else {
           return workItemsDTOs;
         }
@@ -37,5 +38,16 @@ export class WorkItemController {
     @Get("tags")
     async findAllTags(): Promise<ShowTagDTO[]>{
       return this.workItemService.findAllTags();
+    }
+
+    @Get(":id")
+    async findWorkItemById(@Param('id') workItemId: string): Promise<ShowWorkItemDTO> {
+
+      const foundWorkItem: ShowWorkItemDTO = await this.workItemService.findWorkItemById(workItemId);
+      if(!foundWorkItem){
+        throw new NotFoundException("No such work item found.")
+      }
+
+      return foundWorkItem;
     }
 }

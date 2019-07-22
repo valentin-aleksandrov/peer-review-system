@@ -1,1 +1,16 @@
-<h1>item details works</h1>
+<h1>Title: {{this.workItem.title}}</h1>
+<h3><strong>description:</strong></h3>
+<h3 [innerHTML]="workItem.description"></h3>
+<h2><strong>assignee:</strong> {{workItem.assignee.username}}</h2>
+<h2><strong>status:</strong> {{workItem.workItemStatus}}</h2>
+<h2> <strong>team:</strong> {{workItem.team}}</h2>
+<h2><strong>reviewers:</strong></h2>
+<div class="reviewer"*ngFor="let review of workItem.reviews" >
+    <h3>reviewer name: {{review.username}}</h3>
+    <h3>status: {{review.status}}</h3>
+    <br>
+</div>
+<h2><strong>tags:</strong></h2>
+<div class="tags" *ngFor="let tag of workItem.tags">
+    <h3>{{tag.name}}</h3>
+</div>

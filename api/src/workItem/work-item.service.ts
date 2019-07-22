@@ -37,6 +37,17 @@ export class WorkItemService {
     private readonly teamsRepository: Repository<Team>,
     
   ) {}
+  async findWorkItemById(workItemId: string): Promise<ShowWorkItemDTO> {
+    const workItem: WorkItem = await this.workItemRepository.findOne({where: {
+      id: workItemId,
+    }})
+
+    if(!workItem){
+      return undefined;
+    }
+    return await this.convertToShowWorkItemDTO(workItem);
+  }
+
   async createWorkItem(loggedUser: User, createWorkItemDTO: CreateWorkItemDTO)
     : Promise<ShowWorkItemDTO>{
     const reviewerDTOs: AddReviwerDTO[] = createWorkItemDTO.reviewers;
