@@ -1,5 +1,10 @@
 <section class="main border border-success">
-    <h3>Title: {{this.workItem.title}}</h3>
+    <!-- <a class="post-title-link" [routerLink]="['/posts', post.id]"> -->
+    <a [routerLink]="['/pullRequests', workItem.id]">
+        <h3>Title: {{this.workItem.title}}</h3>
+    </a>
+        
+    <!-- </a> -->
     <div class="author">
         <h4> {{this.workItem.assignee.username}}</h4>
         <img src="https://camo.githubusercontent.com/57ec864596f60adefb2a5454ec604e720698bad2/68747470733a2f2f662e636c6f75642e6769746875622e636f6d2f6173736574732f363132303433312f313639333233352f62373337366163382d356538622d313165332d393135382d6661313961313263663133612e706e67" alt="author icon" height="40" width="40">

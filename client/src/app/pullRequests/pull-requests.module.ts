@@ -8,6 +8,7 @@ import { FroalaEditorModule, FroalaViewModule } from 'angular-froala-wysiwyg';
 import { NgMultiSelectDropDownModule } from 'ng-multiselect-dropdown';
 import { ReviewerItemComponent } from './reviewerItem/reviewer-item-component';
 import { SimpleWorkItemComponent } from './simpleWorkItem/simple-work-item.component';
+import { ItemDetails } from './itemDetails/item-details.component';
 
 @NgModule({
     declarations: [
@@ -15,6 +16,7 @@ import { SimpleWorkItemComponent } from './simpleWorkItem/simple-work-item.compo
         CreateWorkItemComponent,
         ReviewerItemComponent,
         SimpleWorkItemComponent,
+        ItemDetails,
     ],
     imports: [
       SharedModule,
