@@ -8,6 +8,7 @@ import { CreateTeamDTO } from './models/create-team.dto';
 import { ShowTeamDTO } from './models/show-team.dto';
 import { plainToClass } from 'class-transformer';
 import { SimpleTeamInfoDTO } from './models/simple-team-info.dto';
+import { ShowUserDTO } from 'src/users/models/show-user.dto';
 
 @Injectable()
 export class TeamService {
@@ -71,14 +72,23 @@ export class TeamService {
     return await updatedTeamToShow;
   }
 
-  // public async getTeamsByUserId(user: User): Promise<ShowTeamDTO[]> {
-  //   const team: Team = await this.teamRepository.find({
-  //     where: {
-  //       users: teamId,
-  //     },
-  //   });
-  //   return await
-  // }
+  public async getTeamMembers(teamId: string): Promise<ShowUserDTO[]> {
+    const team: Team = await this.teamRepository.findOne({
+      where: {
+        id: teamId,
+      },
+    });
+    const members = await team.users;
+    const membersToShow: ShowUserDTO[] = [];
+    for (const elem of members) {
+    const member = plainToClass(ShowUserDTO, elem, {
+    excludeExtraneousValues: true,
+    });
+    membersToShow.push(member);
+  }
+    console.log('team:',teamId, membersToShow);
+    return await membersToShow;
+}
   public async getUserTeams(userId: string): Promise<SimpleTeamInfoDTO[]> {
     const foundUser: User = await this.userRepository.findOne({
       where: {
@@ -86,16 +96,19 @@ export class TeamService {
       },
     });
     const teams: Team[] = await foundUser.teams;
-    console.log('foundUser', foundUser);
-    console.log('foundTeams', teams);
+    // console.log('foundUser', foundUser);
+    // console.log('foundTeams', teams);
 
     const foundTeams: SimpleTeamInfoDTO[] = [];
     for (const currentTeam of teams) {
+      const members: ShowUserDTO[] = await this.getTeamMembers(currentTeam.id);
       const simpleInfo: SimpleTeamInfoDTO = {
         id: currentTeam.id,
         teamName: currentTeam.teamName,
+        members: members.map((user) => user.username),
       };
       foundTeams.push(simpleInfo);
+      
     }
     return await foundTeams;
   }
