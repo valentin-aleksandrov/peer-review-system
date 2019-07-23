@@ -29,6 +29,8 @@ import { Comment } from 'src/app/models/comment';
       this.activatedRoute.data.subscribe((data) => {
         this.workItem = data.workItem;
       });
+      console.log(this.workItem);
+      
       this.loggedUser = this.authenticationService.currentUserValue.user;
       this.updateReviewerAuthority();
       this.updateAssigneeAuthority();

@@ -1,6 +1,7 @@
 import { Tag } from './tag';
 import { Reviewer } from './reviewer';
 import { Assignee } from './assinee';
+import { Comment } from './comment';
 
 export class WorkItem {
     id: string;
@@ -20,4 +21,7 @@ export class WorkItem {
     tags: Tag[];
 
     team: string;
+
+    comments: Comment[];
+
 }

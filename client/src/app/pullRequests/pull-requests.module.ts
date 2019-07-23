@@ -10,6 +10,7 @@ import { ReviewerItemComponent } from './reviewerItem/reviewer-item-component';
 import { SimpleWorkItemComponent } from './simpleWorkItem/simple-work-item.component';
 import { ItemDetails } from './itemDetails/item-details.component';
 import { ItemComment } from './itemComment/item-comment.component';
+import { DisplayComment } from './comments/display-comment.component';
 
 @NgModule({
     declarations: [
@@ -19,6 +20,7 @@ import { ItemComment } from './itemComment/item-comment.component';
         SimpleWorkItemComponent,
         ItemDetails,
         ItemComment,
+        DisplayComment,
     ],
     imports: [
       SharedModule,
