@@ -1,7 +1,11 @@
-.col-4 {
+/* .col-4 {
     background-color: green;
+} */
+
+#formGroupPercent {
+  margin-bottom: 10px;
 }
 
-#formGroupPercent{
-    margin-bottom: 10px;
+.row {
+  margin: 10px;
 }

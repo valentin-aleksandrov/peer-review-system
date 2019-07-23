@@ -14,8 +14,8 @@
       <ngb-tabset>
         <ngb-tab title="Team Invitations">
           <ng-template ngbTabContent>
-            <h6>
-              The Best
+            <h6 *ngFor="let invitation of activeInvitations">
+              {{ invitation.name }}
               <button type="button" class="btn btn-outline-success">
                 Accept
                 <i class="fas fa-check"></i>
@@ -29,86 +29,123 @@
         </ngb-tab>
         <ngb-tab title="Teams">
           <ng-template ngbTabContent>
-            <h6>
-              TeamName
-              <button
-                type="button"
-                class="btn btn-outline-success"
-                (click)="toggleInvitation()"
-              >
-                Invite Members
-              </button>
-              <button type="button" class="btn btn-outline-danger">
-                Leave
-              </button>
-              <form *ngIf="sendInvite === true" class="Invitation">
-                <div class="form-group">
-                  <label for="formGroupUserName">Name</label>
-                  <input
-                    type="text"
-                    formControlName="member"
-                    class="form-control"
-                    id="formGroupMember"
-                    placeholder="Username..."
-                  />
+            <div *ngFor="let team of userTeams; let i = index">
+              <div class="row">
+                <div class="col-sm">
+                  {{ team.teamName }}
                 </div>
-                <button type="button" class="btn btn-outline-success">
-                  Send Invite
-                </button>
+                <div class="col-sm">
+                  <button
+                    type="button"
+                    class="btn btn-outline-success"
+                    (click)="toggleInvitation(i)"
+                  >
+                    Invite Members
+                  </button>
+                </div>
+                <div class="col-sm">
+                  <button type="button" class="btn btn-outline-danger">
+                    Leave
+                  </button>
+                </div>
+              </div>
+              <form
+                [formGroup]="addTeamMembersFormArray[i]"
+                class="createTeamForm"
+                *ngIf="userTeamsToggles[i] === true"
+                class="Invitation"
+              >
+                <div>
+                  <label for="typeahead-format">Search for a name:</label>
+                  <input
+                    id="typeahead-format"
+                    formControlName="member"
+                    type="text"
+                    class="form-control"
+                    [ngbTypeahead]="search"
+                    [resultFormatter]="formatter"
+                  />
+                  <hr />
+                  <button
+                    type="button"
+                    (click)="
+                      sendMemberInvitation(team, addTeamMembersFormArray[i])
+                    "
+                    class="btn btn-outline-success"
+                  >
+                    Send Invite
+                  </button>
+                </div>
               </form>
-
-            </h6>
+            </div>
           </ng-template>
         </ngb-tab>
         <ngb-tab title="Make New Team">
           <ng-template ngbTabContent>
-          <form  [formGroup]="createTeamForm" (ngSubmit)="createTeam()" class="createTeamForm">
-            <div class="form-group">
-              <label for="formGroupName">Name</label>
-              <input
-                type="text"
-                formControlName="teamName"
-                class="form-control"
-                id="formGroupName"
-                placeholder="Team Name..."
-              />
-            </div>
-            <div *ngIf="this.createTeamForm.controls.teamName.invalid && this.isSubmitted===true" class="invalid-input">
+            <form
+              [formGroup]="createTeamForm"
+              (ngSubmit)="createTeam()"
+              class="createTeamForm"
+            >
+              <div class="form-group">
+                <label for="formGroupName">Name</label>
+                <input
+                  type="text"
+                  formControlName="teamName"
+                  class="form-control"
+                  id="formGroupName"
+                  placeholder="Team Name..."
+                />
+              </div>
+              <div
+                *ngIf="
+                  this.createTeamForm.controls.teamName.invalid &&
+                  this.isSubmitted === true
+                "
+                class="invalid-input"
+              >
                 Team name must be between 4 and 20 symbols long!
               </div>
-            <div formGroupName="rule">
-              <label for="formGroupRule">Team Rules</label>
-              <input
-                type="number"
-                formControlName="minPercentApprovalOfItem"
-                class="form-control"
-                id="formGroupPercent"
-                placeholder="Minimum Approval Rate..."
-              />
-              <input
-                type="number"
-                formControlName="minNumberOfReviewers"
-                class="form-control"
-                id="formGroupReviewers"
-                placeholder="Minimal number of reviewers..."
-              />
-              <div class="form-check">
-                <input [formControl]="myCheckbox"
-                type="checkbox" 
-                (change)="setRulesToDefault()"
-                  class="form-check-input"
-                  id="exampleCheck1"
+              <div formGroupName="rule">
+                <label for="formGroupRule">Team Rules</label>
+                <input
+                  type="number"
+                  formControlName="minPercentApprovalOfItem"
+                  class="form-control"
+                  id="formGroupPercent"
+                  placeholder="Minimum Approval Rate..."
                 />
-                <label class="form-check-label" for="exampleCheck1"
-                  >Default rule</label
+                <input
+                  type="number"
+                  formControlName="minNumberOfReviewers"
+                  class="form-control"
+                  id="formGroupReviewers"
+                  placeholder="Minimal number of reviewers..."
+                />
+                <div class="form-check">
+                  <input
+                    [formControl]="myCheckbox"
+                    type="checkbox"
+                    (change)="setRulesToDefault()"
+                    class="form-check-input"
+                    id="exampleCheck1"
+                  />
+                  <label class="form-check-label" for="exampleCheck1"
+                    >Default rule</label
+                  >
+                </div>
+                <div
+                  *ngIf="
+                    this.createTeamForm.controls.rule.invalid &&
+                    this.isSubmitted === true
+                  "
+                  class="invalid-input"
                 >
-              </div>
-              <div *ngIf="this.createTeamForm.controls.rule.invalid && this.isSubmitted===true" class="invalid-input">
                   Rules are required!
                 </div>
-              <button type="submit" class="btn btn-primary">Create</button>
-            </div>
-          </form>
+                <button type="submit" class="btn btn-primary">Create</button>
+              </div>
+            </form>
           </ng-template>
         </ngb-tab>
       </ngb-tabset>
