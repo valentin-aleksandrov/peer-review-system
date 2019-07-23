@@ -30,7 +30,8 @@ const statesWithFlags: {name: string, flag: string}[] = [
     selector: 'create-work-item',
     templateUrl: './create-work-item.component.html',
     styleUrls: ['./create-work-item.component.css'],
-    providers: [NgbTypeaheadConfig] // add NgbTypeaheadConfig to the component providers
+    providers: [NgbTypeaheadConfig] // add NgbTypeaheadConfig to the component providers -> found workaround
+    // This is not a good practice
   })
   export class CreateWorkItemComponent implements OnInit{
     public createWorkItemForm: FormGroup;

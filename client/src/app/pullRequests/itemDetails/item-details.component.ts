@@ -5,6 +5,8 @@ import { Router, ActivatedRoute } from '@angular/router';
 import { AuthenticationService } from 'src/app/core/services/authentication.service';
 import { Reviewer } from 'src/app/models/reviewer';
 import { SubmitComment } from 'src/app/models/submit-comment';
+import { CommentsDataService } from 'src/app/core/services/comments-data.service';
+import { Comment } from 'src/app/models/comment';
 
 @Component({
     selector: 'item-details',
@@ -20,6 +22,7 @@ import { SubmitComment } from 'src/app/models/submit-comment';
       private readonly router: Router,
       private readonly activatedRoute: ActivatedRoute,
       private readonly authenticationService: AuthenticationService,
+      private readonly commentDataService: CommentsDataService,
     ){}
 
     ngOnInit(): void {
@@ -52,6 +55,10 @@ import { SubmitComment } from 'src/app/models/submit-comment';
 
     onCommentSubmition(event: SubmitComment) {
       console.log(event);
+      this.commentDataService
+        .addComment(this.workItem.id,event.content)
+        .subscribe((createdComment: Comment)=>console.log(createdComment)
+      );
       
     }
   }

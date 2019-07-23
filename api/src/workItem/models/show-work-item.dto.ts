@@ -1,6 +1,7 @@
 import { ShowAssigneeDTO } from "./show-assignee.dto";
 import { ShowReviewerDTO } from "./show-reviewer.dto";
 import { ShowTagDTO } from "./show-tag.dto";
+import { ShowCommentDTO } from "src/review-requests/models/show-comment.dto";
 
 export class ShowWorkItemDTO {
     id: string;
@@ -20,4 +21,6 @@ export class ShowWorkItemDTO {
     tags: ShowTagDTO[];
 
     team: string;
+
+    comments: ShowCommentDTO[];
 }
