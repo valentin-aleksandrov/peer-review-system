@@ -29,7 +29,7 @@
         </ngb-tab>
         <ngb-tab title="Teams">
           <ng-template ngbTabContent>
-            <div *ngFor="let team of userTeams">
+            <div *ngFor="let team of userTeams; let i = index">
               <div class="row">
                 <div class="col-sm">
                   {{ team.teamName }}
@@ -38,7 +38,7 @@
                   <button
                     type="button"
                     class="btn btn-outline-success"
-                    (click)="toggleInvitation()"
+                    (click)="toggleInvitation(i)"
                   >
                     Invite Members
                   </button>
@@ -50,29 +50,32 @@
                 </div>
               </div>
               <form
-                [formGroup]="addTeamMembersForm"
-                (ngSubmit)="addMember()"
+                [formGroup]="addTeamMembersFormArray[i]"
                 class="createTeamForm"
-                *ngIf="sendInvite === true"
+                *ngIf="userTeamsToggles[i] === true"
                 class="Invitation"
               >
-                <label for="typeahead-format">Search for a name:</label>
-                <input
-                  id="typeahead-format"
-                  formControlName="member"
-                  type="text"
-                  class="form-control"
-                  [ngbTypeahead]="search"
-                  [resultFormatter]="formatter"
-                />
-                <hr />
-                <button
-                  type="button"
-                  (click)="sendMemberInvitation()"
-                  class="btn btn-outline-success"
-                >
-                  Send Invite
-                </button>
+                <div>
+                  <label for="typeahead-format">Search for a name:</label>
+                  <input
+                    id="typeahead-format"
+                    formControlName="member"
+                    type="text"
+                    class="form-control"
+                    [ngbTypeahead]="search"
+                    [resultFormatter]="formatter"
+                  />
+                  <hr />
+                  <button
+                    type="button"
+                    (click)="
+                      sendMemberInvitation(team, addTeamMembersFormArray[i])
+                    "
+                    class="btn btn-outline-success"
+                  >
+                    Send Invite
+                  </button>
+                </div>
               </form>
             </div>
           </ng-template>

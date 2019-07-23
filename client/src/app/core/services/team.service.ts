@@ -23,9 +23,13 @@ export class TeamService {
     );
   }
 
-  //   public createTeamMemberInvitation(any, std): Observable<any> {
-  //     return this.http.post<any>(`http://localhost:3000/api/team-invitation/`);
-  //   }
+  public createTeamMemberInvitation(body, user): Observable<any> {
+    return this.http.post<any>(
+      `http://localhost:3000/api/team-invitation/`,
+      body,
+      user
+    );
+  }
 
   public showPendingInvitations(userId: string): Observable<any> {
     return this.http.get<any>(

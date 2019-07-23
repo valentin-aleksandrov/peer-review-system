@@ -6,7 +6,8 @@ import {
   FormGroup,
   Validators,
   FormBuilder,
-  FormControl
+  FormControl,
+  FormArray
 } from "@angular/forms";
 import { TeamService } from "../core/services/team.service";
 import { first, debounceTime, distinctUntilChanged, map } from "rxjs/operators";
@@ -31,6 +32,8 @@ export class ProfileComponent implements OnInit {
   public activeInvitations: any[] = [];
   public addTeamMembersForm: FormGroup;
   myCheckbox: FormControl = new FormControl();
+  userTeamsToggles: boolean[];
+  addTeamMembersFormArray: FormGroup[] = [];
   constructor(
     private readonly authenticationService: AuthenticationService,
     private readonly teamService: TeamService,
@@ -61,11 +64,19 @@ export class ProfileComponent implements OnInit {
       .getTeamsByUserId(this.currentUser.user.id)
       .subscribe((teams: SimpleTeamInfo[]) => {
         this.userTeams = teams;
+        this.userTeamsToggles = [];
+        this.addTeamMembersFormArray = [];
+        teams.forEach(team => {
+          this.userTeamsToggles.push(false);
+          this.addTeamMembersFormArray.push(
+            this.formBuilder.group({ member: ["", Validators.required] })
+          );
+        });
       });
 
-    this.addTeamMembersForm = this.formBuilder.group({
-      member: ["", [Validators.required]]
-    });
+    // this.addTeamMembersForm = this.formBuilder.group({
+    //    member: ["", [Validators.required]]
+    // });
 
     this.workItemDataService.getUsers().subscribe((data: any) => {
       const users = data;
@@ -91,8 +102,8 @@ export class ProfileComponent implements OnInit {
     return this.createTeamForm.controls;
   }
 
-  public toggleInvitation() {
-    this.sendInvite = !this.sendInvite;
+  public toggleInvitation(i) {
+    this.userTeamsToggles[i] = !this.userTeamsToggles[i];
   }
 
   public createTeam() {
@@ -128,4 +139,18 @@ export class ProfileComponent implements OnInit {
               .slice(0, 10)
       )
     );
+
+  public sendMemberInvitation(team, form) {
+    console.log("input", team, form);
+    const addInvitationBody = {
+      teamName: team.teamName,
+      inviteeName: form.value.member
+    };
+    console.log(addInvitationBody);
+    this.teamService
+      .createTeamMemberInvitation(addInvitationBody, this.currentUser)
+      .subscribe(data => {
+        console.log(data);
+      });
+  }
 }
