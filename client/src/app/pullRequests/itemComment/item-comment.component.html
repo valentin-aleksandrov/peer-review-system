@@ -1,18 +1,23 @@
-<textarea name="comment" placeholder="Leave comment..." [(ngModel)]="commentValue" cols="30" rows="10"></textarea>
-<form [formGroup]="radioGroupForm">
+<form [formGroup]="radioGroupForm" (ngSubmit)="submitComment()">
     <div class="btn-group btn-group-toggle" ngbRadioGroup name="radioBasic" formControlName="model">
       <label ngbButtonLabel class="btn-primary">
-        <input ngbButton type="radio" [value]="1"> Left (pre-checked)
+        <input ngbButton type="radio" [value]="'Only comment'"> Only Comment
       </label>
-      <label ngbButtonLabel class="btn-primary">
-        <input ngbButton type="radio" value="middle"> Middle
+      <label *ngIf="isReviewer" ngbButtonLabel class="btn btn-success">
+        <input ngbButton type="radio" [value]="'approved'"> Approve
       </label>
-      <label ngbButtonLabel class="btn-primary">
-        <input ngbButton type="radio" [value]="false"> Right
+      <label *ngIf="isReviewer" ngbButtonLabel class="btn btn-danger">
+        <input ngbButton type="radio" [value]="'requestChanges'"> Request changes
+      </label>
+      <label *ngIf="isReviewer" ngbButtonLabel class="btn btn-warning">
+        <input ngbButton type="radio" [value]="'rejected'"> Rejected
       </label>
     </div>
+    <hr>
+    <pre> <strong>Tip:</strong>{{this.getTip()}}</pre>
+    <textarea name="comment" placeholder="Leave comment here..." formControlName="commentValue" cols="50" rows="5"></textarea>
+    <br>
+    <button class="btn btn-success">Submit review</button>
   </form>
-  <hr>
-  <pre>{{radioGroupForm.value['model']}}</pre>
 
 <!-- http://localhost:4200/pullRequests/66a46eaf-5b32-4072-a45e-e3eef45aac30 -->

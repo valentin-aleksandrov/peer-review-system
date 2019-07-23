@@ -4,6 +4,7 @@ import { WorkItem } from 'src/app/models/work-item';
 import { Router, ActivatedRoute } from '@angular/router';
 import { AuthenticationService } from 'src/app/core/services/authentication.service';
 import { Reviewer } from 'src/app/models/reviewer';
+import { SubmitComment } from 'src/app/models/submit-comment';
 
 @Component({
     selector: 'item-details',
@@ -42,5 +43,10 @@ import { Reviewer } from 'src/app/models/reviewer';
       } else {
         this.isAssignee = false;
       }
+    }
+
+    onCommentSubmition(event: SubmitComment) {
+      console.log(event);
+      
     }
   }
