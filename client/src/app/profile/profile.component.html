@@ -16,11 +16,19 @@
           <ng-template ngbTabContent>
             <h6 *ngFor="let invitation of activeInvitations">
               {{ invitation.name }}
-              <button type="button" class="btn btn-outline-success">
+              <button
+                type="button"
+                class="btn btn-outline-success"
+                (click)="acceptInvitation(invitation)"
+              >
                 Accept
                 <i class="fas fa-check"></i>
               </button>
-              <button type="button" class="btn btn-outline-danger">
+              <button
+                type="button"
+                class="btn btn-outline-danger"
+                (click)="rejectInvitation(invitation)"
+              >
                 Reject
                 <i class="fas fa-times"></i>
               </button>
