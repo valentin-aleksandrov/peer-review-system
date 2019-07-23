@@ -15,7 +15,7 @@ import { Review } from "../entities/review.entity";
 import { Picture } from "../entities/picture.entity";
 import { FileEntity } from "../entities/file.entity";
 import { Team } from "src/entities/team.entity";
-import { CommentEntity } from "src/entities/comment.entity";
+import { CommentEntity } from "../entities/comment.entity";
 
 @Module({
     imports: [

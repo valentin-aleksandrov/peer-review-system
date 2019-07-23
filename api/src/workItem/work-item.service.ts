@@ -41,7 +41,6 @@ export class WorkItemService {
     private readonly teamsRepository: Repository<Team>,
     @InjectRepository(CommentEntity)
     private readonly commentsRepository: Repository<CommentEntity>,
-    private readonly userService: UsersService,
     
   ) {}
   async findWorkItemById(workItemId: string): Promise<ShowWorkItemDTO> {
@@ -399,7 +398,7 @@ export class WorkItemService {
     }));
   }
   private async convertToCommentDTO(comment: CommentEntity): Promise<ShowCommentDTO> {
-    const author: ShowUserDTO = await this.userService.convertToShowUserDTO(comment.author);
+    const author: ShowUserDTO = await this.convertToShowUserDTO(comment.author);
     const commentDTO: ShowCommentDTO = {
       id: comment.id,
       content: comment.content,
@@ -414,5 +413,18 @@ export class WorkItemService {
       return [];
     }
     return Promise.all(comments.map(async (entity: CommentEntity) => this.convertToCommentDTO(entity)));
-}
+  }
+  private async convertToShowUserDTO(user: User): Promise<ShowUserDTO> {
+    
+    const convertedUser: ShowUserDTO = {
+      id: user.id,
+      username: user.username,
+      email: user.email,
+      firstName: user.firstName,
+      lastName: user.lastName,
+      role: (await user.role).name,
+      avatarURL: user.avatarURL,
+    };
+    return convertedUser;
+  }
 }
