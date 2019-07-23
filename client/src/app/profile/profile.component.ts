@@ -74,10 +74,6 @@ export class ProfileComponent implements OnInit {
         });
       });
 
-    // this.addTeamMembersForm = this.formBuilder.group({
-    //    member: ["", [Validators.required]]
-    // });
-
     this.workItemDataService.getUsers().subscribe((data: any) => {
       const users = data;
       for (const user of users) {
@@ -92,8 +88,8 @@ export class ProfileComponent implements OnInit {
         const teamInvitations = data;
         for (const invitation of teamInvitations) {
           const teamName = invitation.team.teamName;
-          console.log(teamName);
-          this.activeInvitations.push({ name: teamName });
+          const id = invitation.id;
+          this.activeInvitations.push({ name: teamName, invitationId: id });
         }
       });
   }
@@ -141,16 +137,24 @@ export class ProfileComponent implements OnInit {
     );
 
   public sendMemberInvitation(team, form) {
-    console.log("input", team, form);
     const addInvitationBody = {
       teamName: team.teamName,
       inviteeName: form.value.member
     };
-    console.log(addInvitationBody);
     this.teamService
       .createTeamMemberInvitation(addInvitationBody, this.currentUser)
-      .subscribe(data => {
-        console.log(data);
-      });
+      .subscribe(data => {});
+  }
+
+  public acceptInvitation(invitation) {
+    this.teamService
+      .acceptInvitation(invitation.invitationId)
+      .subscribe(data => {});
+  }
+
+  public rejectInvitation(invitation) {
+    this.teamService
+      .rejectInvitation(invitation.invitationId)
+      .subscribe(data => {});
   }
 }
