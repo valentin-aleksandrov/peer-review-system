@@ -47,7 +47,7 @@ export class WorkItemController {
       if(!foundWorkItem){
         throw new NotFoundException("No such work item found.")
       }
-
+      
       return foundWorkItem;
     }
 }

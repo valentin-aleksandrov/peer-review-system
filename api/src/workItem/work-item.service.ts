@@ -45,6 +45,9 @@ export class WorkItemService {
     if(!workItem){
       return undefined;
     }
+    const reviews: Review[] = await workItem.reviews;
+    
+    
     return await this.convertToShowWorkItemDTO(workItem);
   }
 
@@ -306,12 +309,23 @@ export class WorkItemService {
     return Promise.resolve(reviewerEntities);
   }
   private async convertToShowReviewerDTO(reviewer: Review): Promise<ShowReviewerDTO> {
+    const foundReviewer: Review = await this.reviewsRepository.findOne({
+      where: {
+        id: reviewer.id,
+      }
+    });
+    
+    const currentUser: User = await foundReviewer.user;
+    
+    
     const userEntity: User = await this.userRepository
       .findOne({
         where: {
-          reviews: reviewer,
+          id: currentUser.id
         }
-      })
+      });
+     
+      
     const reviewerStatus: ReviewerStatus = await this.reviewerStatusRepository
       .findOne({
         where: {
@@ -324,7 +338,7 @@ export class WorkItemService {
       status: reviewerStatus.status, 
       username: userEntity.username,
     };
-    return Promise.resolve(convertedReviewer);
+    return convertedReviewer;
   }
   private async convertToShowReviewerDTOArray(reviewers: Review[]): Promise<ShowReviewerDTO[]> {
     if(!reviewers){
@@ -338,6 +352,8 @@ export class WorkItemService {
       return new ShowWorkItemDTO();
     }
     const showReviewersDTO: ShowReviewerDTO[] = await this.convertToShowReviewerDTOArray(await workItem.reviews);
+
+    
     if(!showReviewersDTO){
       return new ShowWorkItemDTO();
     }

@@ -29,12 +29,17 @@ import { SubmitComment } from 'src/app/models/submit-comment';
       this.loggedUser = this.authenticationService.currentUserValue.user;
       this.updateReviewerAuthority();
       this.updateAssigneeAuthority();
+      console.log('isreavewer',this.isReviewer);
     }
 
     updateReviewerAuthority(){
       const reviews: Reviewer[] = this.workItem.reviews
       const isUserAReviewer = reviews.some((review)=>review.username===this.loggedUser.username);
       this.isReviewer = isUserAReviewer;
+      console.log(reviews);
+      console.log(this.loggedUser);
+      
+      
     }
 
     updateAssigneeAuthority(){
