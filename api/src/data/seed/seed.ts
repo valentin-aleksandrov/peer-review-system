@@ -1,5 +1,5 @@
 import { User } from './../../entities/user.entity';
-import { createConnection } from 'typeorm';
+import { createConnection, Equal, Not } from 'typeorm';
 import * as bcrypt from 'bcrypt';
 import { ReviewerStatus } from '../../entities/reviewer-status.entity';
 import { WorkItemStatus } from '../../entities/work-item-status.entity';
@@ -639,8 +639,11 @@ const main = async () => {
 
     const reviews: Review[] = await reviewRepository
       .find({
-        take: 10,
+        where: {
+          userId:  Not(user.id),
+        }
       })
+    
     newWorkItem.reviews = Promise.resolve(reviews);
 
     await workItemRepository.save(newWorkItem);

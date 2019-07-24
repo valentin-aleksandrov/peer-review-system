@@ -17,6 +17,10 @@ import { ShowTagDTO } from './models/show-tag.dto';
 import { Team } from '../entities/team.entity';
 import { ShowTeamDTO } from 'src/team/models/show-team.dto';
 import { SearchWorkItemDTO } from './models/search-work-item.dto';
+import { CommentEntity } from 'src/entities/comment.entity';
+import { ShowCommentDTO } from 'src/review-requests/models/show-comment.dto';
+import { UsersService } from 'src/users/users.service';
+import { ShowUserDTO } from 'src/users/models/show-user.dto';
 
 @Injectable()
 export class WorkItemService {
@@ -35,6 +39,8 @@ export class WorkItemService {
     private readonly tagsRepository: Repository<Tag>,
     @InjectRepository(Team)
     private readonly teamsRepository: Repository<Team>,
+    @InjectRepository(CommentEntity)
+    private readonly commentsRepository: Repository<CommentEntity>,
   ) {}
   async findWorkItemById(workItemId: string): Promise<ShowWorkItemDTO> {
     const workItem: WorkItem = await this.workItemRepository.findOne({
@@ -46,6 +52,8 @@ export class WorkItemService {
     if (!workItem) {
       return undefined;
     }
+    const reviews: Review[] = await workItem.reviews;
+
     return await this.convertToShowWorkItemDTO(workItem);
   }
 
@@ -369,7 +377,7 @@ export class WorkItemService {
       status: status.status,
       username: userEntity.username,
     };
-    return Promise.resolve(convertedReviewer);
+    return convertedReviewer;
   }
   private async convertToShowReviewerDTOArray(
     reviewers: Review[],
@@ -393,6 +401,7 @@ export class WorkItemService {
     const showReviewersDTO: ShowReviewerDTO[] = await this.convertToShowReviewerDTOArray(
       await workItem.reviews,
     );
+
     if (!showReviewersDTO) {
       return new ShowWorkItemDTO();
     }
@@ -406,6 +415,14 @@ export class WorkItemService {
       username: workItem.assignee.username,
     };
     const tagDTOs: ShowTagDTO[] = this.convertTagstoDTOs(await workItem.tags);
+    const comments: CommentEntity[] = await this.commentsRepository.find({
+      where: {
+        workItem: workItem,
+      },
+    });
+    const commentDTOs: ShowCommentDTO[] = await this.convertToCommentDTOs(
+      comments,
+    );
     const convertedWorkItem: ShowWorkItemDTO = {
       id: workItem.id,
       isReady: workItem.isReady,
@@ -416,6 +433,7 @@ export class WorkItemService {
       workItemStatus: workItem.workItemStatus.status,
       tags: tagDTOs,
       team: workItem.team.teamName,
+      comments: commentDTOs,
     };
     return convertedWorkItem;
   }
@@ -426,5 +444,41 @@ export class WorkItemService {
         name: tagEntity.name,
       }),
     );
+  }
+  private async convertToCommentDTO(
+    comment: CommentEntity,
+  ): Promise<ShowCommentDTO> {
+    const author: ShowUserDTO = await this.convertToShowUserDTO(comment.author);
+    const commentDTO: ShowCommentDTO = {
+      id: comment.id,
+      content: comment.content,
+      author: author,
+    };
+    return commentDTO;
+  }
+
+  private async convertToCommentDTOs(
+    comments: CommentEntity[],
+  ): Promise<ShowCommentDTO[]> {
+    if (!comments) {
+      return [];
+    }
+    return Promise.all(
+      comments.map(async (entity: CommentEntity) =>
+        this.convertToCommentDTO(entity),
+      ),
+    );
+  }
+  private async convertToShowUserDTO(user: User): Promise<ShowUserDTO> {
+    const convertedUser: ShowUserDTO = {
+      id: user.id,
+      username: user.username,
+      email: user.email,
+      firstName: user.firstName,
+      lastName: user.lastName,
+      role: (await user.role).name,
+      avatarURL: user.avatarURL,
+    };
+    return convertedUser;
   }
 }

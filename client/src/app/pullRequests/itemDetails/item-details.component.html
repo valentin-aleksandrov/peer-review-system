@@ -53,3 +53,10 @@
     </div>
   </div>
 </div>
+<item-comment
+    [isReviewer]="isReviewer"
+    (commentEmiter)="onCommentSubmition($event)"
+    >
+</item-comment>
+
+<display-comment></display-comment>
