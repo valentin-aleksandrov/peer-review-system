@@ -21,6 +21,8 @@ import { CommentEntity } from "src/entities/comment.entity";
 import { ShowCommentDTO } from "src/review-requests/models/show-comment.dto";
 import { UsersService } from "src/users/users.service";
 import { ShowUserDTO } from "src/users/models/show-user.dto";
+import { ChangeWorkItemStatus } from "./models/change-work-item-status.dto";
+import { TeamRules } from "src/entities/team-rules.entity";
 
 @Injectable()
 export class WorkItemService {
@@ -43,6 +45,54 @@ export class WorkItemService {
     private readonly commentsRepository: Repository<CommentEntity>,
     
   ) {}
+
+  async changeWorkItemStatus(workItemId: string, newStatus: ChangeWorkItemStatus, user: User): Promise<ShowWorkItemDTO> {
+      const foundWorkItem: WorkItem = await this.workItemRepository.findOne({where: {
+        id: workItemId,
+      }});
+      if(!foundWorkItem){
+        return undefined;
+      }
+      const foundNewStatus: WorkItemStatus = await this.workItemStatusRepository.findOne({where: {
+        status: newStatus.status,
+      }});
+      if(!foundNewStatus){
+        return undefined;
+      }
+      if(foundNewStatus.status ==='accepted'){
+        const workItemTeam: Team = foundWorkItem.team;
+        const teamRule: TeamRules = workItemTeam.rules;
+        const reviews: Review[] = await this.reviewsRepository.find({where: {
+          workItem: foundWorkItem,
+        }});
+        const minPercentageApprove: number = teamRule.minPercentApprovalOfItem;
+        const totalReviews: number = reviews.length;
+        const approveReviewsCount: number = reviews
+          .map((review: Review)=>review.reviewerStatus.status)
+          .filter((status)=>status==='accepted')
+          .length;
+  
+        const currentPercentageAccepted: number = this.calculatePercentage(totalReviews,approveReviewsCount);
+  
+        if(currentPercentageAccepted < minPercentageApprove){
+          return undefined;
+        } else {
+          foundWorkItem.workItemStatus = foundNewStatus;
+        }
+      } else {
+        foundWorkItem.workItemStatus = foundNewStatus;
+      }
+     const upadetedWorkItem: WorkItem = await this.workItemRepository.save(foundWorkItem);
+    return this.convertToShowWorkItemDTO(upadetedWorkItem);
+  }
+
+  private calculatePercentage(totalReviews: number,approveReviewsCount: number): number {
+    if(totalReviews === 0){
+      console.log('It should not happend');
+      return 0;
+    }
+    return ((approveReviewsCount/totalReviews)*100);
+  }
   async findWorkItemById(workItemId: string): Promise<ShowWorkItemDTO> {
     const workItem: WorkItem = await this.workItemRepository.findOne({where: {
       id: workItemId,

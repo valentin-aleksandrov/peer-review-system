@@ -1,4 +1,4 @@
-import { UseGuards, Controller, Post, Body, ValidationPipe, Req, Get, Param, BadRequestException, NotFoundException, Query } from "@nestjs/common";
+import { UseGuards, Controller, Post, Body, ValidationPipe, Req, Get, Param, BadRequestException, NotFoundException, Query, Put } from "@nestjs/common";
 import { AuthGuard } from "@nestjs/passport";
 import { WorkItemService } from "./work-item.service";
 import { CreateWorkItemDTO } from "./models/create-work-item.dto";
@@ -8,6 +8,7 @@ import { SessionUser } from "../decorators/session-user.decorator";
 import { SearchWorkItemDTO } from "./models/search-work-item.dto";
 import { ShowTagDTO } from "./models/show-tag.dto";
 import { async } from "rxjs/internal/scheduler/async";
+import { ChangeWorkItemStatus } from "./models/change-work-item-status.dto";
 
 @UseGuards(AuthGuard())
 @Controller('api/work-item')
@@ -49,5 +50,19 @@ export class WorkItemController {
       }
       
       return foundWorkItem;
+    }
+
+    @Put(":itemId")
+    async changeWorkItemStatus(
+      @Param('itemId') workItemId: string,
+      @Body(new ValidationPipe({ whitelist: true, transform: true }))
+      newStatus: ChangeWorkItemStatus,
+      @SessionUser() user: User,
+    ): Promise<ShowWorkItemDTO> {
+      const updatedWorkItem: ShowWorkItemDTO = await this.changeWorkItemStatus(workItemId,newStatus,user);
+      if(!updatedWorkItem){
+        throw new BadRequestException("Invalid status or not enough accepted reviews.");
+      }
+      return updatedWorkItem;
     }
 }
