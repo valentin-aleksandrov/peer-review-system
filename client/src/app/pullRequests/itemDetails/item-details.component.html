@@ -1,10 +1,4 @@
-<h1>Title: {{this.workItem.title}}</h1>
-<h3><strong>description:</strong></h3>
-<h3 [innerHTML]="workItem.description"></h3>
-<h2><strong>assignee:</strong> {{workItem.assignee.username}}</h2>
-<h2><strong>status:</strong> {{workItem.workItemStatus}}</h2>
-<h2> <strong>team:</strong> {{workItem.team}}</h2>
-<h2><strong>reviewers:</strong></h2>
+<!-- 
 <div class="reviewer"*ngFor="let review of workItem.reviews" >
     <h3>reviewer name: {{review.username}}</h3>
     <h3>status: {{review.status}}</h3>
@@ -13,6 +7,51 @@
 <h2><strong>tags:</strong></h2>
 <div class="tags" *ngFor="let tag of workItem.tags">
     <h3>{{tag.name}}</h3>
+</div> -->
+<div class="container">
+  <div class="row">
+    <div class="col-9 display-item">
+      <div class="row">
+        <div class=" col-9 title">
+          {{ this.workItem.title }}
+        </div>
+        <div class=" col-3 work-item-status">{{ workItem.workItemStatus }}</div>
+      </div>
+      <div class="content" [innerHTML]="workItem.description"></div>
+    </div>
+
+    <div class="col-3 display-review-details">
+      <div class="assignee">Assignee</div>
+      <div class="assignee-name">{{ workItem.assignee.username }}</div>
+      <hr />
+      <div class="reviewers">Reviewers</div>
+      <div class="row" *ngFor="let review of workItem.reviews">
+        <div class="col reviewer-name">
+          {{ review.username }}
+          {{ review.status }}
+        </div>
+        <div class="col">
+          <i
+            class="fas fa-check-circle"
+            *ngIf="review.status === 'request_changes'"
+          ></i>
+          <!-- <i class="fas fa-times-circle"></i>
+          <i class="fas fa-exclamation-circle"></i> -->
+          <!-- <i class="fas fa-circle"></i> -->
+        </div>
+      </div>
+      <hr />
+      <div class="tags">Tags</div>
+      <div class="tag-name" *ngFor="let tag of workItem.tags">
+        {{ tag.name }}
+      </div>
+      <hr />
+      <div class="team">Team</div>
+      <div class="team-name">
+        {{ workItem.team }}
+      </div>
+    </div>
+  </div>
 </div>
 <item-comment
     [isReviewer]="isReviewer"
