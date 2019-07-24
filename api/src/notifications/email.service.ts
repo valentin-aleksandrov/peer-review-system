@@ -15,7 +15,7 @@ export class EmailService {
         // from: 'valentin808@gmail.com', // list of receivers
         subject: subject, // Subject line
         text: text, // plaintext body
-        html: '<b>Notification service</b>', // HTML body content
+        html: `<b>${text}</b>`, // HTML body content
       })
       .then((success) => {
           console.log(success);
