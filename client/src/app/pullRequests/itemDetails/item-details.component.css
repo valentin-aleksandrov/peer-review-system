@@ -1,3 +1,23 @@
-.author{
+/* .author{
     display: inline;
+} */
+/* .display-item {
+  background-color: plum;
+}
+
+.display-review-details {
+  background-color: purple;
+} */
+
+.container {
+  margin-top: 40px;
+}
+
+.title {
+  font-size: 36px;
+}
+
+.fa-circle {
+  color: brown;
+  padding: 2px;
 }

@@ -1,23 +1,26 @@
-import { Component, Input, Output, EventEmitter, OnInit } from '@angular/core';
-import { UserDetails } from 'src/app/models/user-details';
-import { WorkItem } from 'src/app/models/work-item';
-import { Router, ActivatedRoute } from '@angular/router';
+import { Component, Input, Output, EventEmitter, OnInit } from "@angular/core";
+import { UserDetails } from "src/app/models/user-details";
+import { WorkItem } from "src/app/models/work-item";
+import { Router, ActivatedRoute } from "@angular/router";
+import { ReviewRequestStatus } from "src/app/models/review-request-status";
 
 @Component({
-    selector: 'item-details',
-    templateUrl: './item-details.component.html',
-    styleUrls: ['./item-details.component.css'],
-  })
-  export class ItemDetails implements OnInit{
-    public workItem: WorkItem;  
-    constructor(
-      private readonly router: Router,
-      private readonly activatedRoute: ActivatedRoute,
-    ){}
+  selector: "item-details",
+  templateUrl: "./item-details.component.html",
+  styleUrls: ["./item-details.component.css"]
+})
+export class ItemDetails implements OnInit {
+  public workItem: WorkItem;
+  public reviewRequestStatus: ReviewRequestStatus;
+  constructor(
+    private readonly router: Router,
+    private readonly activatedRoute: ActivatedRoute
+  ) {}
 
-    ngOnInit(): void {
-      this.activatedRoute.data.subscribe((data) => {
-        this.workItem = data.workItem;
-      });
-    }
+  ngOnInit(): void {
+    this.activatedRoute.data.subscribe(data => {
+      this.workItem = data.workItem;
+      console.log(this.workItem);
+    });
   }
+}
