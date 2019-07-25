@@ -1,0 +1,6 @@
+/* tr:nth-child(2n) {
+  background-color: green;
+} */
+.table tbody tr:nth-child(odd) {
+  background: #fafbfc;
+}
