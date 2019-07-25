@@ -1,97 +1,108 @@
-<h2>Create new Work Item</h2>
 <div class="container">
+  <h4>Create New Work Item</h4>
   <form [formGroup]="createWorkItemForm" (ngSubmit)="createWorkItem()">
-    <div class="form-group">
-      <input
-        formControlName="title"
-        type="text"
-        class="form-control"
-        id="exampleInputEmail1"
-        name="title"
-        [(ngModel)]="title"
-        placeholder="Work item title"
-      />
-    </div>
-    <div class="form-group">
-      <div [froalaEditor]="options" [(froalaModel)]="editorContent"></div>
-    </div>
-    <div class="form-group">
-      <div
-        class="btn-group"
-        ngbDropdown
-        role="group"
-        aria-label="Button group with nested dropdown"
-      >
-        <button
-          type="button"
-          #ref
-          class="btn btn-outline-primary"
-          ngbDropdownToggle
-        >
-          {{ this.chosenTeam }}
-        </button>
-        <div class="dropdown-menu" ngbDropdownMenu>
-          <button
-            type="button"
-            *ngFor="let team of userTeams"
-            ngbDropdownItem
-            (click)="changeTeam(team, ref)"
+    <div class="row">
+      <div class="col-8">
+        <div class="form-group">
+          <input
+            formControlName="title"
+            [(ngModel)]="title"
+            type="text"
+            class="form-control"
+            id="exampleInputEmail1"
+            name="title"
+            placeholder="Work item title"
+          />
+        </div>
+        <div class="form-group">
+          <div
+            [froalaEditor]="options"
+            [(froalaModel)]="editorContent"
+            class="froala"
+          ></div>
+        </div>
+      </div>
+      <div class="col-4">
+        <div class="form-group">
+          <div
+            class="btn-group"
+            ngbDropdown
+            role="group"
+            aria-label="Button group with nested dropdown"
           >
-            {{ team.teamName }}
+            <button
+              type="button"
+              #ref
+              class="btn btn-outline-primary"
+              ngbDropdownToggle
+            >
+              {{ this.chosenTeam }}
+            </button>
+            <div class="dropdown-menu" ngbDropdownMenu>
+              <button
+                type="button"
+                *ngFor="let team of userTeams"
+                ngbDropdownItem
+                (click)="changeTeam(team, ref)"
+              >
+                {{ team.teamName }}
+              </button>
+            </div>
+          </div>
+        </div>
+        <div class="form-group">
+          <ng-template #rt let-r="result" let-t="term">
+            <img [src]="r.avatarURL" class="mr-1" style="width: 16px" />
+            <ngb-highlight [result]="r.username" [term]="t"></ngb-highlight>
+          </ng-template>
+
+          <label for="typeahead-template">Search for a user:</label>
+          <input
+            id="typeahead-template"
+            formControlName="reviwer"
+            type="text"
+            class="form-control"
+            name="username-search"
+            [(ngModel)]="model"
+            [ngbTypeahead]="search"
+            [resultTemplate]="rt"
+            [inputFormatter]="formatter"
+          />
+          <button type="button" class="btn btn-success" (click)="addUsername()">
+            Add Reviewer
+          </button>
+
+          <reviewer-item
+            *ngFor="let currentReviewer of addedUsernames"
+            [reviewer]="currentReviewer"
+            (removeUser)="removeReviewer($event)"
+          >
+          </reviewer-item>
+        </div>
+        <div class="form-group">
+          <ng-multiselect-dropdown
+            formControlName="tagControl"
+            name="search-tag"
+            [placeholder]="'Add tags'"
+            [data]="tags"
+            [(ngModel)]="selectedItems"
+            [settings]="dropdownSettings"
+            (onSelect)="onItemSelect($event)"
+            (onSelectAll)="onSelectAll($event)"
+          >
+          </ng-multiselect-dropdown>
+        </div>
+      </div>
+      <!-- <div>
+        <button class="btn btn-success" (click)="showValue()">Show Values</button>
+    </div> -->
+      <div class="row">
+        <div class="form-group">
+          <button class="btn btn-success" type="submit" name="submit">
+            Create Work Item
           </button>
         </div>
       </div>
-    </div>
-    <div class="form-group">
-      <ng-template #rt let-r="result" let-t="term">
-        <img [src]="r.avatarURL" class="mr-1" style="width: 16px" />
-        <ngb-highlight [result]="r.username" [term]="t"></ngb-highlight>
-      </ng-template>
-
-      <label for="typeahead-template">Search for a state:</label>
-      <input
-        id="typeahead-template"
-        formControlName="reviwer"
-        type="text"
-        class="form-control"
-        name="username-search"
-        [(ngModel)]="model"
-        [ngbTypeahead]="search"
-        [resultTemplate]="rt"
-        [inputFormatter]="formatter"
-      />
-      <hr />
-      <button type="button" class="btn btn-success" (click)="addUsername()">
-        Add Reviwer
-      </button>
-
-      <reviewer-item
-        *ngFor="let currentReviewer of addedUsernames"
-        [reviewer]="currentReviewer"
-        (removeUser)="removeReviewer($event)"
-      >
-      </reviewer-item>
-    </div>
-    <div class="form-group">
-      <ng-multiselect-dropdown
-        formControlName="tagControl"
-        name="search-tag"
-        [placeholder]="'Add tags'"
-        [data]="tags"
-        [(ngModel)]="selectedItems"
-        [settings]="dropdownSettings"
-        (onSelect)="onItemSelect($event)"
-        (onSelectAll)="onSelectAll($event)"
-      >
-      </ng-multiselect-dropdown>
-    </div>
-    <!-- <div>
-        <button class="btn btn-success" (click)="showValue()">Show Values</button>
-    </div> -->
-    <div class="form-group">
-      <button class="btn btn-success" type="submit" name="submit">
-        create a Work Item
-      </button>
     </div>
   </form>
 </div>

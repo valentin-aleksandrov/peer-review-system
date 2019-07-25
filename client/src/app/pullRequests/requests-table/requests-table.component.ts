@@ -24,7 +24,6 @@ export class RequestsTableComponent implements OnInit {
       .getWorkItemsByUserId(this.loggedUser.id)
       .subscribe((workItems: WorkItem[]) => {
         this.workItems = workItems;
-        console.log(this.workItems);
       });
   }
 }

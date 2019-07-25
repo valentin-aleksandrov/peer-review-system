@@ -1,13 +1,3 @@
-<!-- 
-<div class="reviewer"*ngFor="let review of workItem.reviews" >
-    <h3>reviewer name: {{review.username}}</h3>
-    <h3>status: {{review.status}}</h3>
-    <br>
-</div>
-<h2><strong>tags:</strong></h2>
-<div class="tags" *ngFor="let tag of workItem.tags">
-    <h3>{{tag.name}}</h3>
-</div> -->
 <div class="container">
   <div class="row">
     <div class="col-9 display-item">
@@ -15,8 +5,13 @@
         <div class=" col-9 title">
           {{ this.workItem.title }}
         </div>
-        <div class=" col-3 work-item-status">{{ workItem.workItemStatus }}</div>
+        <div class=" col-3 work-item-status">
+          <button type="button" class="btn btn-info float-right">
+            {{ workItem.workItemStatus }}
+          </button>
+        </div>
       </div>
+      <hr />
       <div class="content" [innerHTML]="workItem.description"></div>
     </div>
 
@@ -28,16 +23,21 @@
       <div class="row" *ngFor="let review of workItem.reviews">
         <div class="col reviewer-name">
           {{ review.username }}
-          {{ review.status }}
         </div>
         <div class="col">
           <i
             class="fas fa-check-circle"
+            *ngIf="review.status === 'accepted'"
+          ></i>
+          <i
+            class="fas fa-times-circle"
+            *ngIf="review.status === 'rejected'"
+          ></i>
+          <i
+            class="fas fa-exclamation-circle"
             *ngIf="review.status === 'request_changes'"
           ></i>
-          <!-- <i class="fas fa-times-circle"></i>
-          <i class="fas fa-exclamation-circle"></i> -->
-          <!-- <i class="fas fa-circle"></i> -->
+          <i class="fas fa-circle" *ngIf="review.status === 'pending'"></i>
         </div>
       </div>
       <hr />
@@ -54,9 +54,9 @@
   </div>
 </div>
 <item-comment
-    [isReviewer]="isReviewer"
-    (commentEmiter)="onCommentSubmition($event)"
-    >
+  [isReviewer]="isReviewer"
+  (commentEmiter)="onCommentSubmition($event)"
+>
 </item-comment>
 
-<display-comment></display-comment>
+<!-- <display-comment></display-comment> -->

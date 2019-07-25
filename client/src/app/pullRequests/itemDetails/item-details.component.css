@@ -18,6 +18,26 @@
 }
 
 .fa-circle {
-  color: brown;
+  color: grey;
   padding: 2px;
+}
+
+.fa-check-circle {
+  color: green;
+}
+
+.fa-exclamation-circle {
+  color: yellow;
+}
+
+.fa-times-circle {
+  color: red;
+}
+
+.assignee,
+.reviewers,
+.tags,
+.team,
+.title {
+  font-weight: bold;
 }
