@@ -12,6 +12,9 @@ import { TeamModule } from './team/team.module';
 import { TeamInvitationModule } from './team-invitation/team-invitation.module';
 import { Review } from './entities/review.entity';
 import { ReviewRequestsModule } from './review-requests/review-requests.module';
+import { HandlebarsAdapter, MailerModule } from '@nest-modules/mailer';
+import { NotificatorModule } from './notifications/notifaction.module';
+import { EmailService } from './notifications/email.service';
 
 @Module({
   imports: [
@@ -31,6 +34,20 @@ import { ReviewRequestsModule } from './review-requests/review-requests.module';
         synchronize: true,
       }),
     }),
+    MailerModule.forRoot({
+      // transport: 'smtps://user@domain.com:pass@smtp.domain.com',
+      transport: 'smtps://mailservices321@gmail.com:blog123blog@smtp.gmail.com',
+      defaults: {
+        from:'"blog blog" <mailservices321@gmail.com>',
+      },
+      template: {
+        dir: __dirname + '/templates',
+        adapter: new HandlebarsAdapter(), // or new PugAdapter()
+        options: {
+          strict: true,
+        },
+      },
+    }),
     AuthModule,
     UsersModule,
     CoreModule, 
@@ -38,7 +55,9 @@ import { ReviewRequestsModule } from './review-requests/review-requests.module';
     WorkItemModule,
     ConfigModule, 
     TeamModule, 
-    TeamInvitationModule, ReviewRequestsModule,
+    TeamInvitationModule, 
+    ReviewRequestsModule,
+    NotificatorModule,
   ],
   controllers: [AppController],
   providers: [AppService],

@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { WorkItemDataService } from '../core/services/work-item-data.service';
+import { AuthenticationService } from '../core/services/authentication.service';
 
 @Component({
     selector: 'app-home',
@@ -7,11 +8,18 @@ import { WorkItemDataService } from '../core/services/work-item-data.service';
     styleUrls: ['./home.component.css']
   })
   export class HomeComponent implements OnInit{
-    constructor(private readonly workItemDataService: WorkItemDataService){
+    constructor(
+      private readonly workItemDataService: WorkItemDataService,
+      private readonly authenticationService: AuthenticationService,
+      ){
       
     }
     ngOnInit(): void {
-      
+       if(!!this.authenticationService.currentUserValue){
+        const currentUserName = this.authenticationService.currentUserValue.user.username;
+        const script = document.createElement("script");
+        script.innerHTML = `window.Engagespot={},q=function(e){return function(){(window.engageq=window.engageq||[]).push({f:e,a:arguments})}},f=["captureEvent","subscribe","init","showPrompt","identifyUser","clearUser"];for(k in f)Engagespot[f[k]]=q(f[k]);var s=document.createElement("script");s.type="text/javascript",s.async=!0,s.src="https://cdn.engagespot.co/EngagespotSDK.2.0.js";var x=document.getElementsByTagName("script")[0];x.parentNode.insertBefore(s,x); Engagespot.init('zmE3Keawnraz8VGfNP2MNFcNxiw7FG');Engagespot.identifyUser('${currentUserName}');`;
+        document.head.appendChild(script);
+       }
     }
-
   }

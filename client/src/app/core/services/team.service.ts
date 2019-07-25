@@ -36,4 +36,17 @@ export class TeamService {
       "http://localhost:3000/api/users/" + userId + "/active-invitations"
     );
   }
+
+  public acceptInvitation(invitationId: string): Observable<any> {
+    return this.http.put<{}>(
+      `http://localhost:3000/api/team-invitation/${invitationId}`,
+      {}
+    );
+  }
+
+  public rejectInvitation(invitationId: string): Observable<any> {
+    return this.http.delete<{}>(
+      `http://localhost:3000/api/team-invitation/${invitationId}`
+    );
+  }
 }
