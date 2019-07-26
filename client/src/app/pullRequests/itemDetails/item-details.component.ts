@@ -3,7 +3,7 @@ import { UserDetails } from "src/app/models/user-details";
 import { WorkItem } from "src/app/models/work-item";
 import { Router, ActivatedRoute } from "@angular/router";
 import { AuthenticationService } from "src/app/core/services/authentication.service";
-import { Reviewer } from "src/app/models/reviewer";
+import { Review } from "src/app/models/review";
 import { SubmitComment } from "src/app/models/submit-comment";
 import { CommentsDataService } from "src/app/core/services/comments-data.service";
 import { Comment } from "src/app/models/comment";
@@ -18,6 +18,7 @@ export class ItemDetails implements OnInit {
   public loggedUser: UserDetails;
   public isReviewer: boolean = false;
   public isAssignee: boolean = false;
+  public reviewId: string;
   constructor(
     private readonly router: Router,
     private readonly activatedRoute: ActivatedRoute,
@@ -35,16 +36,15 @@ export class ItemDetails implements OnInit {
     this.updateReviewerAuthority();
     this.updateAssigneeAuthority();
     console.log("isreavewer", this.isReviewer);
+    this.getCurrentReview();
   }
 
   updateReviewerAuthority() {
-    const reviews: Reviewer[] = this.workItem.reviews;
+    const reviews: Review[] = this.workItem.reviews;
     const isUserAReviewer = reviews.some(
       review => review.username === this.loggedUser.username
     );
     this.isReviewer = isUserAReviewer;
-    console.log(reviews);
-    console.log(this.loggedUser);
   }
 
   updateAssigneeAuthority() {
@@ -55,10 +55,27 @@ export class ItemDetails implements OnInit {
     }
   }
 
+  getCurrentReview() {
+    const reviews: Review[] = this.workItem.reviews;
+    let review: Review = reviews.find(
+      review => review.username === this.loggedUser.username
+    );
+    if (review) {
+      this.reviewId = review.reviewId;
+    }
+  }
+
   onCommentSubmition(event: SubmitComment) {
     console.log(event);
-    this.commentDataService
-      .addComment(this.workItem.id, event.content)
-      .subscribe((createdComment: Comment) => console.log(createdComment));
+    if (event.status === "pending") {
+      this.commentDataService
+        .addComment(this.workItem.id, event.content)
+        .subscribe((createdComment: Comment) => console.log(createdComment));
+    } else {
+      const reviewId = this.reviewId;
+      this.commentDataService
+        .changeReviewStatus(reviewId, this.workItem.id, event)
+        .subscribe();
+    }
   }
 }

@@ -3,7 +3,6 @@ import { UserDetails } from "src/app/models/user-details";
 import { WorkItem } from "src/app/models/work-item";
 import { Router, ActivatedRoute } from "@angular/router";
 import { AuthenticationService } from "src/app/core/services/authentication.service";
-import { Reviewer } from "src/app/models/reviewer";
 import {
   FormGroup,
   FormBuilder,
@@ -70,7 +69,12 @@ export class ItemComment implements OnInit {
   // }
 
   public submitRequest() {
-    const status = this.sendReviewForm.value["status"];
+    const newStatus = this.sendReviewForm.value["status"];
     const comment = this.sendReviewForm.value["content"];
+    const newReviewOrComment = {
+      content: comment,
+      status: newStatus
+    };
+    this.commentEmiter.emit(newReviewOrComment);
   }
 }
