@@ -121,13 +121,7 @@ export class TeamService {
     }
     return await foundTeams;
   }
-<<<<<<< HEAD
-
   private async convertToShowUserDTO(user: User): Promise<ShowUserDTO> {
-=======
-  private async convertToShowUserDTO(user: User): Promise<ShowUserDTO> {
-    
->>>>>>> notification
     const convertedUser: ShowUserDTO = {
       id: user.id,
       username: user.username,
