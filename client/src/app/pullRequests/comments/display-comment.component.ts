@@ -12,6 +12,10 @@ import { SubmitComment } from "src/app/models/submit-comment";
   styleUrls: ["./display-comment.component.css"]
 })
 export class DisplayComment implements OnInit {
+  @Input()
+  comments: Comment[];
   constructor() {}
-  ngOnInit(): void {}
+  ngOnInit(): void {
+    console.log(this.comments);
+  }
 }
