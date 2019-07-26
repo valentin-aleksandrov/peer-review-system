@@ -53,9 +53,10 @@ export class TeamInvitationService {
     const createdInvitation = await this.teamInvitationRepository.save(
       newInvitation,
     );
-    const inviteeToDTO = plainToClass(ShowUserDTO, await invitee, {
-      excludeExtraneousValues: true,
-    });
+    // const inviteeToDTO = plainToClass(ShowUserDTO, await invitee, {
+    //   excludeExtraneousValues: true,
+    // });
+    const inviteeToDTO: ShowUserDTO = await this.convertToShowUserDTO(invitee);
     const teamToDTO = plainToClass(ShowTeamDTO, await team, {
       excludeExtraneousValues: true,
     });
@@ -171,5 +172,17 @@ export class TeamInvitationService {
       activeInvitationsToDTO.push(invToDTO);
     });
     return await activeInvitationsToDTO;
+  }
+  private async convertToShowUserDTO(user: User): Promise<ShowUserDTO> {
+    const convertedUser: ShowUserDTO = {
+      id: user.id,
+      username: user.username,
+      email: user.email,
+      firstName: user.firstName,
+      lastName: user.lastName,
+      role: (await user.role).name,
+      avatarURL: user.avatarURL,
+    };
+    return convertedUser;
   }
 }
