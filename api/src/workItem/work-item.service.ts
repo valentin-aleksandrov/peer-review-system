@@ -1,26 +1,26 @@
-import { Injectable } from '@nestjs/common';
-import { InjectRepository } from '@nestjs/typeorm';
-import { WorkItem } from '../entities/work-item.entity';
-import { Repository } from 'typeorm';
-import { User } from '../entities/user.entity';
-import { CreateWorkItemDTO } from './models/create-work-item.dto';
-import { AddReviwerDTO } from './models/add-reviewer.dto';
-import { ReviewerStatus } from '../entities/reviewer-status.entity';
-import { Review } from '../entities/review.entity';
-import { ShowWorkItemDTO } from './models/show-work-item.dto';
-import { ShowReviewerDTO } from './models/show-reviewer.dto';
-import { ShowAssigneeDTO } from './models/show-assignee.dto';
-import { WorkItemStatus } from '../entities/work-item-status.entity';
-import { AddTagDTO } from './models/add-tag.dto';
-import { Tag } from '../entities/tag.entity';
-import { ShowTagDTO } from './models/show-tag.dto';
-import { Team } from '../entities/team.entity';
-import { ShowTeamDTO } from 'src/team/models/show-team.dto';
-import { SearchWorkItemDTO } from './models/search-work-item.dto';
-import { CommentEntity } from 'src/entities/comment.entity';
-import { ShowCommentDTO } from 'src/review-requests/models/show-comment.dto';
-import { UsersService } from 'src/users/users.service';
-import { ShowUserDTO } from 'src/users/models/show-user.dto';
+import { Injectable } from "@nestjs/common";
+import { InjectRepository } from "@nestjs/typeorm";
+import { WorkItem } from "../entities/work-item.entity";
+import { Repository } from "typeorm";
+import { User } from "../entities/user.entity";
+import { CreateWorkItemDTO } from "./models/create-work-item.dto";
+import { AddReviwerDTO } from "./models/add-reviewer.dto";
+import { ReviewerStatus } from "../entities/reviewer-status.entity";
+import { Review } from "../entities/review.entity";
+import { ShowWorkItemDTO } from "./models/show-work-item.dto";
+import { ShowReviewValDTO } from "./models/show-reviewer.dto";
+import { ShowAssigneeDTO } from "./models/show-assignee.dto";
+import { WorkItemStatus } from "../entities/work-item-status.entity";
+import { AddTagDTO } from "./models/add-tag.dto";
+import { Tag } from "../entities/tag.entity";
+import { ShowTagDTO } from "./models/show-tag.dto";
+import { Team } from "../entities/team.entity";
+import { ShowTeamDTO } from "src/team/models/show-team.dto";
+import { SearchWorkItemDTO } from "./models/search-work-item.dto";
+import { CommentEntity } from "src/entities/comment.entity";
+import { ShowCommentDTO } from "src/review-requests/models/show-comment.dto";
+import { UsersService } from "src/users/users.service";
+import { ShowUserDTO } from "src/users/models/show-user.dto";
 import { ChangeWorkItemStatus } from "./models/change-work-item-status.dto";
 import { TeamRules } from "src/entities/team-rules.entity";
 import { EmailService } from 'src/notifications/email.service';
@@ -49,52 +49,71 @@ export class WorkItemService {
     private readonly pushNotificationService: PushNotificationService,
   ) {}
 
-  async changeWorkItemStatus(workItemId: string, newStatus: ChangeWorkItemStatus, user: User): Promise<ShowWorkItemDTO> {
-      const foundWorkItem: WorkItem = await this.workItemRepository.findOne({where: {
+  async changeWorkItemStatus(
+    workItemId: string,
+    newStatus: ChangeWorkItemStatus,
+    user: User,
+  ): Promise<ShowWorkItemDTO> {
+    const foundWorkItem: WorkItem = await this.workItemRepository.findOne({
+      where: {
         id: workItemId,
-      }});
-      if(!foundWorkItem){
-        return undefined;
-      }
-      const foundNewStatus: WorkItemStatus = await this.workItemStatusRepository.findOne({where: {
-        status: newStatus.status,
-      }});
-      if(!foundNewStatus){
-        return undefined;
-      }
-      if(foundNewStatus.status ==='accepted'){
-        const workItemTeam: Team = foundWorkItem.team;
-        const teamRule: TeamRules = workItemTeam.rules;
-        const reviews: Review[] = await this.reviewsRepository.find({where: {
+      },
+    });
+    if (!foundWorkItem) {
+      return undefined;
+    }
+    const foundNewStatus: WorkItemStatus = await this.workItemStatusRepository.findOne(
+      {
+        where: {
+          status: newStatus.status,
+        },
+      },
+    );
+    if (!foundNewStatus) {
+      return undefined;
+    }
+    if (foundNewStatus.status === "accepted") {
+      const workItemTeam: Team = foundWorkItem.team;
+      const teamRule: TeamRules = workItemTeam.rules;
+      const reviews: Review[] = await this.reviewsRepository.find({
+        where: {
           workItem: foundWorkItem,
-        }});
-        const minPercentageApprove: number = teamRule.minPercentApprovalOfItem;
-        const totalReviews: number = reviews.length;
-        const approveReviewsCount: number = reviews
-          .map((review: Review)=>review.reviewerStatus.status)
-          .filter((status)=>status==='accepted')
-          .length;
-  
-        const currentPercentageAccepted: number = this.calculatePercentage(totalReviews,approveReviewsCount);
-  
-        if(currentPercentageAccepted < minPercentageApprove){
-          return undefined;
-        } else {
-          foundWorkItem.workItemStatus = foundNewStatus;
-        }
+        },
+      });
+      const minPercentageApprove: number = teamRule.minPercentApprovalOfItem;
+      const totalReviews: number = reviews.length;
+      const approveReviewsCount: number = reviews
+        .map((review: Review) => review.reviewerStatus.status)
+        .filter(status => status === "accepted").length;
+
+      const currentPercentageAccepted: number = this.calculatePercentage(
+        totalReviews,
+        approveReviewsCount,
+      );
+
+      if (currentPercentageAccepted < minPercentageApprove) {
+        return undefined;
       } else {
         foundWorkItem.workItemStatus = foundNewStatus;
       }
-     const upadetedWorkItem: WorkItem = await this.workItemRepository.save(foundWorkItem);
+    } else {
+      foundWorkItem.workItemStatus = foundNewStatus;
+    }
+    const upadetedWorkItem: WorkItem = await this.workItemRepository.save(
+      foundWorkItem,
+    );
     return this.convertToShowWorkItemDTO(upadetedWorkItem);
   }
 
-  private calculatePercentage(totalReviews: number,approveReviewsCount: number): number {
-    if(totalReviews === 0){
-      console.log('It should not happend');
+  private calculatePercentage(
+    totalReviews: number,
+    approveReviewsCount: number,
+  ): number {
+    if (totalReviews === 0) {
+      console.log("It should not happend");
       return 0;
     }
-    return ((approveReviewsCount/totalReviews)*100);
+    return (approveReviewsCount / totalReviews) * 100;
   }
   async findWorkItemById(workItemId: string): Promise<ShowWorkItemDTO> {
     const workItem: WorkItem = await this.workItemRepository.findOne({
@@ -132,7 +151,7 @@ export class WorkItemService {
     const pendingWorkItemStatus: WorkItemStatus = await this.workItemStatusRepository.findOne(
       {
         where: {
-          status: 'pending',
+          status: "pending",
         },
       },
     );
@@ -388,7 +407,7 @@ export class WorkItemService {
     let reviews: Review[] = [];
     const pendingReviewerStatus = await this.reviewerStatusRepository.findOne({
       where: {
-        status: 'pending',
+        status: "pending",
       },
     });
 
@@ -437,29 +456,30 @@ export class WorkItemService {
   }
   private async convertToShowReviewerDTO(
     reviewer: Review,
-  ): Promise<ShowReviewerDTO> {
+  ): Promise<ShowReviewValDTO> {
     const userEntity: User = await this.userRepository.findOne({
       where: {
         reviews: reviewer,
       },
     });
-    const review = await this.reviewsRepository.findOne({
+    const review: Review = await this.reviewsRepository.findOne({
       where: {
         id: reviewer.id,
       },
     });
     const status = review.reviewerStatus;
-    const convertedReviewer: ShowReviewerDTO = {
-      id: userEntity.id,
+    const convertedReviewer: ShowReviewValDTO = {
+      userId: userEntity.id,
       email: userEntity.email,
       status: status.status,
       username: userEntity.username,
+      reviewId: review.id,
     };
     return convertedReviewer;
   }
   private async convertToShowReviewerDTOArray(
     reviewers: Review[],
-  ): Promise<ShowReviewerDTO[]> {
+  ): Promise<ShowReviewValDTO[]> {
     if (!reviewers) {
       return [];
     }
@@ -476,11 +496,11 @@ export class WorkItemService {
     if (!workItem) {
       return new ShowWorkItemDTO();
     }
-    const showReviewersDTO: ShowReviewerDTO[] = await this.convertToShowReviewerDTOArray(
+    const showReviewDTO: ShowReviewValDTO[] = await this.convertToShowReviewerDTOArray(
       await workItem.reviews,
     );
 
-    if (!showReviewersDTO) {
+    if (!showReviewDTO) {
       return new ShowWorkItemDTO();
     }
     if (!workItem.assignee) {
@@ -508,7 +528,7 @@ export class WorkItemService {
       title: workItem.title,
       description: workItem.description,
       assignee: assigneeDTO,
-      reviews: showReviewersDTO,
+      reviews: showReviewDTO,
       workItemStatus: workItem.workItemStatus.status,
       tags: tagDTOs,
       team: workItem.team.teamName,

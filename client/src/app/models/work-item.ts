@@ -1,27 +1,26 @@
-import { Tag } from './tag';
-import { Reviewer } from './reviewer';
-import { Assignee } from './assinee';
-import { Comment } from './comment';
+import { Tag } from "./tag";
+import { Review } from "./review";
+import { Assignee } from "./assinee";
+import { Comment } from "./comment";
 
 export class WorkItem {
-    id: string;
+  id: string;
 
-    isReady: boolean;
-    
-    title: string;
-  
-    description: string;
-  
-    assignee: Assignee;
-  
-    workItemStatus: string;
-  
-    reviews: Reviewer[];
+  isReady: boolean;
 
-    tags: Tag[];
+  title: string;
 
-    team: string;
+  description: string;
 
-    comments: Comment[];
+  assignee: Assignee;
 
+  workItemStatus: string;
+
+  reviews: Review[];
+
+  tags: Tag[];
+
+  team: string;
+
+  comments: Comment[];
 }

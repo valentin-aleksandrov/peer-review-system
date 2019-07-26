@@ -1,26 +1,26 @@
 import { ShowAssigneeDTO } from "./show-assignee.dto";
-import { ShowReviewerDTO } from "./show-reviewer.dto";
+import { ShowReviewValDTO } from "./show-reviewer.dto";
 import { ShowTagDTO } from "./show-tag.dto";
 import { ShowCommentDTO } from "src/review-requests/models/show-comment.dto";
 
 export class ShowWorkItemDTO {
-    id: string;
+  id: string;
 
-    isReady: boolean;
-    
-    title: string;
-  
-    description: string;
-  
-    assignee: ShowAssigneeDTO;
-  
-    workItemStatus: string;
-  
-    reviews: ShowReviewerDTO[];
+  isReady: boolean;
 
-    tags: ShowTagDTO[];
+  title: string;
 
-    team: string;
+  description: string;
 
-    comments: ShowCommentDTO[];
+  assignee: ShowAssigneeDTO;
+
+  workItemStatus: string;
+
+  reviews: ShowReviewValDTO[];
+
+  tags: ShowTagDTO[];
+
+  team: string;
+
+  comments: ShowCommentDTO[];
 }
