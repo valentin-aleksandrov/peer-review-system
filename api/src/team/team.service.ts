@@ -34,7 +34,6 @@ export class TeamService {
         minNumberOfReviewers: body.rule.minNumberOfReviewers,
       },
     });
-    console.log('test4');
     if (!rules) {
       const newRules = new TeamRules();
       newRules.minNumberOfReviewers = body.rule.minNumberOfReviewers;
