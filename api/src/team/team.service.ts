@@ -78,15 +78,25 @@ export class TeamService {
         id: teamId,
       },
     });
-    const members = await team.users;
-    const membersToShow: ShowUserDTO[] = [];
+    const membersIds: string[] = await team.users.map((user)=>user.id);
+    const members: User[] = [];
+    
+    for (const userId of membersIds) {
+      const foundMember: User = await this.userRepository.findOne({where: {
+        id: userId,
+      }});  
+      members.push(foundMember);
+    }
+    
+    const membersToShow: ShowUserDTO[] = []; 
     for (const elem of members) {
-    const member = plainToClass(ShowUserDTO, elem, {
-    excludeExtraneousValues: true,
-    });
-    membersToShow.push(member);
-  }
-    console.log('team:',teamId, membersToShow);
+    // const member: ShowUserDTO = plainToClass(ShowUserDTO, elem, {
+    // excludeExtraneousValues: true,
+    // });
+      const member: ShowUserDTO = await this.convertToShowUserDTO(elem);
+      membersToShow.push(member);
+    }
+   
     return await membersToShow;
 }
   public async getUserTeams(userId: string): Promise<SimpleTeamInfoDTO[]> {
@@ -111,5 +121,18 @@ export class TeamService {
       
     }
     return await foundTeams;
+  }
+  private async convertToShowUserDTO(user: User): Promise<ShowUserDTO> {
+    
+    const convertedUser: ShowUserDTO = {
+      id: user.id,
+      username: user.username,
+      email: user.email,
+      firstName: user.firstName,
+      lastName: user.lastName,
+      role: (await user.role).name,
+      avatarURL: user.avatarURL,
+    };
+    return convertedUser;
   }
 }
