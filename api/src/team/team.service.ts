@@ -81,11 +81,12 @@ export class TeamService {
     const members = await team.users;
     const membersToShow: ShowUserDTO[] = [];
     for (const elem of members) {
-    const member = plainToClass(ShowUserDTO, elem, {
-    excludeExtraneousValues: true,
-    });
-    membersToShow.push(member);
-  }
+    // const member = plainToClass(ShowUserDTO, elem, { 
+    // excludeExtraneousValues: true,
+    // });
+      const member: ShowUserDTO = await this.convertToShowUserDTO(elem);
+      membersToShow.push(member);
+    }
     console.log('team:',teamId, membersToShow);
     return await membersToShow;
 }
@@ -111,5 +112,18 @@ export class TeamService {
       
     }
     return await foundTeams;
+  }
+
+  private async convertToShowUserDTO(user: User): Promise<ShowUserDTO> {
+    const convertedUser: ShowUserDTO = {
+      id: user.id,
+      username: user.username,
+      email: user.email,
+      firstName: user.firstName,
+      lastName: user.lastName,
+      role: (await user.role).name,
+      avatarURL: user.avatarURL,
+    };
+    return convertedUser;
   }
 }
