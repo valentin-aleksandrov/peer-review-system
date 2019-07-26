@@ -1,4 +1,4 @@
-<form [formGroup]="radioGroupForm" (ngSubmit)="submitComment()">
+<!-- <form [formGroup]="radioGroupForm" (ngSubmit)="submitComment()">
     <div class="btn-group btn-group-toggle" ngbRadioGroup name="radioBasic" formControlName="model">
       <label ngbButtonLabel class="btn-primary">
         <input ngbButton type="radio" [value]="'Only comment'"> Only Comment
@@ -18,6 +18,58 @@
     <textarea name="comment" placeholder="Leave comment here..." formControlName="commentValue" cols="50" rows="5"></textarea>
     <br>
     <button class="btn btn-success">Submit review</button>
+  </form> -->
+<div class="container">
+  <form
+    class="comment-form"
+    [formGroup]="sendReviewForm"
+    (ngSubmit)="submitRequest()"
+  >
+    <textarea class="text-comment" formControlName="content"></textarea>
+    <div class="form-check ">
+      <input
+        class="form-check-input"
+        type="radio"
+        id="inlineRadio1"
+        value="comment"
+        formControlName="status"
+      />
+      <label class="form-check-label" for="inlineRadio1">Comment</label>
+    </div>
+    <div class="form-check">
+      <input
+        class="form-check-input"
+        type="radio"
+        id="inlineRadio1"
+        value="accepted"
+        formControlName="status"
+      />
+      <label class="form-check-label" for="inlineRadio1">Accept</label>
+    </div>
+    <div class="form-check">
+      <input
+        class="form-check-input"
+        type="radio"
+        id="inlineRadio1"
+        value="request_changes"
+        formControlName="status"
+      />
+      <label class="form-check-label" for="inlineRadio1">Request changes</label>
+    </div>
+    <div class="form-check">
+      <input
+        class="form-check-input"
+        type="radio"
+        id="inlineRadio1"
+        value="rejected"
+        formControlName="status"
+      />
+      <label class="form-check-label" for="inlineRadio1">Reject</label>
+    </div>
+    <div class="form-group">
+      <button type="submit" name="submit" class=" btn btn-success">
+        Submit review
+      </button>
+    </div>
   </form>
-
-<!-- http://localhost:4200/pullRequests/66a46eaf-5b32-4072-a45e-e3eef45aac30 -->
+</div>

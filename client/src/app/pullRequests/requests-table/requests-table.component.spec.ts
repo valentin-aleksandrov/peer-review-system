@@ -1,20 +1,20 @@
 // import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
-// import { RegisterComponent } from './register.component';
+// import { RequestsTableComponent } from './requests-table.component';
 
-// describe('RegisterComponent', () => {
-//   let component: RegisterComponent;
-//   let fixture: ComponentFixture<RegisterComponent>;
+// describe('RequestsTableComponent', () => {
+//   let component: RequestsTableComponent;
+//   let fixture: ComponentFixture<RequestsTableComponent>;
 
 //   beforeEach(async(() => {
 //     TestBed.configureTestingModule({
-//       declarations: [ RegisterComponent ]
+//       declarations: [ RequestsTableComponent ]
 //     })
 //     .compileComponents();
 //   }));
 
 //   beforeEach(() => {
-//     fixture = TestBed.createComponent(RegisterComponent);
+//     fixture = TestBed.createComponent(RequestsTableComponent);
 //     component = fixture.componentInstance;
 //     fixture.detectChanges();
 //   });

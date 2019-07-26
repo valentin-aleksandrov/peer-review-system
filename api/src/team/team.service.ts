@@ -78,16 +78,24 @@ export class TeamService {
         id: teamId,
       },
     });
-    const members = await team.users;
-    const membersToShow: ShowUserDTO[] = [];
+    const membersIds: string[] = await team.users.map((user)=>user.id);
+    const members: User[] = [];
+    
+    for (const userId of membersIds) {
+      const foundMember: User = await this.userRepository.findOne({where: {
+        id: userId,
+      }});  
+      members.push(foundMember);
+    }
+    
+    const membersToShow: ShowUserDTO[] = []; 
     for (const elem of members) {
-    // const member = plainToClass(ShowUserDTO, elem, { 
+    // const member: ShowUserDTO = plainToClass(ShowUserDTO, elem, {
     // excludeExtraneousValues: true,
     // });
       const member: ShowUserDTO = await this.convertToShowUserDTO(elem);
       membersToShow.push(member);
     }
-    console.log('team:',teamId, membersToShow);
     return await membersToShow;
 }
   public async getUserTeams(userId: string): Promise<SimpleTeamInfoDTO[]> {
@@ -113,8 +121,13 @@ export class TeamService {
     }
     return await foundTeams;
   }
+<<<<<<< HEAD
 
   private async convertToShowUserDTO(user: User): Promise<ShowUserDTO> {
+=======
+  private async convertToShowUserDTO(user: User): Promise<ShowUserDTO> {
+    
+>>>>>>> notification
     const convertedUser: ShowUserDTO = {
       id: user.id,
       username: user.username,

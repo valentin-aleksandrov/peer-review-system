@@ -1,5 +1,5 @@
 <nav class="navbar navbar-expand-lg navbar-light">
-  <a class="navbar-brand" href="#">Review42</a>
+  <a class="navbar-brand" [routerLink]="['/home']">Review42</a>
   <button
     class="navbar-toggler"
     type="button"
@@ -30,6 +30,9 @@
           <i class="fas fa-user-circle"></i>Profile
         </a>
       </li>
+      <li id="notificator-belt" class="nav-item">
+        <!-- this is the notification icon-->
+      </li>
       <li class="nav-item">
         <a class="nav-link" [routerLink]="['/register']" *ngIf="!currentUser"
           >Register</a
@@ -41,9 +44,7 @@
         >
       </li>
       <li class="nav-item ">
-        <a class="nav-link" href="#" (click)="logout()" *ngIf="currentUser"
-          >Log out</a
-        >
+        <a class="nav-link" (click)="logout()" *ngIf="currentUser">Log out</a>
       </li>
     </ul>
   </div>

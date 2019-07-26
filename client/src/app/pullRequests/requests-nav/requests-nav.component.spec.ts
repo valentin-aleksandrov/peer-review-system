@@ -1,20 +1,20 @@
 // import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
-// import { RegisterComponent } from './register.component';
+// import { RequestsNavComponent } from './requests-nav.component';
 
-// describe('RegisterComponent', () => {
-//   let component: RegisterComponent;
-//   let fixture: ComponentFixture<RegisterComponent>;
+// describe('RequestsNavComponent', () => {
+//   let component: RequestsNavComponent;
+//   let fixture: ComponentFixture<RequestsNavComponent>;
 
 //   beforeEach(async(() => {
 //     TestBed.configureTestingModule({
-//       declarations: [ RegisterComponent ]
+//       declarations: [ RequestsNavComponent ]
 //     })
 //     .compileComponents();
 //   }));
 
 //   beforeEach(() => {
-//     fixture = TestBed.createComponent(RegisterComponent);
+//     fixture = TestBed.createComponent(RequestsNavComponent);
 //     component = fixture.componentInstance;
 //     fixture.detectChanges();
 //   });
