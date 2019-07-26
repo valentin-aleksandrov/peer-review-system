@@ -20,6 +20,8 @@ export class TeamController {
     body: CreateTeamDTO,
     @SessionUser() user: User,
   ): Promise<ShowTeamDTO> {
+    console.log('body controller ',body);
+    
     return await this.teamService.createTeam(body, user);
   }
     @Delete(':id')

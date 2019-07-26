@@ -23,10 +23,13 @@ export class TeamService {
     body: CreateTeamDTO,
     user: User,
   ): Promise<ShowTeamDTO> {
+    console.log('test1');
     const newTeam = new Team();
     newTeam.teamName = body.teamName;
+    console.log('test2');
     const newUser = user;
     newTeam.users = [newUser];
+    console.log('test3');
     let rules;
     rules = await this.teamRulesRepository.findOne({
       where: {
@@ -34,16 +37,35 @@ export class TeamService {
         minNumberOfReviewers: body.rule.minNumberOfReviewers,
       },
     });
+    console.log('test4');
     if (!rules) {
       const newRules = new TeamRules();
       newRules.minNumberOfReviewers = body.rule.minNumberOfReviewers;
       newRules.minPercentApprovalOfItem = body.rule.minPercentApprovalOfItem;
+      console.log('test4,5');
+      console.log(newRules);
+      console.log(newRules.id,' id');
+      console.log(newRules.minNumberOfReviewers,' min rev');
+      console.log(newRules.minPercentApprovalOfItem,'min percen');
+      console.log(newRules.team,'team');
+      
+      
+      
+      
+      
       const savedNewRules = await this.teamRulesRepository.save(newRules);
+      console.log('test4,6');
       newTeam.rules = savedNewRules;
+      console.log('test4,7');
     } else {
       newTeam.rules = rules;
     }
+    console.log('test5');
     const savedTeam = await this.teamRepository.save(newTeam);
+   
+    console.log(savedTeam);
+    
+    
     const TeamToShow: ShowTeamDTO = plainToClass(ShowTeamDTO, savedTeam, {
       excludeExtraneousValues: true,
     });
