@@ -1,9 +1,8 @@
-<div class="comment container">
+<div class="comment container" *ngFor="let comment of comments">
   <div class="row content">
-    orem Ipsum is simply dummy text of the printing and typesetting industry.
-    Lorem Ipsum has been the industry's standard dummy text ever since the 1500s
+    {{ comment.content }}
   </div>
   <div class="row username">
-    <div class="float-left">by Username</div>
+    <div class="float-left">{{ comment.author.username }}</div>
   </div>
 </div>

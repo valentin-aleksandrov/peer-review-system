@@ -33,6 +33,7 @@ export class ItemDetails implements OnInit {
       this.comments = this.workItem.comments;
     });
     console.log(this.workItem);
+    console.log(this.comments);
 
     this.loggedUser = this.authenticationService.currentUserValue.user;
     this.updateReviewerAuthority();

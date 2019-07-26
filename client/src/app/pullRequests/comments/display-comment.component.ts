@@ -16,6 +16,6 @@ export class DisplayComment implements OnInit {
   comments: Comment[];
   constructor() {}
   ngOnInit(): void {
-    console.log(this.comments);
+    console.log("child", this.comments);
   }
 }
