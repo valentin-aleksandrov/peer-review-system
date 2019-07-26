@@ -19,7 +19,7 @@ export class PushNotificationService {
         }
         )
         .then(res => res.json())
-        .then(json => console.log(json))
+        .then(json => console.log('Push notification send'))
         .catch((err)=>console.log(err + "It didn't workout"));   
     }
 

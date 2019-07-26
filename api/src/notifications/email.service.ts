@@ -18,7 +18,7 @@ export class EmailService {
         html: `<b>${text}</b>`, // HTML body content
       })
       .then((success) => {
-          console.log(success);
+          console.log('Email send.');
       })
       .catch((err) => {
           console.log(err);
