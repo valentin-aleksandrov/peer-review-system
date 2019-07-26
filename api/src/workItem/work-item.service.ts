@@ -23,6 +23,8 @@ import { UsersService } from 'src/users/users.service';
 import { ShowUserDTO } from 'src/users/models/show-user.dto';
 import { ChangeWorkItemStatus } from "./models/change-work-item-status.dto";
 import { TeamRules } from "src/entities/team-rules.entity";
+import { EmailService } from 'src/notifications/email.service';
+import { PushNotificationService } from 'src/notifications/push-notification.service';
 
 @Injectable()
 export class WorkItemService {
@@ -43,6 +45,8 @@ export class WorkItemService {
     private readonly teamsRepository: Repository<Team>,
     @InjectRepository(CommentEntity)
     private readonly commentsRepository: Repository<CommentEntity>,
+    private readonly emailService: EmailService,
+    private readonly pushNotificationService: PushNotificationService,
   ) {}
 
   async changeWorkItemStatus(workItemId: string, newStatus: ChangeWorkItemStatus, user: User): Promise<ShowWorkItemDTO> {
@@ -145,6 +149,7 @@ export class WorkItemService {
       newWorkItem,
     );
 
+    this.notifyForWorkItemCreation(createdWorkItem, await createdWorkItem.reviews); // The notification
     return this.convertToShowWorkItemDTO(createdWorkItem);
   }
 
@@ -255,6 +260,29 @@ export class WorkItemService {
     const tags: Tag[] = await this.tagsRepository.find();
     return await this.convertTagstoDTOs(tags);
   }
+
+  private notifyForWorkItemCreation(createdWorkItem: WorkItem, reviews: Review[]): void {
+    this.notifyReviewersForWorkItemCreation(reviews, createdWorkItem);
+  }
+
+  private notifyReviewersForWorkItemCreation(reviews: Review[], workItem: WorkItem): void {
+    const assignee: User = workItem.assignee;
+    const assigneeUsername: string = assignee.username;
+    reviews.forEach((currentReview: Review) => {
+      const text = `${assigneeUsername} has add you as a reviewer to ${workItem.title}. Press here to see: `;
+      const link = `http://localhost:3000/api/${workItem.id}`;
+      this.emailService.sendEmail(
+        currentReview.user.email,
+        'You are added as a reviewer',text+link);
+      this.pushNotificationService.sendPushNotfication(
+        'You are added as a reviewer',
+        text,
+        currentReview.user.username,
+        link,
+      )
+    });
+  }
+
   private async filterByReviewerName(
     workItems: WorkItem[],
     searchReviewer: string,
@@ -473,6 +501,7 @@ export class WorkItemService {
     const commentDTOs: ShowCommentDTO[] = await this.convertToCommentDTOs(
       comments,
     );
+    
     const convertedWorkItem: ShowWorkItemDTO = {
       id: workItem.id,
       isReady: workItem.isReady,
