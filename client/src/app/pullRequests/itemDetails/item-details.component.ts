@@ -67,7 +67,7 @@ export class ItemDetails implements OnInit {
 
   onCommentSubmition(event: SubmitComment) {
     console.log(event);
-    if (event.status === "pending") {
+    if (event.status === "comment") {   
       this.commentDataService
         .addComment(this.workItem.id, event.content)
         .subscribe((createdComment: Comment) => console.log(createdComment));
