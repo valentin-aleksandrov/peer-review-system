@@ -56,7 +56,7 @@ export class User {
   @OneToMany(type => Activity, activity => activity.user)
   activity: Promise<Activity[]>;
 
-  @OneToMany(type => WorkItem, workItem => workItem.assignee)
+  @OneToMany(type => WorkItem, workItem => workItem.author)
   workItems: Promise<WorkItem>;
 
   @OneToMany(type => Review, review => review.user)

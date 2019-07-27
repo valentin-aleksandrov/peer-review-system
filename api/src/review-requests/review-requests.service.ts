@@ -89,7 +89,7 @@ export class ReviewRequestsService {
     return await combined;
   }
   private async notifyForWorkItemComment(comment: ShowCommentDTO, workItem: WorkItem): Promise<void> {
-    const workItemAuthor: User = workItem.assignee;
+    const workItemAuthor: User = workItem.author;
     const reviews: Review[] = await workItem.reviews;
     // I need this step, because linux doesn't load reviews with all of data (only IDs D:)
     let loadedReviews: Review[] = [];
@@ -104,7 +104,7 @@ export class ReviewRequestsService {
     
     const reviewersEntities: User[] = loadedReviews.map((review: Review)=>review.user);
     if(comment.author.username !== workItemAuthor.username){
-      this.notifyUserForComment(workItem.assignee, workItem, comment);
+      this.notifyUserForComment(workItem.author, workItem, comment);
     }
     
     reviewersEntities
