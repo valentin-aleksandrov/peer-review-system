@@ -38,16 +38,21 @@ export class WorkItemController {
     return await this.workItemService.createWorkItem(user, createWorkItemDTO);
   }
 
-  // @Get("team/:teamId")
-  // async findWorkItemsByTeam(@Query() searchOptions: SearchWorkItemDTO,@Param('teamId') teamId: string,): Promise<ShowWorkItemDTO[]> {
-
-  //     const workItemsDTOs: ShowWorkItemDTO[] = await this.workItemService.findWorkItemsByTeam(teamId,searchOptions);
-  //     if(!workItemsDTOs){
-  //       throw new NotFoundException("No such team found.");
-  //     } else {
-  //       return workItemsDTOs;
-  //     }
-  // }
+  @Get("team/:teamId")
+  async findWorkItemsByTeam(
+    @Query() searchOptions: SearchWorkItemDTO,
+    @Param("teamId") teamId: string,
+  ): Promise<ShowWorkItemDTO[]> {
+    const workItemsDTOs: ShowWorkItemDTO[] = await this.workItemService.findWorkItemsByTeam(
+      teamId,
+      searchOptions,
+    );
+    if (!workItemsDTOs) {
+      throw new NotFoundException("No such team found.");
+    } else {
+      return workItemsDTOs;
+    }
+  }
 
   @Get("tags")
   async findAllTags(): Promise<ShowTagDTO[]> {

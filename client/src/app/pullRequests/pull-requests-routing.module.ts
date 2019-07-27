@@ -8,6 +8,7 @@ import { SimpleWorkItemComponent } from "./simpleWorkItem/simple-work-item.compo
 import { RequestsTableComponent } from "./requests-table/requests-table.component";
 import { AuthGuard } from "../guards/auth-guard";
 import { SingleUserResolverService } from "../core/services/profile-resolver.service";
+import { SearchBarComponent } from "./search-bar/search-bar.component";
 
 const routes: Routes = [
   {
@@ -24,6 +25,11 @@ const routes: Routes = [
         path: "all",
         component: RequestsTableComponent,
         resolve: { workItems: SingleUserResolverService },
+        pathMatch: "full"
+      },
+      {
+        path: "search",
+        component: SearchBarComponent,
         pathMatch: "full"
       },
 

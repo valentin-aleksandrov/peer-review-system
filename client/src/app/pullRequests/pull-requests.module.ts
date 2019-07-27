@@ -13,6 +13,8 @@ import { ItemComment } from "./itemComment/item-comment.component";
 import { DisplayComment } from "./comments/display-comment.component";
 import { RequestsNavComponent } from "./requests-nav/requests-nav.component";
 import { RequestsTableComponent } from "./requests-table/requests-table.component";
+import { SearchBarComponent } from "./search-bar/search-bar.component";
+import { AutocompleteComponent } from "./autocomplete/autocomplete.component";
 
 @NgModule({
   declarations: [
@@ -24,7 +26,9 @@ import { RequestsTableComponent } from "./requests-table/requests-table.componen
     ItemComment,
     DisplayComment,
     RequestsNavComponent,
-    RequestsTableComponent
+    RequestsTableComponent,
+    SearchBarComponent,
+    AutocompleteComponent
   ],
   imports: [
     SharedModule,

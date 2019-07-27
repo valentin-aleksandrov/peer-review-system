@@ -1,0 +1,74 @@
+<div class="container">
+  <div class="row">
+    <div class="col-lg col-xs-6 col-md-4 mb-20">
+      <label for="typeahead-format">Author:</label>
+      <input
+        type="text"
+        class="form-control"
+        [ngbTypeahead]="search"
+        [resultFormatter]="formatter"
+      />
+    </div>
+    <div class="col-lg col-xs-6 col-md-4 mb-20">
+      <label for="typeahead2">Asignee:</label>
+      <input
+        type="text"
+        class="form-control"
+        [ngbTypeahead]="search"
+        [resultFormatter]="formatter"
+      />
+    </div>
+    <div class="col-lg col-xs-6 col-md-4 mb-20">
+      <label for="typeahead3">Team:</label>
+      <input
+        type="text"
+        class="form-control"
+        [ngbTypeahead]="teamSearch"
+        [resultFormatter]="formatterTeam"
+      />
+    </div>
+    <div class="col-lg col-xs-6 col-md-4 mb-20">
+      <label class="block">Tags:</label>
+      <div ngbDropdown class="d-inline-block">
+        <button
+          class="btn btn-outline-primary"
+          id="dropdownBasic1"
+          ngbDropdownToggle
+        >
+          Toggle dropdown
+        </button>
+        <div ngbDropdownMenu aria-labelledby="dropdownBasic1">
+          <button *ngFor="let tag of tags" ngbDropdownItem>
+            {{ tag.name }}
+          </button>
+        </div>
+      </div>
+    </div>
+    <div class="col-lg col-xs-6 col-md-4 mb-20">
+      <div ngbDropdown class="d-inline-block">
+        <label class="block" for="typeahead3">Status:</label>
+        <button
+          class="btn btn-outline-primary"
+          id="dropdownBasic1"
+          ngbDropdownToggle
+        >
+          Toggle dropdown
+        </button>
+        <div ngbDropdownMenu aria-labelledby="dropdownBasic1">
+          <button ngbDropdownItem>pending</button>
+          <button ngbDropdownItem>accepted</button>
+          <button ngbDropdownItem>rejected</button>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-lg-8 col-md-12">
+      <label class="block">Title:</label>
+      <input class="title-input" style="width:100%;" type="text" />
+    </div>
+    <div class="col-lg-4">
+      <button class="btn search-button">Search</button>
+    </div>
+  </div>
+</div>

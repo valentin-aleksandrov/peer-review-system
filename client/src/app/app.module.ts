@@ -13,6 +13,8 @@ import { HttpClientModule, HTTP_INTERCEPTORS } from "@angular/common/http";
 import { JwtInterceptor } from "./interceptors/auth-interceptor";
 import { RequestsNavComponent } from "./pullRequests/requests-nav/requests-nav.component";
 import { RequestsTableComponent } from "./pullRequests/requests-table/requests-table.component";
+import { SearchBarComponent } from "./pullRequests/search-bar/search-bar.component";
+import { AutocompleteComponent } from "./pullRequests/autocomplete/autocomplete.component";
 
 @NgModule({
   declarations: [

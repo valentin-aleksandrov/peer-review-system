@@ -136,4 +136,22 @@ export class TeamService {
     };
     return convertedUser;
   }
+
+  public async getAllTeams(): Promise<ShowTeamDTO[]> {
+    const allTeams: Team[] = await this.teamRepository.find();
+    const teamsToShow = [];
+    for (let team of allTeams) {
+      const teamToDTO = await this.convertToTeamDTO(team);
+      teamsToShow.push(teamToDTO);
+    }
+    return await teamsToShow;
+  }
+
+  private async convertToTeamDTO(team): Promise<ShowTeamDTO> {
+    const teamToDTO = plainToClass(ShowTeamDTO, team, {
+      excludeExtraneousValues: true,
+    });
+    teamToDTO.rules = await team.rules;
+    return await teamToDTO;
+  }
 }
