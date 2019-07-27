@@ -12,6 +12,8 @@ import { plainToClass } from 'class-transformer';
 import { ShowUserDTO } from 'src/users/models/show-user.dto';
 import { ShowTeamDTO } from 'src/team/models/show-team.dto';
 import { ShowTeamInvitationStatusDTO } from './models/team-invitation-status.dto';
+import { EmailService } from 'src/notifications/email.service';
+import { PushNotificationService } from 'src/notifications/push-notification.service';
 
 @Injectable()
 export class TeamInvitationService {
@@ -22,6 +24,8 @@ export class TeamInvitationService {
     @InjectRepository(User) private userRepository: Repository<User>,
     @InjectRepository(TeamInvitation)
     private teamInvitationRepository: Repository<TeamInvitation>,
+    private readonly emailService: EmailService,
+    private readonly pushNotificationService: PushNotificationService,
   ) {}
 
   public async createTeamInvitation(
@@ -73,6 +77,7 @@ export class TeamInvitationService {
     exposedInvitation.invitee = inviteeToDTO;
     exposedInvitation.team = teamToDTO;
     exposedInvitation.status = statusToDTO;
+    this.notifyInvitedUserInTeam(exposedInvitation);
     return await exposedInvitation;
   }
 
@@ -184,5 +189,25 @@ export class TeamInvitationService {
       avatarURL: user.avatarURL,
     };
     return convertedUser;
+  }
+  private notifyInvitedUserInTeam(teamInvitation: ShowTeamInvitationDTO): void {
+    const hostUsername: string = teamInvitation.host.username;
+    const teamName: string = teamInvitation.team.teamName;
+    const inviteeEmail: string = teamInvitation.invitee.email;
+    const inviteeUsername: string = teamInvitation.invitee.username;
+    const link: string = 'http://localhost:4200/profile';
+
+    this.emailService.sendEmail(
+      inviteeEmail,
+      'New invitation',
+      `${hostUsername} invited you to join ${teamName} team. Press here: ${link}`
+    );
+
+    this.pushNotificationService.sendPushNotfication(
+      'New invitation',
+      `${hostUsername} invited you to join ${teamName} team. Press here:`,
+      inviteeUsername,
+      link
+    );
   }
 }
