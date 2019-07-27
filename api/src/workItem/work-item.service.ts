@@ -477,11 +477,6 @@ export class WorkItemService {
   private async convertToShowReviewerDTO(
     reviewer: Review,
   ): Promise<ShowReviewValDTO> {
-    const userEntity: User = await this.userRepository.findOne({
-      where: {
-        reviews: reviewer,
-      },
-    });
     const review: Review = await this.reviewsRepository.findOne({
       where: {
         id: reviewer.id,

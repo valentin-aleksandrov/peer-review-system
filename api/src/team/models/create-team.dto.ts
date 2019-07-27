@@ -1,5 +1,6 @@
 import { IsString, Length, ValidateNested } from "class-validator";
 import { TeamRuleDTO } from "./team-rule.dto";
+import { Type } from "class-transformer";
 
 export class CreateTeamDTO {
   
@@ -8,6 +9,7 @@ export class CreateTeamDTO {
   teamName: string;
 
   @ValidateNested()
+  @Type(() => TeamRuleDTO) 
   rule: TeamRuleDTO;
 
 }

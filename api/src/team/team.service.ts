@@ -38,12 +38,14 @@ export class TeamService {
       const newRules = new TeamRules();
       newRules.minNumberOfReviewers = body.rule.minNumberOfReviewers;
       newRules.minPercentApprovalOfItem = body.rule.minPercentApprovalOfItem;
+
       const savedNewRules = await this.teamRulesRepository.save(newRules);
       newTeam.rules = savedNewRules;
     } else {
       newTeam.rules = rules;
     }
     const savedTeam = await this.teamRepository.save(newTeam);
+
     const TeamToShow: ShowTeamDTO = plainToClass(ShowTeamDTO, savedTeam, {
       excludeExtraneousValues: true,
     });
@@ -98,7 +100,6 @@ export class TeamService {
       const member: ShowUserDTO = await this.convertToShowUserDTO(elem);
       membersToShow.push(member);
     }
-
     return await membersToShow;
   }
   public async getUserTeams(userId: string): Promise<SimpleTeamInfoDTO[]> {

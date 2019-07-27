@@ -8,11 +8,13 @@ import { TeamInvitationStatus } from 'src/entities/team-invitation-status.entity
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { AuthModule } from 'src/auth/auth.module';
 import { PassportModule } from '@nestjs/passport';
+import { NotificatorModule } from 'src/notifications/notifaction.module';
 @Module({
   imports: [
     PassportModule.register({defaultStrategy: 'jwt'}),
     TypeOrmModule.forFeature([Team, TeamInvitation, TeamInvitationStatus, User ]),
     AuthModule,
+    NotificatorModule,
   ],
   controllers: [TeamInvitationController],
   providers: [TeamInvitationService],

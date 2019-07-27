@@ -8,12 +8,14 @@ import { AuthModule } from '../auth/auth.module';
 import { ReviewerStatus } from '../entities/reviewer-status.entity';
 import { Review } from '../entities/review.entity';
 import { PassportModule } from '@nestjs/passport';
+import { NotificatorModule } from 'src/notifications/notifaction.module';
 
 @Module({
   imports: [
     PassportModule.register({defaultStrategy: 'jwt'}),
     TypeOrmModule.forFeature([CommentEntity, WorkItem, ReviewerStatus,Review]),
     AuthModule,
+    NotificatorModule,
   ],
   providers: [ReviewRequestsService],
   controllers: [ReviewRequestsController]

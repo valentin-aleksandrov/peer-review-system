@@ -13,6 +13,8 @@ import { ChangeReviewStatusDTO } from "./models/change-review-status.dto";
 import { Review } from "src/entities/review.entity";
 import { ShowReviewDTO } from "./models/show-review.dto";
 import { CombinedReviewDTO } from "./models/combined-review.dto";
+import { EmailService } from "src/notifications/email.service";
+import { PushNotificationService } from "src/notifications/push-notification.service";
 
 @Injectable()
 export class ReviewRequestsService {
@@ -24,6 +26,8 @@ export class ReviewRequestsService {
     @InjectRepository(ReviewerStatus)
     private reviewStatusRepository: Repository<ReviewerStatus>,
     @InjectRepository(Review) private reviewRepository: Repository<Review>,
+    private readonly emailService: EmailService,
+    private readonly pushNotificationService: PushNotificationService,
   ) {}
 
   public async createReviewRequestComment(
@@ -44,6 +48,7 @@ export class ReviewRequestsService {
     const commentToShow = plainToClass(ShowCommentDTO, newComment, {
       excludeExtraneousValues: true,
     });
+    await this.notifyForWorkItemComment(commentToShow,commentWorkItem);
     return await commentToShow;
   }
 
@@ -82,5 +87,44 @@ export class ReviewRequestsService {
       comment: commentEntity,
     };
     return await combined;
+  }
+  private async notifyForWorkItemComment(comment: ShowCommentDTO, workItem: WorkItem): Promise<void> {
+    const workItemAuthor: User = workItem.assignee;
+    const reviews: Review[] = await workItem.reviews;
+    // I need this step, because linux doesn't load reviews with all of data (only IDs D:)
+    let loadedReviews: Review[] = [];
+    for (const currentReview of reviews) {
+      const currentlyLoadedReview: Review = await this.reviewRepository.findOne({
+        where: {
+          id: currentReview.id,
+        }
+      });
+      loadedReviews = [currentlyLoadedReview,...loadedReviews];
+    }
+    
+    const reviewersEntities: User[] = loadedReviews.map((review: Review)=>review.user);
+    if(comment.author.username !== workItemAuthor.username){
+      this.notifyUserForComment(workItem.assignee, workItem, comment);
+    }
+    
+    reviewersEntities
+      .filter((user: User)=>user.id !== comment.author.id)
+      .forEach((user: User)=>this.notifyUserForComment(user,workItem, comment));
+  }
+  private notifyUserForComment(user: User, workItem: WorkItem, comment: ShowCommentDTO): void {
+    const link: string = `http://localhost:4200/pullRequests/${workItem.id}`;
+
+    this.emailService.sendEmail(
+      user.email,
+      'New comment',
+      `${comment.author.username} comment on Work Item ${workItem.title}. Press here: ${link}`
+    );
+
+    this.pushNotificationService.sendPushNotfication(
+      'New comment',
+      `${comment.author.username} comment on Work Item ${workItem.title}. Press here:`,
+      user.username,
+      link
+    );
   }
 }

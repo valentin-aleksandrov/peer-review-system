@@ -1,4 +1,4 @@
-import { Controller, Post, UseGuards, Body, ValidationPipe, Delete, Param, Get } from '@nestjs/common';
+import { Controller, Post, UseGuards, Body, Delete, Param, Get, ValidationPipe } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
 import { TeamService } from './team.service';
 import { SessionUser } from 'src/decorators/session-user.decorator';
@@ -16,7 +16,7 @@ export class TeamController {
     @Post()
     @UseGuards(AuthGuard())
     public async createTeam(
-    @Body(new ValidationPipe({ whitelist: true, transform: true }))
+    @Body(new ValidationPipe({ transform: true, whitelist: true, forbidNonWhitelisted: true }))
     body: CreateTeamDTO,
     @SessionUser() user: User,
   ): Promise<ShowTeamDTO> {
