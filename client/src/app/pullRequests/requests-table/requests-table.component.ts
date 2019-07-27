@@ -3,6 +3,7 @@ import { WorkItemDataService } from "src/app/core/services/work-item-data.servic
 import { AuthenticationService } from "src/app/core/services/authentication.service";
 import { UserDetails } from "src/app/models/user-details";
 import { WorkItem } from "src/app/models/work-item";
+import { ActivatedRoute } from "@angular/router";
 
 @Component({
   selector: "app-requests-table",
@@ -15,15 +16,14 @@ export class RequestsTableComponent implements OnInit {
 
   constructor(
     private readonly workItemDataService: WorkItemDataService,
-    private readonly authenticationService: AuthenticationService
+    private readonly authenticationService: AuthenticationService,
+    private readonly activatedRoute: ActivatedRoute
   ) {}
   ngOnInit(): void {
     this.loggedUser = this.authenticationService.currentUserValue.user;
 
-    this.workItemDataService
-      .getWorkItemsByUserId(this.loggedUser.id)
-      .subscribe((workItems: WorkItem[]) => {
-        this.workItems = workItems;
-      });
+    this.activatedRoute.data.subscribe(data => {
+      this.workItems = data.workItems;
+    });
   }
 }

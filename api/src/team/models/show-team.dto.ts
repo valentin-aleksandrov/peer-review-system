@@ -6,28 +6,23 @@ import { TeamInvitation } from "src/entities/team-invitation.entity";
 import { TeamRuleDTO } from "./team-rule.dto";
 
 export class ShowTeamDTO {
-  
   @Expose()
   @IsString()
   @Length(1, 20)
   teamName: string;
 
-  @IsString()
-  @Expose()
-  users: ShowUserDTO;
+  // @IsString()
+  // @Expose()
+  // users: ShowUserDTO;
 
   @Expose()
   @IsString()
   id: string;
 
-  @Expose()
-  @ValidateNested()
-  rules: TeamRuleDTO;
-  
-  @Expose()
-  teamInvitation: TeamInvitation;
+  // @Expose()
+  // @ValidateNested()
+  // rules: TeamRuleDTO;
 
-
-  
-
+  // @Expose()
+  // teamInvitation: TeamInvitation;
 }

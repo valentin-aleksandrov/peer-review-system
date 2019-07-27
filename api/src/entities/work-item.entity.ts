@@ -1,4 +1,12 @@
-import { Entity, PrimaryGeneratedColumn, Column, ManyToOne, ManyToMany, JoinTable, OneToMany } from "typeorm";
+import {
+  Entity,
+  PrimaryGeneratedColumn,
+  Column,
+  ManyToOne,
+  ManyToMany,
+  JoinTable,
+  OneToMany,
+} from "typeorm";
 import { WorkItemStatus } from "./work-item-status.entity";
 import { Tag } from "./tag.entity";
 import { Review } from "./review.entity";
@@ -8,24 +16,24 @@ import { User } from "./user.entity";
 import { Team } from "./team.entity";
 import { CommentEntity } from "./comment.entity";
 
-@Entity('work_items')
+@Entity("work_items")
 export class WorkItem {
-  @PrimaryGeneratedColumn('uuid')
+  @PrimaryGeneratedColumn("uuid")
   id: string;
 
-  @Column({default: false})
+  @Column({ default: false })
   isReady: boolean;
 
-  @Column('nvarchar')
+  @Column("nvarchar")
   title: string;
 
-  @Column('nvarchar') // It could be not Enough!
+  @Column("nvarchar") // It could be not Enough!
   description: string;
 
-  @ManyToOne((type) => User, (user) => user.workItems, {
+  @ManyToOne(type => User, user => user.workItems, {
     eager: true,
   })
-  assignee: User;
+  author: User;
 
   @ManyToOne(type => WorkItemStatus, status => status.workItems, {
     eager: true,
@@ -39,7 +47,7 @@ export class WorkItem {
   @OneToMany(type => Review, review => review.workItem)
   reviews: Promise<Review[]>;
 
-  @OneToMany((type) => CommentEntity, (comments) => comments.workItem, {
+  @OneToMany(type => CommentEntity, comments => comments.workItem, {
     eager: true,
   })
   comments: CommentEntity[];
@@ -50,7 +58,7 @@ export class WorkItem {
   @OneToMany(type => FileEntity, file => file.workItem)
   files: Promise<FileEntity>;
 
-  @ManyToOne((type) => Team, (team) => team.workItems, {
+  @ManyToOne(type => Team, team => team.workItems, {
     eager: true,
   })
   team: Team;

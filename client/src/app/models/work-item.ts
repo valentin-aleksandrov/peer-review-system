@@ -12,7 +12,7 @@ export class WorkItem {
 
   description: string;
 
-  assignee: Assignee;
+  author: Assignee;
 
   workItemStatus: string;
 

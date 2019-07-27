@@ -7,7 +7,7 @@
         </div>
         <div class=" col-3 work-item-status">
           <button type="button" class="btn btn-info float-right">
-            {{ workItem.workItemStatus }}
+            {{ workItem.workItemStatus.status }}
           </button>
         </div>
       </div>
@@ -16,8 +16,8 @@
     </div>
 
     <div class="col-3 display-review-details">
-      <div class="assignee">Assignee</div>
-      <div class="assignee-name">{{ workItem.assignee.username }}</div>
+      <div class="assignee">Author</div>
+      <div class="assignee-name">{{ workItem.author.username }}</div>
       <hr />
       <div class="reviewers">Reviewers</div>
       <div class="row" *ngFor="let review of workItem.reviews">
@@ -48,7 +48,7 @@
       <hr />
       <div class="team">Team</div>
       <div class="team-name">
-        {{ workItem.team }}
+        {{ workItem.team.teamName }}
       </div>
     </div>
   </div>

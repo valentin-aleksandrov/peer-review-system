@@ -13,8 +13,8 @@
         [routerLink]="['/pullRequests', currentWorkItem.id]"
       >
         <td>{{ currentWorkItem.title }}</td>
-        <td>{{ currentWorkItem.assignee.username }}</td>
-        <td>{{ currentWorkItem.workItemStatus }}</td>
+        <td>{{ currentWorkItem.author.username }}</td>
+        <td>{{ currentWorkItem.workItemStatus.status }}</td>
       </tr>
     </tbody>
   </table>

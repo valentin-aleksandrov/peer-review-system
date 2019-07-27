@@ -1,9 +1,9 @@
-import { UsersService } from './../users/users.service';
-import { Injectable } from '@nestjs/common';
-import { JwtService } from '@nestjs/jwt';
-import { UserLoginDTO } from './models/user-login.dto';
-import { UserRegisterDTO } from './models/user-register.dto';
-import { ShowUserDTO } from '../users/models/show-user.dto';
+import { UsersService } from "./../users/users.service";
+import { Injectable } from "@nestjs/common";
+import { JwtService } from "@nestjs/jwt";
+import { UserLoginDTO } from "./models/user-login.dto";
+import { UserRegisterDTO } from "./models/user-register.dto";
+import { ShowUserDTO } from "../users/models/show-user.dto";
 
 @Injectable()
 export class AuthService {
@@ -12,10 +12,12 @@ export class AuthService {
     private readonly usersService: UsersService,
   ) {}
 
-  async login(user: UserLoginDTO): Promise<{user: ShowUserDTO, token: string}>{
+  async login(
+    user: UserLoginDTO,
+  ): Promise<{ user: ShowUserDTO; token: string }> {
     const userFound = await this.usersService.findUserByEmail(user.email);
 
-    if(!userFound){
+    if (!userFound) {
       return undefined;
     }
     const token = await this.jwtService.sign({

@@ -1,7 +1,7 @@
 import { Injectable } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
 import { WorkItem } from "../entities/work-item.entity";
-import { Repository } from "typeorm";
+import { Repository, getRepository } from "typeorm";
 import { User } from "../entities/user.entity";
 import { CreateWorkItemDTO } from "./models/create-work-item.dto";
 import { AddReviwerDTO } from "./models/add-reviewer.dto";
@@ -25,6 +25,10 @@ import { ChangeWorkItemStatus } from "./models/change-work-item-status.dto";
 import { TeamRules } from "src/entities/team-rules.entity";
 import { EmailService } from "src/notifications/email.service";
 import { PushNotificationService } from "src/notifications/push-notification.service";
+import { WorkItemModule } from "./work-item.module";
+import { WorkItemQueryDTO } from "./models/workitem-query.dto";
+import { plainToClass } from "class-transformer";
+import { ShowWorkItemStatusDTO } from "./models/show-workitem-status.dto";
 
 @Injectable()
 export class WorkItemService {
@@ -102,7 +106,7 @@ export class WorkItemService {
     const upadetedWorkItem: WorkItem = await this.workItemRepository.save(
       foundWorkItem,
     );
-    return this.convertToShowWorkItemDTO(upadetedWorkItem);
+    return await this.convertToShowWorkItemDTO(upadetedWorkItem);
   }
 
   private calculatePercentage(
@@ -110,7 +114,6 @@ export class WorkItemService {
     approveReviewsCount: number,
   ): number {
     if (totalReviews === 0) {
-      //console.log("It should not happend");
       return 0;
     }
     return (approveReviewsCount / totalReviews) * 100;
@@ -135,13 +138,12 @@ export class WorkItemService {
     createWorkItemDTO: CreateWorkItemDTO,
   ): Promise<ShowWorkItemDTO> {
     const reviewerDTOs: AddReviwerDTO[] = createWorkItemDTO.reviewers;
-    console.log(reviewerDTOs);
+
     const reviewerEntities: User[] = await this.getReviewerEntities(
       reviewerDTOs,
     );
-    console.log("revEnt", Promise.resolve(reviewerEntities));
     const newWorkItem: WorkItem = new WorkItem();
-    newWorkItem.assignee = loggedUser;
+    newWorkItem.author = loggedUser;
     newWorkItem.title = createWorkItemDTO.title;
     newWorkItem.description = createWorkItemDTO.description;
 
@@ -185,7 +187,7 @@ export class WorkItemService {
     });
     const workItems: WorkItem[] = await this.workItemRepository.find({
       where: {
-        assignee: foundUser,
+        author: foundUser,
       },
     });
     return this.convertToShowWorkItemDTOs(workItems);
@@ -296,10 +298,10 @@ export class WorkItemService {
     reviews: Review[],
     workItem: WorkItem,
   ): void {
-    const assignee: User = workItem.assignee;
-    const assigneeUsername: string = assignee.username;
+    const author: User = workItem.author;
+    const authorUsername: string = author.username;
     reviews.forEach((currentReview: Review) => {
-      const text = `${assigneeUsername} has add you as a reviewer to ${
+      const text = `${authorUsername} has added you as a reviewer to ${
         workItem.title
       }. Press here to see: `;
       const link = `http://localhost:3000/api/${workItem.id}`;
@@ -400,7 +402,7 @@ export class WorkItemService {
       const currentUserWorkItems: WorkItem[] = await this.workItemRepository.find(
         {
           where: {
-            assignee: user,
+            author: user,
           },
         },
       );
@@ -457,9 +459,9 @@ export class WorkItemService {
     if (!reviewerDTOs) {
       return Promise.resolve([]);
     }
-    console.log("revToDTO", reviewerDTOs);
+
     const reviewerEntities: User[] = [];
-    console.log("revEntities", reviewerEntities);
+
     reviewerDTOs.forEach(async (currentReviewerDTO: AddReviwerDTO) => {
       const foundReviewerEntity = await this.userRepository.findOne({
         where: {
@@ -467,9 +469,8 @@ export class WorkItemService {
           isDeleted: false,
         },
       });
-      console.log("current", foundReviewerEntity);
+
       reviewerEntities.push(foundReviewerEntity);
-      console.log("revArr", reviewerEntities);
     });
     return Promise.resolve(reviewerEntities);
   }
@@ -522,14 +523,14 @@ export class WorkItemService {
     if (!showReviewDTO) {
       return new ShowWorkItemDTO();
     }
-    if (!workItem.assignee) {
+    if (!workItem.author) {
       return new ShowWorkItemDTO();
     }
 
     const assigneeDTO: ShowAssigneeDTO = {
-      id: workItem.assignee.id,
-      email: workItem.assignee.email,
-      username: workItem.assignee.username,
+      id: workItem.author.id,
+      email: workItem.author.email,
+      username: workItem.author.username,
     };
     const tagDTOs: ShowTagDTO[] = this.convertTagstoDTOs(await workItem.tags);
     const comments: CommentEntity[] = await this.commentsRepository.find({
@@ -546,11 +547,11 @@ export class WorkItemService {
       isReady: workItem.isReady,
       title: workItem.title,
       description: workItem.description,
-      assignee: assigneeDTO,
+      author: assigneeDTO,
       reviews: showReviewDTO,
-      workItemStatus: workItem.workItemStatus.status,
+      workItemStatus: workItem.workItemStatus,
       tags: tagDTOs,
-      team: workItem.team.teamName,
+      team: workItem.team,
       comments: commentDTOs,
     };
     return convertedWorkItem;
@@ -598,5 +599,180 @@ export class WorkItemService {
       avatarURL: user.avatarURL,
     };
     return convertedUser;
+  }
+
+  public async getAllByQuery(query: WorkItemQueryDTO): Promise<any> {
+    // if (
+    //   query.team &&
+    //   query.tag &&
+    //   query.author &&
+    //   query.asignee &&
+    //   query.status &&
+    //   query.title
+    // ) {
+    //   const currentStatus: WorkItemStatus = await this.workItemStatusRepository.findOne(
+    //     {
+    //       where: {
+    //         status: query.status,
+    //       },
+    //     },
+    //   );
+    //   const asigneeQuery: User = await this.userRepository.findOne({
+    //     where: {
+    //       username: query.asignee,
+    //     },
+    //   });
+    //   const authorQuery: User = await this.userRepository.findOne({
+    //     where: {
+    //       username: query.author,
+    //     },
+    //   });
+    //   const queryObject = {};
+    //   if (query.title) {
+    //     queryObject.title = query.title;
+    //   }
+    //   if (query.author) {
+    //     queryObject.author = query.author;
+    //   }
+    // const workitems: WorkItem[] = await this.workItemRepository.find({
+    //   where: { queryObject },
+    //   // title: query.title,
+    //   // team: query.team,queryObject,
+    //   // asignee: asigneeQuery,
+    //   // workItemStatus: currentStatus,
+    //   // author: authorQuery,
+    // });
+    // return await this.convertToShowWorkItemDTOs(workitems);
+    // }
+    // if (query.author) {
+    //   const authorQuery: User = await this.userRepository.findOne({
+    //     where: {
+    //       username: query.author,
+    //     },
+    //   });
+    //   const workitems: WorkItem[] = await this.workItemRepository.find({
+    //     where: {
+    //       author: authorQuery,
+    //     },
+    //   });
+    //   return workitems;
+    // }
+    // if (query.author && query.team) {
+    //   const authorQuery: User = await this.userRepository.findOne({
+    //     where: {
+    //       username: query.author,
+    //     },
+    //   });
+    //   const teamQuery: Team = await this.teamsRepository.findOne({
+    //     where: {
+    //       teamName: query.team,
+    //     },
+    //   });
+    //   const workitems: WorkItem[] = await this.workItemRepository.find({
+    //     where: {
+    //       author: authorQuery,
+    //       team: teamQuery,
+    //     },
+    //   });
+    //   return workitems;
+    // }
+    // if (query.asignee) {
+    //   const asigneeQuery: User = await this.userRepository.findOne({
+    //     where: {
+    //       username: query.asignee,
+    //     },
+    //   });
+    //   const reviews: Review[] = await this.reviewsRepository.find({
+    //     where: {
+    //       user: asigneeQuery,
+    //     },
+    //   });
+    //   return reviews;
+    // }
+    // if (query.team) {
+    //   const teamQuery: Team = await this.teamsRepository.findOne({
+    //     where: {
+    //       teamName: query.team,
+    //     },
+    //   });
+    //   const workitems: WorkItem[] = await this.workItemRepository.find({
+    //     where: {
+    //       team: teamQuery,
+    //     },
+    //   });
+    //   return workitems;
+    // }
+    // if (query.title) {
+    //   const workitems: WorkItem[] = await this.workItemRepository.find({
+    //     where: {
+    //       title: query.title,
+    //     },
+    //   });
+    //   return workitems;
+    // }
+    // if (query.status) {
+    //   const statusQuery: WorkItemStatus = await this.workItemStatusRepository.findOne(
+    //     {
+    //       where: {
+    //         status: query.status,
+    //       },
+    //     },
+    //   );
+    const allWorkItems: WorkItem[] = await this.workItemRepository.find({});
+    let allWorkItemsToDTO: ShowWorkItemDTO[] = [];
+    for (let item of allWorkItems) {
+      const reviews = await item.reviews;
+      const status = await item.workItemStatus;
+      const statusToDTO = plainToClass(ShowWorkItemStatusDTO, status, {
+        excludeExtraneousValues: true,
+      });
+      const reviewsToDTO = await this.convertToShowReviewerDTOArray(reviews);
+      const tags = await this.convertTagstoDTOs(await item.tags);
+      const team = await item.team;
+      const teamToDTO = plainToClass(ShowTeamDTO, team, {
+        excludeExtraneousValues: true,
+      });
+      const currentworkItem = item;
+      currentworkItem.reviews = Promise.resolve(reviews);
+      const itemToDTO: ShowWorkItemDTO = plainToClass(
+        ShowWorkItemDTO,
+        currentworkItem,
+        {
+          excludeExtraneousValues: true,
+        },
+      );
+      itemToDTO.reviews = reviewsToDTO;
+      itemToDTO.tags = tags;
+      itemToDTO.workItemStatus = statusToDTO;
+      itemToDTO.team = teamToDTO;
+      allWorkItemsToDTO.push(itemToDTO);
+    }
+    let result = allWorkItemsToDTO;
+    if (query.title) {
+      result = result.filter(x => x.title.indexOf(query.title) >= 0);
+    }
+    if (query.author) {
+      result = result.filter(x => x.author.username === query.author);
+    }
+    if (query.asignee) {
+      result = result.filter(
+        x => x.reviews.findIndex(y => y.username === query.asignee) >= 0,
+      );
+    }
+    if (query.tag) {
+      result = result.filter(
+        x => x.tags.findIndex(y => y.name === query.tag) >= 0,
+      );
+    }
+
+    if (query.status) {
+      result = result.filter(x => x.workItemStatus.status === query.status);
+    }
+
+    if (query.team) {
+      result = result.filter(x => x.team.teamName === query.team);
+    }
+
+    return result;
   }
 }

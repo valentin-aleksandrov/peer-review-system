@@ -38,7 +38,9 @@ export class TeamInvitationController {
     return await this.teamInvitationService.rejectInvitation(id);
   }
 
+  
   @Get('api/users/:userId/active-invitations')
+  @UseGuards(AuthGuard())
     async getActiveInvitations(
       @Param('userId') userId: string,
     ): Promise<any> {

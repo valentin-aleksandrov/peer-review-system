@@ -1,14 +1,14 @@
-import { Injectable } from '@nestjs/common';
-import { Team } from 'src/entities/team.entity';
-import { Repository } from 'typeorm';
-import { InjectRepository } from '@nestjs/typeorm';
-import { User } from 'src/entities/user.entity';
-import { TeamRules } from 'src/entities/team-rules.entity';
-import { CreateTeamDTO } from './models/create-team.dto';
-import { ShowTeamDTO } from './models/show-team.dto';
-import { plainToClass } from 'class-transformer';
-import { SimpleTeamInfoDTO } from './models/simple-team-info.dto';
-import { ShowUserDTO } from 'src/users/models/show-user.dto';
+import { Injectable } from "@nestjs/common";
+import { Team } from "src/entities/team.entity";
+import { Repository } from "typeorm";
+import { InjectRepository } from "@nestjs/typeorm";
+import { User } from "src/entities/user.entity";
+import { TeamRules } from "src/entities/team-rules.entity";
+import { CreateTeamDTO } from "./models/create-team.dto";
+import { ShowTeamDTO } from "./models/show-team.dto";
+import { plainToClass } from "class-transformer";
+import { SimpleTeamInfoDTO } from "./models/simple-team-info.dto";
+import { ShowUserDTO } from "src/users/models/show-user.dto";
 
 @Injectable()
 export class TeamService {
@@ -47,7 +47,7 @@ export class TeamService {
     const TeamToShow: ShowTeamDTO = plainToClass(ShowTeamDTO, savedTeam, {
       excludeExtraneousValues: true,
     });
-    TeamToShow.rules = await savedTeam.rules;
+    //TeamToShow.rules = await savedTeam.rules;
     return TeamToShow;
   }
 
@@ -78,27 +78,29 @@ export class TeamService {
         id: teamId,
       },
     });
-    const membersIds: string[] = await team.users.map((user)=>user.id);
+    const membersIds: string[] = await team.users.map(user => user.id);
     const members: User[] = [];
-    
+
     for (const userId of membersIds) {
-      const foundMember: User = await this.userRepository.findOne({where: {
-        id: userId,
-      }});  
+      const foundMember: User = await this.userRepository.findOne({
+        where: {
+          id: userId,
+        },
+      });
       members.push(foundMember);
     }
-    
-    const membersToShow: ShowUserDTO[] = []; 
+
+    const membersToShow: ShowUserDTO[] = [];
     for (const elem of members) {
-    // const member: ShowUserDTO = plainToClass(ShowUserDTO, elem, {
-    // excludeExtraneousValues: true,
-    // });
+      // const member: ShowUserDTO = plainToClass(ShowUserDTO, elem, {
+      // excludeExtraneousValues: true,
+      // });
       const member: ShowUserDTO = await this.convertToShowUserDTO(elem);
       membersToShow.push(member);
     }
-   
+
     return await membersToShow;
-}
+  }
   public async getUserTeams(userId: string): Promise<SimpleTeamInfoDTO[]> {
     const foundUser: User = await this.userRepository.findOne({
       where: {
@@ -115,15 +117,13 @@ export class TeamService {
       const simpleInfo: SimpleTeamInfoDTO = {
         id: currentTeam.id,
         teamName: currentTeam.teamName,
-        members: members.map((user) => user.username),
+        members: members.map(user => user.username),
       };
       foundTeams.push(simpleInfo);
-      
     }
     return await foundTeams;
   }
   private async convertToShowUserDTO(user: User): Promise<ShowUserDTO> {
-    
     const convertedUser: ShowUserDTO = {
       id: user.id,
       username: user.username,

@@ -51,7 +51,7 @@ export class ItemDetails implements OnInit {
   }
 
   updateAssigneeAuthority() {
-    if (this.workItem.assignee.id === this.loggedUser.id) {
+    if (this.workItem.author.id === this.loggedUser.id) {
       this.isAssignee = true;
     } else {
       this.isAssignee = false;

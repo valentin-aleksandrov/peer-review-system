@@ -7,6 +7,7 @@ import { itemDetailsResolverService } from "./services/item-details-resolver.ser
 import { SimpleWorkItemComponent } from "./simpleWorkItem/simple-work-item.component";
 import { RequestsTableComponent } from "./requests-table/requests-table.component";
 import { AuthGuard } from "../guards/auth-guard";
+import { SingleUserResolverService } from "../core/services/profile-resolver.service";
 
 const routes: Routes = [
   {
@@ -22,6 +23,7 @@ const routes: Routes = [
       {
         path: "all",
         component: RequestsTableComponent,
+        resolve: { workItems: SingleUserResolverService },
         pathMatch: "full"
       },
 
