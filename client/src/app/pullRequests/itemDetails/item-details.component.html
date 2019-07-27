@@ -52,11 +52,15 @@
       </div>
     </div>
   </div>
+  <div class="row">
+    <div class="col-9">
+      <display-comment [comments]="workItem.comments"></display-comment>
+    </div>
+  </div>
 </div>
 <item-comment
   [isReviewer]="isReviewer"
   (commentEmiter)="onCommentSubmition($event)"
 >
 </item-comment>
-
-<!-- <display-comment></display-comment> -->
+0

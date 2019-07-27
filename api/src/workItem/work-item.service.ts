@@ -23,8 +23,8 @@ import { UsersService } from "src/users/users.service";
 import { ShowUserDTO } from "src/users/models/show-user.dto";
 import { ChangeWorkItemStatus } from "./models/change-work-item-status.dto";
 import { TeamRules } from "src/entities/team-rules.entity";
-import { EmailService } from 'src/notifications/email.service';
-import { PushNotificationService } from 'src/notifications/push-notification.service';
+import { EmailService } from "src/notifications/email.service";
+import { PushNotificationService } from "src/notifications/push-notification.service";
 
 @Injectable()
 export class WorkItemService {
@@ -110,7 +110,7 @@ export class WorkItemService {
     approveReviewsCount: number,
   ): number {
     if (totalReviews === 0) {
-      console.log("It should not happend");
+      //console.log("It should not happend");
       return 0;
     }
     return (approveReviewsCount / totalReviews) * 100;
@@ -135,9 +135,11 @@ export class WorkItemService {
     createWorkItemDTO: CreateWorkItemDTO,
   ): Promise<ShowWorkItemDTO> {
     const reviewerDTOs: AddReviwerDTO[] = createWorkItemDTO.reviewers;
+    console.log(reviewerDTOs);
     const reviewerEntities: User[] = await this.getReviewerEntities(
       reviewerDTOs,
     );
+    console.log("revEnt", Promise.resolve(reviewerEntities));
     const newWorkItem: WorkItem = new WorkItem();
     newWorkItem.assignee = loggedUser;
     newWorkItem.title = createWorkItemDTO.title;
@@ -168,7 +170,10 @@ export class WorkItemService {
       newWorkItem,
     );
 
-    this.notifyForWorkItemCreation(createdWorkItem, await createdWorkItem.reviews); // The notification
+    this.notifyForWorkItemCreation(
+      createdWorkItem,
+      await createdWorkItem.reviews,
+    ); // The notification
     return this.convertToShowWorkItemDTO(createdWorkItem);
   }
 
@@ -280,25 +285,35 @@ export class WorkItemService {
     return await this.convertTagstoDTOs(tags);
   }
 
-  private notifyForWorkItemCreation(createdWorkItem: WorkItem, reviews: Review[]): void {
+  private notifyForWorkItemCreation(
+    createdWorkItem: WorkItem,
+    reviews: Review[],
+  ): void {
     this.notifyReviewersForWorkItemCreation(reviews, createdWorkItem);
   }
 
-  private notifyReviewersForWorkItemCreation(reviews: Review[], workItem: WorkItem): void {
+  private notifyReviewersForWorkItemCreation(
+    reviews: Review[],
+    workItem: WorkItem,
+  ): void {
     const assignee: User = workItem.assignee;
     const assigneeUsername: string = assignee.username;
     reviews.forEach((currentReview: Review) => {
-      const text = `${assigneeUsername} has add you as a reviewer to ${workItem.title}. Press here to see: `;
+      const text = `${assigneeUsername} has add you as a reviewer to ${
+        workItem.title
+      }. Press here to see: `;
       const link = `http://localhost:3000/api/${workItem.id}`;
       this.emailService.sendEmail(
         currentReview.user.email,
-        'You are added as a reviewer',text+link);
+        "You are added as a reviewer",
+        text + link,
+      );
       this.pushNotificationService.sendPushNotfication(
-        'You are added as a reviewer',
+        "You are added as a reviewer",
         text,
         currentReview.user.username,
         link,
-      )
+      );
     });
   }
 
@@ -442,7 +457,9 @@ export class WorkItemService {
     if (!reviewerDTOs) {
       return Promise.resolve([]);
     }
+    console.log("revToDTO", reviewerDTOs);
     const reviewerEntities: User[] = [];
+    console.log("revEntities", reviewerEntities);
     reviewerDTOs.forEach(async (currentReviewerDTO: AddReviwerDTO) => {
       const foundReviewerEntity = await this.userRepository.findOne({
         where: {
@@ -450,7 +467,9 @@ export class WorkItemService {
           isDeleted: false,
         },
       });
+      console.log("current", foundReviewerEntity);
       reviewerEntities.push(foundReviewerEntity);
+      console.log("revArr", reviewerEntities);
     });
     return Promise.resolve(reviewerEntities);
   }
@@ -469,10 +488,10 @@ export class WorkItemService {
     });
     const status = review.reviewerStatus;
     const convertedReviewer: ShowReviewValDTO = {
-      userId: userEntity.id,
-      email: userEntity.email,
+      userId: review.user.id,
+      email: review.user.email,
       status: status.status,
-      username: userEntity.username,
+      username: review.user.username,
       reviewId: review.id,
     };
     return convertedReviewer;
@@ -521,7 +540,7 @@ export class WorkItemService {
     const commentDTOs: ShowCommentDTO[] = await this.convertToCommentDTOs(
       comments,
     );
-    
+
     const convertedWorkItem: ShowWorkItemDTO = {
       id: workItem.id,
       isReady: workItem.isReady,

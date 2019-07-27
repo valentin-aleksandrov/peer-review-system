@@ -19,6 +19,7 @@ export class ItemDetails implements OnInit {
   public isReviewer: boolean = false;
   public isAssignee: boolean = false;
   public reviewId: string;
+  public comments: Comment[] = [];
   constructor(
     private readonly router: Router,
     private readonly activatedRoute: ActivatedRoute,
@@ -29,8 +30,10 @@ export class ItemDetails implements OnInit {
   ngOnInit(): void {
     this.activatedRoute.data.subscribe(data => {
       this.workItem = data.workItem;
+      this.comments = this.workItem.comments;
     });
     console.log(this.workItem);
+    console.log(this.comments);
 
     this.loggedUser = this.authenticationService.currentUserValue.user;
     this.updateReviewerAuthority();
