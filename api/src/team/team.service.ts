@@ -49,7 +49,7 @@ export class TeamService {
     const TeamToShow: ShowTeamDTO = plainToClass(ShowTeamDTO, savedTeam, {
       excludeExtraneousValues: true,
     });
-    //TeamToShow.rules = await savedTeam.rules;
+    TeamToShow.rules = await savedTeam.rules;
     return TeamToShow;
   }
 
