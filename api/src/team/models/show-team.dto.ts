@@ -19,9 +19,9 @@ export class ShowTeamDTO {
   @IsString()
   id: string;
 
-  // @Expose()
-  // @ValidateNested()
-  // rules: TeamRuleDTO;
+  @Expose()
+  @ValidateNested()
+  rules: TeamRuleDTO;
 
   // @Expose()
   // teamInvitation: TeamInvitation;
