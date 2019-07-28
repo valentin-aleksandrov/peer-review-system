@@ -33,7 +33,7 @@ export class EditItem implements OnInit {
       title: [this.workItem.title, [Validators.required, Validators.minLength(3)]],
       reviwer: ["", []],
       tagControl: ["", []],
-      editorModel: ["",[Validators.required, Validators.minLength(17)]]
+      editorModel: [this.workItem.description,[Validators.required, Validators.minLength(17)]]
     });
   }
 }
