@@ -29,6 +29,8 @@ import { WorkItemModule } from "./work-item.module";
 import { WorkItemQueryDTO } from "./models/workitem-query.dto";
 import { plainToClass } from "class-transformer";
 import { ShowWorkItemStatusDTO } from "./models/show-workitem-status.dto";
+import { EditWorkItemDTO } from "./models/edit-work-item.dto";
+import { Role } from "src/entities/role.entity";
 
 @Injectable()
 export class WorkItemService {
@@ -287,6 +289,33 @@ export class WorkItemService {
     return await this.convertTagstoDTOs(tags);
   }
 
+  public async editWorkItem(user: User, workItemId: string, editWorkItemDTO: EditWorkItemDTO): Promise<ShowWorkItemDTO> {
+    const foundWorkItem: WorkItem = await this.workItemRepository.findOne({where: {
+      id: workItemId,
+    }});
+    if(!foundWorkItem){
+      return undefined;
+    } 
+    const role: Role = await user.role; // this may not work
+    if(foundWorkItem.author.id !== user.id && role.name !== 'admin') {
+      return undefined;
+    } foundWorkItem.title = editWorkItemDTO.title;
+    foundWorkItem.description = editWorkItemDTO.description;
+    let updatedTagsList: Tag[] = [];
+    for (const tagDTO of editWorkItemDTO.tags) {
+      const foundTag: Tag = await this.tagsRepository.findOne({where: {
+        name: tagDTO.name
+      }});
+      if(foundTag){
+        updatedTagsList = [foundTag,...updatedTagsList];
+      }
+
+    }
+    foundWorkItem.tags = Promise.resolve(updatedTagsList);
+    const updatedWorkItem: WorkItem = await this.workItemRepository.save(foundWorkItem);
+    const updatedWorkItemDTO: ShowWorkItemDTO = await this.convertToShowWorkItemDTO(updatedWorkItem);
+    return updatedWorkItemDTO;
+  }
   private notifyForWorkItemCreation(
     createdWorkItem: WorkItem,
     reviews: Review[],

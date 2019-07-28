@@ -13,31 +13,6 @@ import { FormGroup, FormBuilder, Validators } from "@angular/forms";
 import { CreateWorkItem } from "src/app/models/create-work-item";
 import { Router } from "@angular/router";
 
-const states = ["valentin", "valka1", "valka2", "valka3", "valka4", "valka5"];
-const tags = ["computers", "sports", "cooking", "bikes"];
-const statesWithFlags: { name: string; flag: string }[] = [
-  {
-    name: "Alabama",
-    flag: "5/5c/Flag_of_Alabama.svg/45px-Flag_of_Alabama.svg.png"
-  },
-  {
-    name: "Alaska",
-    flag: "e/e6/Flag_of_Alaska.svg/43px-Flag_of_Alaska.svg.png"
-  },
-  {
-    name: "Arizona",
-    flag: "9/9d/Flag_of_Arizona.svg/45px-Flag_of_Arizona.svg.png"
-  },
-  {
-    name: "Arkansas",
-    flag: "9/9d/Flag_of_Arkansas.svg/45px-Flag_of_Arkansas.svg.png"
-  },
-  {
-    name: "California",
-    flag: "0/01/Flag_of_California.svg/45px-Flag_of_California.svg.png"
-  }
-];
-
 @Component({
   selector: "create-work-item",
   templateUrl: "./create-work-item.component.html",
@@ -47,15 +22,26 @@ const statesWithFlags: { name: string; flag: string }[] = [
 })
 export class CreateWorkItemComponent implements OnInit {
   public createWorkItemForm: FormGroup;
-  title: string;
-  chosenTeam: string = "Choose a team.";
-  loggedUser: UserDetails = new UserDetails();
-  users: UserDetails[] = [];
-  tags: Tag[] = [];
-  userTeams: SimpleTeamInfo[] = [];
-  dropdownList = [];
-  selectedItems: Tag[] = [];
-  dropdownSettings = {};
+  public isSubmitted: boolean = false;
+ 
+  public model: any;
+  public addedUsernames: UserDetails[] = [];
+  public title: string;
+  public chosenTeam: string = "Choose a team.";
+  public loggedUser: UserDetails = new UserDetails();
+  public users: UserDetails[] = [];
+  public tags: Tag[] = [];
+  public userTeams: SimpleTeamInfo[] = [];
+  public selectedItems: Tag[] = [];
+  public dropdownSettings = {};
+
+  constructor(
+    private readonly workItemDataService: WorkItemDataService,
+    private readonly authenticationService: AuthenticationService,
+    private readonly teamService: TeamService,
+    private readonly formBuilder: FormBuilder,
+    private readonly router: Router
+  ) {}
   ngOnInit() {
     this.loggedUser = this.authenticationService.currentUserValue.user;
     console.log(this.loggedUser);
@@ -73,14 +59,6 @@ export class CreateWorkItemComponent implements OnInit {
     this.workItemDataService.getTags().subscribe(data => {
       this.tags = data;
     });
-
-    this.dropdownList = [
-      { item_id: 1, item_text: "Mumbai" },
-      { item_id: 2, item_text: "Bangaluru" },
-      { item_id: 3, item_text: "Pune" },
-      { item_id: 4, item_text: "Navsari" },
-      { item_id: 5, item_text: "New Delhi" }
-    ];
     this.selectedItems = [];
     this.dropdownSettings = {
       singleSelection: false,
@@ -92,20 +70,15 @@ export class CreateWorkItemComponent implements OnInit {
       allowSearchFilter: true
     };
     this.createWorkItemForm = this.formBuilder.group({
-      title: ["", [Validators.required]],
+      title: ["", [Validators.required, Validators.minLength(3)]],
       reviwer: ["", []],
-      tagControl: ["", []]
+      tagControl: ["", []],
+      editorModel: ["",[Validators.required, Validators.minLength(17)]]
       // password: ['', [Validators.required, Validators.pattern("(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)(?=.*[@$!%*?&])[A-Za-z\\d@$!%*?&]{6,}")]]
     });
   }
 
-  constructor(
-    private readonly workItemDataService: WorkItemDataService,
-    private readonly authenticationService: AuthenticationService,
-    private readonly teamService: TeamService,
-    private readonly formBuilder: FormBuilder,
-    private readonly router: Router
-  ) {}
+
 
   public get formControls() {
     return this.createWorkItemForm.controls;
@@ -125,9 +98,6 @@ export class CreateWorkItemComponent implements OnInit {
     }
   };
 
-  public editorContent: string;
-  public model: any;
-  public addedUsernames: UserDetails[] = [];
 
   search = (text$: Observable<string>) =>
     text$.pipe(
@@ -136,9 +106,7 @@ export class CreateWorkItemComponent implements OnInit {
         term === ""
           ? []
           : this.users
-              .filter(
-                v => v.username.toLowerCase().indexOf(term.toLowerCase()) > -1
-              )
+              .filter(v => v.username.toLowerCase().indexOf(term.toLowerCase()) > -1)
               .slice(0, 10)
       )
       /* debounceTime(200),
@@ -171,6 +139,14 @@ export class CreateWorkItemComponent implements OnInit {
     return -1;
   }
   public createWorkItem() {
+    this.isSubmitted = true;
+    if (this.createWorkItemForm.invalid) {
+      return;
+    }
+
+    if(this.chosenTeam ==="Choose a team."){
+      return;
+    }
     const reviewers: { username: string }[] = this.addedUsernames.map(
       reviewer => ({ username: reviewer.username })
     );
@@ -179,7 +155,7 @@ export class CreateWorkItemComponent implements OnInit {
     }));
 
     const createdWorkItem: CreateWorkItem = {
-      description: this.editorContent,
+      description: this.createWorkItemForm.value.editorModel,
       reviewers: reviewers,
       team: this.chosenTeam,
       title: this.title,
