@@ -100,6 +100,9 @@
                   <div *ngIf="this.invalidInput" class="invalid-input">
                     Something went wrong! Try again!
                   </div>
+                  <div *ngIf="this.errorMessage" class="invalid-input">
+                    {{ errorMessage }}
+                  </div>
                 </div>
               </form>
             </div>

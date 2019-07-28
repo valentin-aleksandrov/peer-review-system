@@ -33,6 +33,7 @@ export class ProfileComponent implements OnInit {
   public model: any;
   public addedUsers: string[] = [];
   public activeInvitations: any[] = [];
+  public errorMessage: string = '';
   @ViewChild("t")
   public tabset: NgbTabset;
   public successfulInvitation: boolean = false;
@@ -194,7 +195,12 @@ export class ProfileComponent implements OnInit {
           this.successfulInvitation = true;
         },
         error => {
-          this.invalidInput = true;
+          if (error === "Internal Server Error!") {
+            this.invalidInput = true;
+          } else {
+            this.errorMessage = error;
+          }
+          
         }
       );
   }
