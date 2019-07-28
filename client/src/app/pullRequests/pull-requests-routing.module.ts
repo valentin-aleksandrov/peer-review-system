@@ -51,6 +51,7 @@ const routes: Routes = [
       {
         path: "edit/:id",
         component: EditItem,
+        resolve: { workItem: itemDetailsResolverService }
       }
     ]
   }
