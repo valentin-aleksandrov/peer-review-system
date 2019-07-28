@@ -109,7 +109,7 @@ export class WorkItemController {
   }
 
   @Get()
-  all(@Query() query: WorkItemQueryDTO): Promise<any> {
+  all(@Query() query: WorkItemQueryDTO): Promise<ShowWorkItemDTO[]> {
     return this.workItemService.getAllByQuery(query);
   }
 }

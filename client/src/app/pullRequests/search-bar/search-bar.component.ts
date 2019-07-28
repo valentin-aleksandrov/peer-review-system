@@ -8,6 +8,9 @@ import { Tag } from "src/app/models/tag";
 import { TeamService } from "src/app/core/services/team.service";
 import { AuthenticationService } from "src/app/core/services/authentication.service";
 import { Team } from "src/app/models/team";
+import { FormGroup, FormBuilder } from "@angular/forms";
+import { createUrlResolverWithoutPackagePrefix } from "@angular/compiler";
+import { WorkItem } from "src/app/models/work-item";
 
 @Component({
   selector: "app-search-bar",
@@ -20,14 +23,25 @@ export class SearchBarComponent implements OnInit {
   public tags: Tag[];
   public currentUser: UserDetails;
   public teams: Team[];
+  public teamNames: string[] = [];
+  public searchForm: FormGroup;
+  chosenTag: string = "Choose a tag";
+  chosenStatus: string = "Choose a status";
   // public status: WorkItemStatus[];
   constructor(
     private readonly workItemDataService: WorkItemDataService,
     private readonly teamService: TeamService,
-    private readonly authenticationService: AuthenticationService
+    private readonly authenticationService: AuthenticationService,
+    private readonly formBuilder: FormBuilder
   ) {}
 
   ngOnInit() {
+    this.searchForm = this.formBuilder.group({
+      title: [""],
+      author: [""],
+      asignee: [""],
+      team: [""]
+    });
     this.currentUser = this.authenticationService.currentUserValue.user;
     this.workItemDataService.getUsers().subscribe((users: UserDetails[]) => {
       this.users = users;
@@ -35,6 +49,7 @@ export class SearchBarComponent implements OnInit {
         const name = user.username;
         this.userNames.push(name);
       }
+      this.userNames.push(this.currentUser.username);
     });
 
     this.workItemDataService.getTags().subscribe((tags: Tag[]) => {
@@ -45,8 +60,10 @@ export class SearchBarComponent implements OnInit {
       .getTeamsByUserId(this.currentUser.id)
       .subscribe((teams: Team[]) => {
         this.teams = teams;
-        console.log(teams);
-        console.log(teams[0].teamName);
+        for (const team of teams) {
+          const teamName = team.teamName;
+          this.teamNames.push(teamName);
+        }
       });
 
     // this.workItemDataService.get).subscribe((data) =>{}
@@ -73,13 +90,55 @@ export class SearchBarComponent implements OnInit {
       map(term =>
         term === ""
           ? []
-          : this.teams
-              .filter(
-                v => v.teamName.toLowerCase().indexOf(term.toLowerCase()) > -1
-              )
+          : this.teamNames
+              .filter(v => v.toLowerCase().indexOf(term.toLowerCase()) > -1)
               .slice(0, 10)
       )
     );
 
-  formatterTeam = (x: { teamname: string }) => x.teamname;
+  formatterTeam = (result: string) => result;
+
+  public changeTag(tag: string) {
+    this.chosenTag = tag;
+  }
+
+  public changeStatus(status: string) {
+    this.chosenStatus = status;
+  }
+
+  searchForWorkitems() {
+    const title = this.searchForm.value["title"];
+    const author = this.searchForm.value["author"];
+    const asignee = this.searchForm.value["asignee"];
+    const team = this.searchForm.value["team"];
+    const tag = this.chosenTag;
+    const status = this.chosenStatus;
+    let urlStr = "";
+    if (title) {
+      urlStr += `?title=${title}&`;
+    }
+    if (author) {
+      urlStr += `?author=${author}&`;
+    }
+    if (asignee) {
+      urlStr += `?asignee=${asignee}&`;
+    }
+    if (team) {
+      urlStr += `?team=${team}&`;
+    }
+    if (tag) {
+      urlStr += `?tag=${tag}&`;
+    }
+    if (status) {
+      urlStr += `?status=${status}&`;
+    }
+
+    this.workItemDataService
+      .getSelectedWorkItems(urlStr)
+      .subscribe((data: WorkItem[]) => {
+        if (data == []) {
+          console.log("empty");
+        }
+      });
+  }
 }
