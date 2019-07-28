@@ -16,6 +16,8 @@ import { RequestsTableComponent } from "./pullRequests/requests-table/requests-t
 import { SearchBarComponent } from "./pullRequests/search-bar/search-bar.component";
 import { AutocompleteComponent } from "./pullRequests/autocomplete/autocomplete.component";
 import { ErrorInterceptor } from "./interceptors/error.interceptor";
+import { SearchWorkitemsComponent } from "./pullRequests/search-workitems/search-workitems.component";
+import { WorkitemsTableComponent } from "./pullRequests/workitems-table/workitems-table.component";
 
 @NgModule({
   declarations: [

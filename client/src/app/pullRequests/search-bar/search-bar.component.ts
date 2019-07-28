@@ -1,4 +1,4 @@
-import { Component, OnInit } from "@angular/core";
+import { Component, OnInit, Output, EventEmitter } from "@angular/core";
 import { User } from "src/app/models/user";
 import { Observable } from "rxjs";
 import { debounceTime, distinctUntilChanged, map } from "rxjs/operators";
@@ -18,6 +18,7 @@ import { WorkItem } from "src/app/models/work-item";
   styleUrls: ["./search-bar.component.css"]
 })
 export class SearchBarComponent implements OnInit {
+  @Output() updateSearchResults = new EventEmitter<WorkItem[]>();
   public users: UserDetails[];
   public userNames: string[] = [];
   public tags: Tag[];
@@ -25,8 +26,8 @@ export class SearchBarComponent implements OnInit {
   public teams: Team[];
   public teamNames: string[] = [];
   public searchForm: FormGroup;
-  chosenTag: string = "Choose a tag";
-  chosenStatus: string = "Choose a status";
+  chosenTag: string = "";
+  chosenStatus: string = "";
   // public status: WorkItemStatus[];
   constructor(
     private readonly workItemDataService: WorkItemDataService,
@@ -65,10 +66,6 @@ export class SearchBarComponent implements OnInit {
           this.teamNames.push(teamName);
         }
       });
-
-    // this.workItemDataService.get).subscribe((data) =>{}
-
-    // )
   }
   search = (text$: Observable<string>) =>
     text$.pipe(
@@ -136,9 +133,8 @@ export class SearchBarComponent implements OnInit {
     this.workItemDataService
       .getSelectedWorkItems(urlStr)
       .subscribe((data: WorkItem[]) => {
-        if (data == []) {
-          console.log("empty");
-        }
+        console.log(urlStr);
+        this.updateSearchResults.emit(data);
       });
   }
 }

@@ -15,6 +15,8 @@ import { RequestsNavComponent } from "./requests-nav/requests-nav.component";
 import { RequestsTableComponent } from "./requests-table/requests-table.component";
 import { SearchBarComponent } from "./search-bar/search-bar.component";
 import { AutocompleteComponent } from "./autocomplete/autocomplete.component";
+import { SearchWorkitemsComponent } from "./search-workitems/search-workitems.component";
+import { WorkitemsTableComponent } from "./workitems-table/workitems-table.component";
 
 @NgModule({
   declarations: [
@@ -28,7 +30,9 @@ import { AutocompleteComponent } from "./autocomplete/autocomplete.component";
     RequestsNavComponent,
     RequestsTableComponent,
     SearchBarComponent,
-    AutocompleteComponent
+    AutocompleteComponent,
+    SearchWorkitemsComponent,
+    WorkitemsTableComponent
   ],
   imports: [
     SharedModule,

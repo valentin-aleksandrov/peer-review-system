@@ -9,6 +9,7 @@ import { RequestsTableComponent } from "./requests-table/requests-table.componen
 import { AuthGuard } from "../guards/auth-guard";
 import { SingleUserResolverService } from "../core/services/profile-resolver.service";
 import { SearchBarComponent } from "./search-bar/search-bar.component";
+import { SearchWorkitemsComponent } from "./search-workitems/search-workitems.component";
 
 const routes: Routes = [
   {
@@ -29,7 +30,7 @@ const routes: Routes = [
       },
       {
         path: "search",
-        component: SearchBarComponent,
+        component: SearchWorkitemsComponent,
         pathMatch: "full"
       },
 

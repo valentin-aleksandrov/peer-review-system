@@ -7,6 +7,7 @@ import { ChangeWorkItemStatus } from "./change-work-item-status.dto";
 import { ShowTeamDTO } from "src/team/models/show-team.dto";
 
 export class ShowWorkItemDTO {
+  @Expose()
   id: string;
 
   @Expose()
