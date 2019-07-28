@@ -11,7 +11,7 @@ import { TeamService } from "src/app/core/services/team.service";
 import { SimpleTeamInfo } from "src/app/models/simple-team-info";
 import { FormGroup, FormBuilder, Validators } from "@angular/forms";
 import { CreateWorkItem } from "src/app/models/create-work-item";
-import { Router } from "@angular/router";
+import { Router, ActivatedRoute } from "@angular/router";
 
 @Component({
   selector: "create-work-item",
@@ -40,24 +40,17 @@ export class CreateWorkItemComponent implements OnInit {
     private readonly authenticationService: AuthenticationService,
     private readonly teamService: TeamService,
     private readonly formBuilder: FormBuilder,
-    private readonly router: Router
+    private readonly router: Router,
+    private readonly activatedRoute: ActivatedRoute
   ) {}
   ngOnInit() {
     this.loggedUser = this.authenticationService.currentUserValue.user;
-    console.log(this.loggedUser);
-
-    this.workItemDataService.getUsers().subscribe((users: UserDetails[]) => {
-      this.users = users;
-    });
-
-    this.teamService
-      .getTeamsByUserId(this.loggedUser.id)
-      .subscribe((teams: SimpleTeamInfo[]) => {
-        this.userTeams = teams;
-      });
-
-    this.workItemDataService.getTags().subscribe(data => {
-      this.tags = data;
+    this.activatedRoute.data.subscribe((data)=>{
+      this.users=data.users;
+      this.userTeams = data.teams;
+      this.tags = data.tags;
+      
+      
     });
     this.selectedItems = [];
     this.dropdownSettings = {

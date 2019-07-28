@@ -10,6 +10,9 @@ import { AuthGuard } from "../guards/auth-guard";
 import { SingleUserResolverService } from "../core/services/profile-resolver.service";
 import { SearchBarComponent } from "./search-bar/search-bar.component";
 import { SearchWorkitemsComponent } from "./search-workitems/search-workitems.component";
+import { UsersResolverService } from "../core/services/users-resolver.service";
+import { UserTeamsResolverService } from "../core/services/user-teams-resolver.service";
+import { TagsResolverService } from "../core/services/tags-resolver.service";
 
 const routes: Routes = [
   {
@@ -20,6 +23,11 @@ const routes: Routes = [
       {
         path: "create",
         component: CreateWorkItemComponent,
+        resolve: {
+          users: UsersResolverService,
+          teams: UserTeamsResolverService,
+          tags: TagsResolverService
+        },
         pathMatch: "full"
       },
       {
