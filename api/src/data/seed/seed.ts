@@ -1,5 +1,5 @@
 import { User } from './../../entities/user.entity';
-import { createConnection } from 'typeorm';
+import { createConnection, Equal, Not } from 'typeorm';
 import * as bcrypt from 'bcrypt';
 import { ReviewerStatus } from '../../entities/reviewer-status.entity';
 import { WorkItemStatus } from '../../entities/work-item-status.entity';
@@ -110,14 +110,14 @@ const main = async () => {
 
   const valka3: User = await userRepository.findOne({
     where: {
-      email: 'valentin3805@gmail.com'
+      email: 'pingvin_8@mail.bg'
     },
   });
 
   if (!valka3) {
     const user1:User = new User();
     user1.username = 'Valka3';
-    user1.email = 'valentin3805@gmail.com';
+    user1.email = 'pingvin_8@mail.bg';
     user1.password = await bcrypt.hash('aaAA$$123456789', 10);
     user1.firstName = 'Valentin3';
     user1.lastName = 'Aleksandrov3';
@@ -418,7 +418,7 @@ const main = async () => {
     });
     const user3 = await userRepository.findOne({
       where: {
-        email: 'valentin3805@gmail.com'
+        email: 'pingvin_8@mail.bg'
       },
     });
     let users: User[] = [];
@@ -466,7 +466,7 @@ const main = async () => {
    
     const user1 = await userRepository.findOne({
       where: {
-        email: 'valentin3805@gmail.com'
+        email: 'pingvin_8@mail.bg'
       },
     });
     const user2 = await userRepository.findOne({
@@ -565,7 +565,7 @@ const main = async () => {
           email: 'valentin805@gmail.com',
         }
       });
-    newWorkItem.assignee = user;
+    newWorkItem.author = user;
     newWorkItem.isReady = false;
     newWorkItem.title = "title1";
     newWorkItem.description = 'This is a description for workitem with a title -> title1';
@@ -606,7 +606,7 @@ const main = async () => {
 
     const foundUser2 : User = await userRepository.findOne({
       where: {
-        email: 'valentin3805@gmail.com'
+        email: 'pingvin_8@mail.bg'
       },
     });
     newReview2.user = foundUser2;
@@ -639,8 +639,11 @@ const main = async () => {
 
     const reviews: Review[] = await reviewRepository
       .find({
-        take: 10,
+        where: {
+          userId:  Not(user.id),
+        }
       })
+    
     newWorkItem.reviews = Promise.resolve(reviews);
 
     await workItemRepository.save(newWorkItem);

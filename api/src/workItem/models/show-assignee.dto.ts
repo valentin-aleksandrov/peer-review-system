@@ -1,5 +1,10 @@
+import { Expose } from "class-transformer";
+
 export class ShowAssigneeDTO {
-    id: string;
-    email: string;
-    username: string;
+  @Expose()
+  id: string;
+  @Expose()
+  email: string;
+  @Expose()
+  username: string;
 }

@@ -1,4 +1,17 @@
-import { UseGuards, Controller, Post, Body, ValidationPipe, Req, Get, Param, BadRequestException, NotFoundException, Query } from "@nestjs/common";
+import {
+  UseGuards,
+  Controller,
+  Post,
+  Body,
+  ValidationPipe,
+  Req,
+  Get,
+  Param,
+  BadRequestException,
+  NotFoundException,
+  Query,
+  Put,
+} from "@nestjs/common";
 import { AuthGuard } from "@nestjs/passport";
 import { WorkItemService } from "./work-item.service";
 import { CreateWorkItemDTO } from "./models/create-work-item.dto";
@@ -7,35 +20,81 @@ import { User } from "../entities/user.entity";
 import { SessionUser } from "../decorators/session-user.decorator";
 import { SearchWorkItemDTO } from "./models/search-work-item.dto";
 import { ShowTagDTO } from "./models/show-tag.dto";
+import { async } from "rxjs/internal/scheduler/async";
+import { ChangeWorkItemStatus } from "./models/change-work-item-status.dto";
+import { WorkItemQueryDTO } from "./models/workitem-query.dto";
 
 @UseGuards(AuthGuard())
-@Controller('api/work-item')
+@Controller("api/work-item")
 export class WorkItemController {
-  constructor(
-    private readonly workItemService: WorkItemService,
-  ) {}
+  constructor(private readonly workItemService: WorkItemService) {}
 
   @Post()
   async create(
-    @Body(new ValidationPipe({ whitelist: false, transform: true })) createWorkItemDTO: CreateWorkItemDTO,
-    @SessionUser() user: User
-    ): Promise<ShowWorkItemDTO> {
-     return await this.workItemService.createWorkItem(user,createWorkItemDTO);
+    @Body(new ValidationPipe({ whitelist: false, transform: true }))
+    createWorkItemDTO: CreateWorkItemDTO,
+    @SessionUser() user: User,
+  ): Promise<ShowWorkItemDTO> {
+    return await this.workItemService.createWorkItem(user, createWorkItemDTO);
   }
-  
-    @Get("team/:teamId")
-    async findWorkItemsByTeam(@Query() searchOptions: SearchWorkItemDTO,@Param('teamId') teamId: string,): Promise<ShowWorkItemDTO[]> {
-        
-        const workItemsDTOs: ShowWorkItemDTO[] = await this.workItemService.findWorkItemsByTeam(teamId,searchOptions);
-        if(!workItemsDTOs){
-          throw new NotFoundException("No such team found");
-        } else {
-          return workItemsDTOs;
-        }
+
+  @Get("team/:teamId")
+  async findWorkItemsByTeam(
+    @Query() searchOptions: SearchWorkItemDTO,
+    @Param("teamId") teamId: string,
+  ): Promise<ShowWorkItemDTO[]> {
+    const workItemsDTOs: ShowWorkItemDTO[] = await this.workItemService.findWorkItemsByTeam(
+      teamId,
+      searchOptions,
+    );
+    if (!workItemsDTOs) {
+      throw new NotFoundException("No such team found.");
+    } else {
+      return workItemsDTOs;
+    }
+  }
+
+  @Get("tags")
+  async findAllTags(): Promise<ShowTagDTO[]> {
+    return this.workItemService.findAllTags();
+  }
+
+  @Get(":id")
+  async findWorkItemById(
+    @Param("id") workItemId: string,
+  ): Promise<ShowWorkItemDTO> {
+    const foundWorkItem: ShowWorkItemDTO = await this.workItemService.findWorkItemById(
+      workItemId,
+    );
+    if (!foundWorkItem) {
+      throw new NotFoundException("No such work item found.");
     }
 
-    @Get("tags")
-    async findAllTags(): Promise<ShowTagDTO[]>{
-      return this.workItemService.findAllTags();
+    return foundWorkItem;
+  }
+
+  @Put(":itemId")
+  async changeWorkItemStatus(
+    @Param("itemId") workItemId: string,
+    @Body(new ValidationPipe({ whitelist: true, transform: true }))
+    newStatus: ChangeWorkItemStatus,
+    @SessionUser() user: User,
+  ): Promise<ShowWorkItemDTO> {
+    const updatedWorkItem: ShowWorkItemDTO = await this.changeWorkItemStatus(
+      workItemId,
+      newStatus,
+      user,
+    );
+    if (!updatedWorkItem) {
+      throw new BadRequestException(
+        "Invalid status or not enough accepted reviews.",
+      );
     }
+    return updatedWorkItem;
+  }
+
+  @Get()
+  all(@Query() query: WorkItemQueryDTO): Promise<ShowWorkItemDTO[]> {
+    return this.workItemService.getAllByQuery(query);
+  }
 }

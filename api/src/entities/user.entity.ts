@@ -1,12 +1,11 @@
-
-import { 
-  Entity, 
-  PrimaryGeneratedColumn, 
-  Column, 
-  ManyToMany, 
-  OneToMany, 
-  JoinTable, 
-  ManyToOne
+import {
+  Entity,
+  PrimaryGeneratedColumn,
+  Column,
+  ManyToMany,
+  OneToMany,
+  JoinTable,
+  ManyToOne,
 } from 'typeorm';
 import { Role } from './role.entity';
 import { Team } from './team.entity';
@@ -21,15 +20,15 @@ export class User {
   @PrimaryGeneratedColumn('uuid')
   id: string;
 
-  @Column('nvarchar', {unique: true})
+  @Column('nvarchar', { unique: true })
   username: string;
 
-  @Column('nvarchar', {unique: true})
+  @Column('nvarchar', { unique: true })
   email: string;
 
   @Column('nvarchar')
   avatarURL: string;
-  
+
   @Column('nvarchar')
   password: string;
 
@@ -39,7 +38,7 @@ export class User {
   @Column('nvarchar')
   lastName: string;
 
-  @Column({default: false})
+  @Column({ default: false })
   isDeleted: boolean;
 
   @ManyToOne(type => Role, role => role.name)
@@ -48,23 +47,21 @@ export class User {
   @ManyToMany(type => Team, team => team.users)
   teams: Promise<Team[]>;
 
-  @OneToMany(type => TeamInvitation, TeamInvitation => TeamInvitation.host)
-  host: Promise <TeamInvitation>;
+  @OneToMany(type => TeamInvitation, teamInvitation => teamInvitation.host)
+  host: Promise<TeamInvitation>;
 
-  @OneToMany(type => TeamInvitation, TeamInvitation => TeamInvitation.invitee)
+  @OneToMany(type => TeamInvitation, teamInvitation => teamInvitation.invitee)
   invitee: Promise<TeamInvitation>;
 
   @OneToMany(type => Activity, activity => activity.user)
   activity: Promise<Activity[]>;
-  
-  @OneToMany(type => WorkItem, workItem => workItem.assignee)
+
+  @OneToMany(type => WorkItem, workItem => workItem.author)
   workItems: Promise<WorkItem>;
 
-  @OneToMany((type) => Review, (review) => review.user)
+  @OneToMany(type => Review, review => review.user)
   reviews: Promise<Review[]>;
 
-  @OneToMany((type) => CommentEntity, (comment) => comment.author)
+  @OneToMany(type => CommentEntity, comment => comment.author)
   comments: Promise<CommentEntity[]>;
-
 }
-

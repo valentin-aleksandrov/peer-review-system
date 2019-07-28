@@ -1,0 +1,75 @@
+<!-- <form [formGroup]="radioGroupForm" (ngSubmit)="submitComment()">
+    <div class="btn-group btn-group-toggle" ngbRadioGroup name="radioBasic" formControlName="model">
+      <label ngbButtonLabel class="btn-primary">
+        <input ngbButton type="radio" [value]="'Only comment'"> Only Comment
+      </label>
+      <label *ngIf="isReviewer" ngbButtonLabel class="btn btn-success">
+        <input ngbButton type="radio" [value]="'approved'"> Approve
+      </label>
+      <label *ngIf="isReviewer" ngbButtonLabel class="btn btn-danger">
+        <input ngbButton type="radio" [value]="'requestChanges'"> Request changes
+      </label>
+      <label *ngIf="isReviewer" ngbButtonLabel class="btn btn-warning">
+        <input ngbButton type="radio" [value]="'rejected'"> Rejected
+      </label>
+    </div>
+    <hr>
+    <pre> <strong>Tip:</strong>{{this.getTip()}}</pre>
+    <textarea name="comment" placeholder="Leave comment here..." formControlName="commentValue" cols="50" rows="5"></textarea>
+    <br>
+    <button class="btn btn-success">Submit review</button>
+  </form> -->
+<div class="container">
+  <form
+    class="comment-form"
+    [formGroup]="sendReviewForm"
+    (ngSubmit)="submitRequest()"
+  >
+    <textarea class="text-comment" formControlName="content"></textarea>
+    <div class="form-check ">
+      <input
+        class="form-check-input"
+        type="radio"
+        id="inlineRadio1"
+        value="comment"
+        formControlName="status"
+      />
+      <label class="form-check-label" for="inlineRadio1">Comment</label>
+    </div>
+    <div class="form-check">
+      <input
+        class="form-check-input"
+        type="radio"
+        id="inlineRadio1"
+        value="accepted"
+        formControlName="status"
+      />
+      <label class="form-check-label" for="inlineRadio1">Accept</label>
+    </div>
+    <div class="form-check">
+      <input
+        class="form-check-input"
+        type="radio"
+        id="inlineRadio1"
+        value="request_changes"
+        formControlName="status"
+      />
+      <label class="form-check-label" for="inlineRadio1">Request changes</label>
+    </div>
+    <div class="form-check">
+      <input
+        class="form-check-input"
+        type="radio"
+        id="inlineRadio1"
+        value="rejected"
+        formControlName="status"
+      />
+      <label class="form-check-label" for="inlineRadio1">Reject</label>
+    </div>
+    <div class="form-group">
+      <button type="submit" name="submit" class=" btn btn-success">
+        Submit review
+      </button>
+    </div>
+  </form>
+</div>

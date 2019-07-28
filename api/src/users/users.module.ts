@@ -16,6 +16,8 @@ import { Picture } from '../entities/picture.entity';
 import { FileEntity } from '../entities/file.entity';
 import { WorkItemService } from '../workItem/work-item.service';
 import { Team } from '../entities/team.entity';
+import { CommentEntity } from '../entities/comment.entity';
+import { NotificatorModule } from 'src/notifications/notifaction.module';
 
 @Module({
   imports: [
@@ -32,8 +34,10 @@ import { Team } from '../entities/team.entity';
       Picture, 
       FileEntity,
       Team,
+      CommentEntity,
   ]),
     WorkItemModule,
+    NotificatorModule,
   ],
   controllers: [UsersController],
   providers: [UsersService, WorkItemService],

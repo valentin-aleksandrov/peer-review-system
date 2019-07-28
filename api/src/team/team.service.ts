@@ -1,14 +1,14 @@
-import { Injectable } from '@nestjs/common';
-import { Team } from 'src/entities/team.entity';
-import { Repository } from 'typeorm';
-import { InjectRepository } from '@nestjs/typeorm';
-import { User } from 'src/entities/user.entity';
-import { TeamRules } from 'src/entities/team-rules.entity';
-import { CreateTeamDTO } from './models/create-team.dto';
-import { ShowTeamDTO } from './models/show-team.dto';
-import { plainToClass } from 'class-transformer';
-import { SimpleTeamInfoDTO } from './models/simple-team-info.dto';
-import { ShowUserDTO } from 'src/users/models/show-user.dto';
+import { Injectable } from "@nestjs/common";
+import { Team } from "src/entities/team.entity";
+import { Repository } from "typeorm";
+import { InjectRepository } from "@nestjs/typeorm";
+import { User } from "src/entities/user.entity";
+import { TeamRules } from "src/entities/team-rules.entity";
+import { CreateTeamDTO } from "./models/create-team.dto";
+import { ShowTeamDTO } from "./models/show-team.dto";
+import { plainToClass } from "class-transformer";
+import { SimpleTeamInfoDTO } from "./models/simple-team-info.dto";
+import { ShowUserDTO } from "src/users/models/show-user.dto";
 
 @Injectable()
 export class TeamService {
@@ -38,12 +38,14 @@ export class TeamService {
       const newRules = new TeamRules();
       newRules.minNumberOfReviewers = body.rule.minNumberOfReviewers;
       newRules.minPercentApprovalOfItem = body.rule.minPercentApprovalOfItem;
+
       const savedNewRules = await this.teamRulesRepository.save(newRules);
       newTeam.rules = savedNewRules;
     } else {
       newTeam.rules = rules;
     }
     const savedTeam = await this.teamRepository.save(newTeam);
+
     const TeamToShow: ShowTeamDTO = plainToClass(ShowTeamDTO, savedTeam, {
       excludeExtraneousValues: true,
     });
@@ -78,17 +80,28 @@ export class TeamService {
         id: teamId,
       },
     });
-    const members = await team.users;
+    const membersIds: string[] = await team.users.map(user => user.id);
+    const members: User[] = [];
+
+    for (const userId of membersIds) {
+      const foundMember: User = await this.userRepository.findOne({
+        where: {
+          id: userId,
+        },
+      });
+      members.push(foundMember);
+    }
+
     const membersToShow: ShowUserDTO[] = [];
     for (const elem of members) {
-    const member = plainToClass(ShowUserDTO, elem, {
-    excludeExtraneousValues: true,
-    });
-    membersToShow.push(member);
-  }
-    console.log('team:',teamId, membersToShow);
+      // const member: ShowUserDTO = plainToClass(ShowUserDTO, elem, {
+      // excludeExtraneousValues: true,
+      // });
+      const member: ShowUserDTO = await this.convertToShowUserDTO(elem);
+      membersToShow.push(member);
+    }
     return await membersToShow;
-}
+  }
   public async getUserTeams(userId: string): Promise<SimpleTeamInfoDTO[]> {
     const foundUser: User = await this.userRepository.findOne({
       where: {
@@ -105,11 +118,40 @@ export class TeamService {
       const simpleInfo: SimpleTeamInfoDTO = {
         id: currentTeam.id,
         teamName: currentTeam.teamName,
-        members: members.map((user) => user.username),
+        members: members.map(user => user.username),
       };
       foundTeams.push(simpleInfo);
-      
     }
     return await foundTeams;
+  }
+  private async convertToShowUserDTO(user: User): Promise<ShowUserDTO> {
+    const convertedUser: ShowUserDTO = {
+      id: user.id,
+      username: user.username,
+      email: user.email,
+      firstName: user.firstName,
+      lastName: user.lastName,
+      role: (await user.role).name,
+      avatarURL: user.avatarURL,
+    };
+    return convertedUser;
+  }
+
+  public async getAllTeams(): Promise<ShowTeamDTO[]> {
+    const allTeams: Team[] = await this.teamRepository.find();
+    const teamsToShow = [];
+    for (let team of allTeams) {
+      const teamToDTO = await this.convertToTeamDTO(team);
+      teamsToShow.push(teamToDTO);
+    }
+    return await teamsToShow;
+  }
+
+  private async convertToTeamDTO(team): Promise<ShowTeamDTO> {
+    const teamToDTO = plainToClass(ShowTeamDTO, team, {
+      excludeExtraneousValues: true,
+    });
+    teamToDTO.rules = await team.rules;
+    return await teamToDTO;
   }
 }

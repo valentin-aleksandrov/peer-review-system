@@ -20,7 +20,7 @@ export class UsersService {
   ) {}
 
   // One day we should move those "convert" methods in the ConverterService
-  private async convertToShowUserDTO(user: User): Promise<ShowUserDTO> {
+  public async convertToShowUserDTO(user: User): Promise<ShowUserDTO> {
     
     const convertedUser: ShowUserDTO = {
       id: user.id,

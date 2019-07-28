@@ -32,10 +32,10 @@ export class ReviewRequestsController {
     public async changeStatus(
     @Param('id') id: string,
     @Param('reviewId') reviewId: string,
-    @Body(new ValidationPipe({ whitelist: true, transform: true }))
+    @Body(new ValidationPipe({ whitelist: true,forbidNonWhitelisted: true, transform: true }))
     newStatus: ChangeReviewStatusDTO,
     @SessionUser() user: User,
-  ): Promise<CombinedReviewDTO> {
+  ): Promise<CombinedReviewDTO> { 
     return await this.reviewRequestService.changeReviewStatus(id, reviewId, newStatus, user);
   }
 

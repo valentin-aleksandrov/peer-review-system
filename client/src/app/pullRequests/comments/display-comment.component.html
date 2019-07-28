@@ -1,0 +1,8 @@
+<div class="comment container" *ngFor="let comment of comments">
+  <div class="row content">
+    {{ comment.content }}
+  </div>
+  <div class="row username">
+    <div class="float-left">{{ comment.author.username }}</div>
+  </div>
+</div>

@@ -1,0 +1,43 @@
+/* .author{
+    display: inline;
+} */
+/* .display-item {
+  background-color: plum;
+}
+
+.display-review-details {
+  background-color: purple;
+} */
+
+.container {
+  margin-top: 40px;
+}
+
+.title {
+  font-size: 36px;
+}
+
+.fa-circle {
+  color: grey;
+  padding: 2px;
+}
+
+.fa-check-circle {
+  color: green;
+}
+
+.fa-exclamation-circle {
+  color: yellow;
+}
+
+.fa-times-circle {
+  color: red;
+}
+
+.assignee,
+.reviewers,
+.tags,
+.team,
+.title {
+  font-weight: bold;
+}

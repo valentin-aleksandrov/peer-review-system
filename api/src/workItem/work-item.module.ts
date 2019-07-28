@@ -15,6 +15,10 @@ import { Review } from "../entities/review.entity";
 import { Picture } from "../entities/picture.entity";
 import { FileEntity } from "../entities/file.entity";
 import { Team } from "src/entities/team.entity";
+import { CommentEntity } from "../entities/comment.entity";
+import { NotificatorModule } from "src/notifications/notifaction.module";
+import { PushNotificationService } from "src/notifications/push-notification.service";
+import { EmailService } from "src/notifications/email.service";
 
 @Module({
     imports: [
@@ -30,7 +34,9 @@ import { Team } from "src/entities/team.entity";
         Picture, 
         FileEntity,
         Team,
+        CommentEntity,
       ]),
+      NotificatorModule,
     ],
     controllers: [WorkItemController],
     providers: [
