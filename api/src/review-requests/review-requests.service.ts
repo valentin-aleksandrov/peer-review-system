@@ -111,9 +111,50 @@ export class ReviewRequestsService {
     // change of a status
     // update
     const isWorkItemStatusUpdated: boolean = await this.updateWorkItemStatus(workItem);
-    // do something with isWorkItemStatusUpdate when you have time
+    if(isWorkItemStatusUpdated){
+      const lockedWorkItem: WorkItem = await this.workItemRepository.findOne({
+        where: {
+          id: workItemId,
+        }
+      });
+      this.notifyForWorkItemStatusChange(lockedWorkItem);
+      // notify
+    }
     
     return await combined;
+  }
+
+
+  private async notifyForWorkItemStatusChange(workItem: WorkItem): Promise<void>{
+    const workItemStatus: WorkItemStatus = workItem.workItemStatus;
+    const link: string = `http://localhost:4200/pullRequests/${workItem.id}`;
+    const reviews: Review[] = await this.reviewRepository.find({
+      where: {
+        workItem: workItem,
+      }
+    });
+    this.notifyUserForWorkItemStatusChange(workItem.author,workItem.title,workItemStatus.status,link);
+    reviews
+      .map((review: Review)=>review.user)
+      .forEach((user)=>this.notifyUserForWorkItemStatusChange(user,workItem.title,workItemStatus.status,link))
+  }
+  private notifyUserForWorkItemStatusChange(
+    user: User, 
+    workItemTitle: string, 
+    workItemStatus: string,
+    workItemLink: string,
+    ): void {
+      this.emailService.sendEmail(
+        user.email,
+        'Peer review is complete.',
+        `${workItemTitle} is ${workItemStatus}. Press here: ${workItemLink}`
+        );
+      this.pushNotificationService.sendPushNotfication(
+        'Peer review is complete.',
+        `${workItemTitle} is ${workItemStatus}. Press here:`,
+        user.username,
+        workItemLink
+      );
   }
   private async updateWorkItemStatus(workItem: WorkItem): Promise<boolean> {
     const workItemTeam: Team = workItem.team;
