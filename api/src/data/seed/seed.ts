@@ -565,7 +565,7 @@ const main = async () => {
           email: 'valentin805@gmail.com',
         }
       });
-    newWorkItem.assignee = user;
+    newWorkItem.author = user;
     newWorkItem.isReady = false;
     newWorkItem.title = "title1";
     newWorkItem.description = 'This is a description for workitem with a title -> title1';
