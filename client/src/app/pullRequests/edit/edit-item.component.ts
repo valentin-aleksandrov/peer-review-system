@@ -10,6 +10,9 @@ import { Comment } from "src/app/models/comment";
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 import { NgbTypeaheadConfig } from '@ng-bootstrap/ng-bootstrap';
 import { Tag } from 'src/app/models/tag';
+import { WorkItemDataService } from 'src/app/core/services/work-item-data.service';
+import { CreateWorkItem } from 'src/app/models/create-work-item';
+import { UpdateWorkItem } from 'src/app/models/update-work-item';
 
 @Component({
   selector: "edit-item",
@@ -21,12 +24,14 @@ export class EditItem implements OnInit {
   public workItem: WorkItem;
   public updateWorkItemForm: FormGroup;
   public tags: Tag[] = [];
-  
   public selectedItems: Tag[] = [];
   public dropdownSettings = {};
+  public isSubmitted: boolean = false;
   constructor(
     private readonly activatedRoute: ActivatedRoute,
     private readonly formBuilder: FormBuilder,
+    private readonly workItemDataService: WorkItemDataService,
+    private readonly router: Router,
   ) {}
 
   ngOnInit(): void {
@@ -52,6 +57,31 @@ export class EditItem implements OnInit {
       editorModel: [this.workItem.description,[Validators.required, Validators.minLength(17)]]
     });
   }
-  onItemSelect(item: any) {}
-  onSelectAll(items: any) {}
+  public onItemSelect(item: any) {}
+  public onSelectAll(items: any) {}
+
+  public updateWorkItem() {
+    console.log('updateWorkItem');
+    
+    this.isSubmitted = true;
+    if (this.updateWorkItemForm.invalid) {
+      return;
+    }
+    const tags: { name: string }[] = this.selectedItems.map((tag: Tag) => ({
+      name: tag.name
+    }));
+
+    const updateddWorkItem: UpdateWorkItem = {
+      description: this.updateWorkItemForm.value.editorModel,
+      title: this.updateWorkItemForm.value.title,
+      tags: tags,
+    };
+
+    this.workItemDataService
+      .updateWorkItemById(this.workItem.id,updateddWorkItem) 
+      .subscribe(data => {
+        console.log(data);
+        this.router.navigate(["/home"]);
+      });
+  }
 }

@@ -14,14 +14,14 @@
               placeholder="Work item title"
             />
           </div>
-          <!-- <div
+          <div
             *ngIf="
-              this.createWorkItemForm.controls.title.invalid && this.isSubmitted === true
+              this.updateWorkItemForm.controls.title.invalid && this.isSubmitted === true
             "
             class="invalid-input"
           >
             Title is required!
-          </div> -->
+          </div>
           <div class="form-group">
             <!-- <div
               [froalaEditor]="options"
@@ -34,14 +34,19 @@
       
             class="froala"
             ></textarea>
-            <!-- <div
+            <div
             *ngIf="
-              this.createWorkItemForm.controls.editorModel.invalid && this.isSubmitted === true
+              this.updateWorkItemForm.controls.editorModel.invalid && this.isSubmitted === true
             "
             class="invalid-input"
           >
             Description is required (at least 10 characters)!
-          </div> -->
+          </div>
+          </div>
+          <div class="form-group">
+            <button class="btn btn-success" type="submit" name="submit">
+              Update Work Item
+            </button>
           </div>
         </div>
         <div class="col-4">
