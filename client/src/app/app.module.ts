@@ -15,6 +15,7 @@ import { RequestsNavComponent } from "./pullRequests/requests-nav/requests-nav.c
 import { RequestsTableComponent } from "./pullRequests/requests-table/requests-table.component";
 import { SearchBarComponent } from "./pullRequests/search-bar/search-bar.component";
 import { AutocompleteComponent } from "./pullRequests/autocomplete/autocomplete.component";
+import { ErrorInterceptor } from "./interceptors/error.interceptor";
 
 @NgModule({
   declarations: [
@@ -30,7 +31,8 @@ import { AutocompleteComponent } from "./pullRequests/autocomplete/autocomplete.
       provide: HTTP_INTERCEPTORS,
       useClass: JwtInterceptor,
       multi: true
-    }
+    },
+    { provide: HTTP_INTERCEPTORS, useClass: ErrorInterceptor, multi: true }
   ],
   bootstrap: [AppComponent]
 })
