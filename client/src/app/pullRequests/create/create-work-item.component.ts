@@ -23,7 +23,7 @@ import { Router, ActivatedRoute } from "@angular/router";
 export class CreateWorkItemComponent implements OnInit {
   public createWorkItemForm: FormGroup;
   public isSubmitted: boolean = false;
- 
+
   public model: any;
   public addedUsernames: UserDetails[] = [];
   public title: string;
@@ -45,12 +45,10 @@ export class CreateWorkItemComponent implements OnInit {
   ) {}
   ngOnInit() {
     this.loggedUser = this.authenticationService.currentUserValue.user;
-    this.activatedRoute.data.subscribe((data)=>{
-      this.users=data.users;
+    this.activatedRoute.data.subscribe(data => {
+      this.users = data.users;
       this.userTeams = data.teams;
       this.tags = data.tags;
-      
-      
     });
     this.selectedItems = [];
     this.dropdownSettings = {
@@ -66,12 +64,10 @@ export class CreateWorkItemComponent implements OnInit {
       title: ["", [Validators.required, Validators.minLength(3)]],
       reviwer: ["", []],
       tagControl: ["", []],
-      editorModel: ["",[Validators.required, Validators.minLength(17)]]
+      editorModel: ["", [Validators.required, Validators.minLength(17)]]
       // password: ['', [Validators.required, Validators.pattern("(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)(?=.*[@$!%*?&])[A-Za-z\\d@$!%*?&]{6,}")]]
     });
   }
-
-
 
   public get formControls() {
     return this.createWorkItemForm.controls;
@@ -91,7 +87,6 @@ export class CreateWorkItemComponent implements OnInit {
     }
   };
 
-
   search = (text$: Observable<string>) =>
     text$.pipe(
       debounceTime(200),
@@ -99,7 +94,9 @@ export class CreateWorkItemComponent implements OnInit {
         term === ""
           ? []
           : this.users
-              .filter(v => v.username.toLowerCase().indexOf(term.toLowerCase()) > -1)
+              .filter(
+                v => v.username.toLowerCase().indexOf(term.toLowerCase()) > -1
+              )
               .slice(0, 10)
       )
       /* debounceTime(200),
@@ -137,7 +134,7 @@ export class CreateWorkItemComponent implements OnInit {
       return;
     }
 
-    if(this.chosenTeam ==="Choose a team."){
+    if (this.chosenTeam === "Choose a team.") {
       return;
     }
     const reviewers: { username: string }[] = this.addedUsernames.map(
@@ -157,7 +154,7 @@ export class CreateWorkItemComponent implements OnInit {
 
     this.workItemDataService.createWorkItem(createdWorkItem).subscribe(data => {
       console.log(data);
-      this.router.navigate(["/home"]);
+      this.router.navigate([`/pullRequests/${data.id}`]);
     });
   }
 }
