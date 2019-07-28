@@ -14,32 +14,43 @@
       <ngb-tabset>
         <ngb-tab title="Team Invitations">
           <ng-template ngbTabContent>
-            <h6 *ngFor="let invitation of activeInvitations">
-              {{ invitation.name }}
-              <button
-                type="button"
-                class="btn btn-outline-success"
-                (click)="acceptInvitation(invitation)"
-              >
-                Accept
-                <i class="fas fa-check"></i>
-              </button>
-              <button
-                type="button"
-                class="btn btn-outline-danger"
-                (click)="rejectInvitation(invitation)"
-              >
-                Reject
-                <i class="fas fa-times"></i>
-              </button>
-            </h6>
+            <div class="row">
+              <div class="col-sm">
+                <div
+                  *ngFor="let invitation of activeInvitations"
+                  class="resource-name"
+                >
+                  {{ invitation.name }}
+                </div>
+              </div>
+              <div class="col-sm">
+                <button
+                  type="button"
+                  class="btn btn-outline-success"
+                  (click)="acceptInvitation(invitation)"
+                >
+                  Accept
+                  <i class="fas fa-check"></i>
+                </button>
+              </div>
+              <div class="col-sm">
+                <button
+                  type="button"
+                  class="btn btn-outline-danger"
+                  (click)="rejectInvitation(invitation)"
+                >
+                  Reject
+                  <i class="fas fa-times"></i>
+                </button>
+              </div>
+            </div>
           </ng-template>
         </ngb-tab>
         <ngb-tab title="Teams">
           <ng-template ngbTabContent>
             <div *ngFor="let team of userTeams; let i = index">
               <div class="row">
-                <div class="col-sm">
+                <div class="col-sm resource-name">
                   {{ team.teamName }}
                 </div>
                 <div class="col-sm">

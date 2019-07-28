@@ -757,7 +757,6 @@ export class WorkItemService {
         excludeExtraneousValues: true,
       });
       const currentworkItem = item;
-      currentworkItem.reviews = Promise.resolve(reviews);
       const itemToDTO: ShowWorkItemDTO = plainToClass(
         ShowWorkItemDTO,
         currentworkItem,
