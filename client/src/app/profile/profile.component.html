@@ -11,15 +11,12 @@
       <div>{{ currentUser.user.email }}</div>
     </div>
     <div class="col-8">
-      <ngb-tabset>
+      <ngb-tabset #t="ngbTabset">
         <ngb-tab title="Team Invitations">
           <ng-template ngbTabContent>
-            <div class="row">
-              <div class="col-sm">
-                <div
-                  *ngFor="let invitation of activeInvitations"
-                  class="resource-name"
-                >
+            <div class="row" *ngFor="let invitation of activeInvitations">
+              <div class="col-sm" class="resource-name">
+                <div class="resource-name">
                   {{ invitation.name }}
                 </div>
               </div>
@@ -43,10 +40,13 @@
                   <i class="fas fa-times"></i>
                 </button>
               </div>
+              <div *ngIf="this.invalidInput" class="invalid-input">
+                Something went wrong! Try again!
+              </div>
             </div>
           </ng-template>
         </ngb-tab>
-        <ngb-tab title="Teams">
+        <ngb-tab id="tab-selectbyid2" title="Teams">
           <ng-template ngbTabContent>
             <div *ngFor="let team of userTeams; let i = index">
               <div class="row">
@@ -94,6 +94,12 @@
                   >
                     Send Invite
                   </button>
+                  <div *ngIf="this.successfulInvitation" class="valid-input">
+                    You have successfully invited this user!
+                  </div>
+                  <div *ngIf="this.invalidInput" class="invalid-input">
+                    Something went wrong! Try again!
+                  </div>
                 </div>
               </form>
             </div>
@@ -127,6 +133,18 @@
               </div>
               <div formGroupName="rule">
                 <label for="formGroupRule">Team Rules</label>
+                <div class="form-check">
+                  <input
+                    [formControl]="myCheckbox"
+                    type="checkbox"
+                    (change)="setRulesToDefault()"
+                    class="form-check-input"
+                    id="exampleCheck1"
+                  />
+                  <label class="form-check-label" for="exampleCheck1"
+                    >Default rule</label
+                  >
+                </div>
                 <input
                   type="number"
                   formControlName="minPercentApprovalOfItem"
@@ -141,18 +159,6 @@
                   id="formGroupReviewers"
                   placeholder="Minimal number of reviewers..."
                 />
-                <div class="form-check">
-                  <input
-                    [formControl]="myCheckbox"
-                    type="checkbox"
-                    (change)="setRulesToDefault()"
-                    class="form-check-input"
-                    id="exampleCheck1"
-                  />
-                  <label class="form-check-label" for="exampleCheck1"
-                    >Default rule</label
-                  >
-                </div>
                 <div
                   *ngIf="
                     this.createTeamForm.controls.rule.invalid &&
@@ -162,7 +168,12 @@
                 >
                   Rules are required!
                 </div>
-                <button type="submit" class="btn btn-primary">Create</button>
+                <div *ngIf="this.invalidInput" class="invalid-input">
+                  Something went wrong! Try again!
+                </div>
+                <button type="submit" class="btn create-button float-right">
+                  Create
+                </button>
               </div>
             </form>
           </ng-template>

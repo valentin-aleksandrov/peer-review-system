@@ -1,6 +1,10 @@
-@import '~bootstrap/dist/css/bootstrap.min.css';
+@import "~bootstrap/dist/css/bootstrap.min.css";
 @import "~@fortawesome/fontawesome-free/css/all.css";
 
-.invalid-input{
-    color:#bd0410;
+.invalid-input {
+  color: #bd0410;
+}
+
+.valid-input {
+  color: #28a745;
 }

@@ -1,5 +1,5 @@
 <div class="container">
-  <form [formGroup]="searchForm" (ngSubmit)="searchForWorkitems()">
+  <form [formGroup]="searchForm">
     <div class="row">
       <div class="col-lg col-xs-6 col-md-4 mb-20">
         <label for="typeahead-format">Author:</label>
@@ -49,6 +49,7 @@
             >
               {{ tag.name }}
             </button>
+            <button ngbDropdownItem (click)="changeTag('')">any</button>
           </div>
         </div>
       </div>
@@ -75,6 +76,7 @@
             <button ngbDropdownItem (click)="changeStatus('request_changes')">
               request changes
             </button>
+            <button ngbDropdownItem (click)="changeStatus('')">any</button>
           </div>
         </div>
       </div>
@@ -91,8 +93,11 @@
         />
       </div>
       <div class="col-lg-4">
-        <button class="btn search-button">Search</button>
+        <button class="btn search-button" (click)="searchForWorkitems()">
+          Search
+        </button>
       </div>
     </div>
   </form>
+  <div *ngIf="this.empty" class="invalid-input">There no work items matching the selected criteria!</div>
 </div>

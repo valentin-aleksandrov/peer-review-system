@@ -46,13 +46,11 @@ export class TeamInvitationService {
       },
     });
     newInvitation.team = team;
-    console.log('inv', body.inviteeName);
     const invitee = await this.userRepository.findOne({
       where: {
         username: body.inviteeName,
       },
     });
-    console.log(invitee);
     newInvitation.invitee = invitee;
     const createdInvitation = await this.teamInvitationRepository.save(
       newInvitation,

@@ -48,7 +48,6 @@ export class LoginComponent implements OnInit {
       .pipe(first())
       .subscribe(
         data => {
-          console.log(this.loginForm.value);
           this.router.navigate(["/home"]);
         },
         error => {

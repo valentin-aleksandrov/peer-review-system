@@ -69,11 +69,12 @@ export class ItemDetails implements OnInit {
   }
 
   onCommentSubmition(event: SubmitComment) {
-    console.log(event);
-    if (event.status === "comment") {   
+    if (event.status === "comment") {
       this.commentDataService
         .addComment(this.workItem.id, event.content)
-        .subscribe((createdComment: Comment) => console.log(createdComment));
+        .subscribe((createdComment: Comment) =>
+          this.comments.push(createdComment)
+        );
     } else {
       const reviewId = this.reviewId;
       this.commentDataService

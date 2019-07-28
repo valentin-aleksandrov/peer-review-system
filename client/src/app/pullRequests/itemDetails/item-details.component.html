@@ -13,6 +13,21 @@
       </div>
       <hr />
       <div class="content" [innerHTML]="workItem.description"></div>
+      <div class="row">
+        <div class="col-12">
+          Comments:
+          <display-comment [comments]="workItem.comments"></display-comment>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-12">
+          <item-comment
+            [isReviewer]="isReviewer"
+            (commentEmiter)="onCommentSubmition($event)"
+          >
+          </item-comment>
+        </div>
+      </div>
     </div>
 
     <div class="col-3 display-review-details">
@@ -52,15 +67,4 @@
       </div>
     </div>
   </div>
-  <div class="row">
-    <div class="col-9">
-      <display-comment [comments]="workItem.comments"></display-comment>
-    </div>
-  </div>
 </div>
-<item-comment
-  [isReviewer]="isReviewer"
-  (commentEmiter)="onCommentSubmition($event)"
->
-</item-comment>
-0

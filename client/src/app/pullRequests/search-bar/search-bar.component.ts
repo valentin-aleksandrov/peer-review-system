@@ -28,6 +28,7 @@ export class SearchBarComponent implements OnInit {
   public searchForm: FormGroup;
   chosenTag: string = "";
   chosenStatus: string = "";
+  empty: boolean = false;
   // public status: WorkItemStatus[];
   constructor(
     private readonly workItemDataService: WorkItemDataService,
@@ -133,7 +134,9 @@ export class SearchBarComponent implements OnInit {
     this.workItemDataService
       .getSelectedWorkItems(urlStr)
       .subscribe((data: WorkItem[]) => {
-        console.log(urlStr);
+        if (!(data && data.length)) {
+          this.empty = true;
+        }
         this.updateSearchResults.emit(data);
       });
   }
