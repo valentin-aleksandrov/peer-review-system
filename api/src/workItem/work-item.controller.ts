@@ -23,6 +23,7 @@ import { ShowTagDTO } from "./models/show-tag.dto";
 import { async } from "rxjs/internal/scheduler/async";
 import { ChangeWorkItemStatus } from "./models/change-work-item-status.dto";
 import { WorkItemQueryDTO } from "./models/workitem-query.dto";
+import { EditWorkItemDTO } from "./models/edit-work-item.dto";
 
 @UseGuards(AuthGuard())
 @Controller("api/work-item")
@@ -72,7 +73,7 @@ export class WorkItemController {
 
     return foundWorkItem;
   }
-
+/*
   @Put(":itemId")
   async changeWorkItemStatus(
     @Param("itemId") workItemId: string,
@@ -89,6 +90,20 @@ export class WorkItemController {
       throw new BadRequestException(
         "Invalid status or not enough accepted reviews.",
       );
+    }
+    return updatedWorkItem;
+  }*/
+
+  @Put(":itemId")
+  async editWorkItem(
+    @Param("itemId") workItemId: string,
+    @Body(new ValidationPipe({ whitelist: true, transform: true, forbidNonWhitelisted: true }))
+    editedWorkItem: EditWorkItemDTO,
+    @SessionUser() user: User,
+  ): Promise<ShowWorkItemDTO> {
+    const updatedWorkItem: ShowWorkItemDTO = await this.workItemService.editWorkItem(user,workItemId,editedWorkItem);
+    if(!updatedWorkItem){
+      throw new BadRequestException("Invalid workitem update");
     }
     return updatedWorkItem;
   }

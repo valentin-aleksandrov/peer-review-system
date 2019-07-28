@@ -46,7 +46,7 @@ export class TeamController {
 
   @Get()
   @UseGuards(AuthGuard())
-  public async getAllTeams(): Promise<ShowTeamDTO> {
+  public async getAllTeams(): Promise<ShowTeamDTO[]> {
     return await this.teamService.getAllTeams();
   }
   @Get("/user/:id")
