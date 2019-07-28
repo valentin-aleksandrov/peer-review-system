@@ -23,14 +23,18 @@ import { Router } from "@angular/router";
 export class CreateWorkItemComponent implements OnInit {
   public createWorkItemForm: FormGroup;
   public isSubmitted: boolean = false;
-  title: string;
-  chosenTeam: string = "Choose a team.";
-  loggedUser: UserDetails = new UserDetails();
-  users: UserDetails[] = [];
-  tags: Tag[] = [];
-  userTeams: SimpleTeamInfo[] = [];
-  selectedItems: Tag[] = [];
-  dropdownSettings = {};
+ 
+  public model: any;
+  public addedUsernames: UserDetails[] = [];
+  public title: string;
+  public chosenTeam: string = "Choose a team.";
+  public loggedUser: UserDetails = new UserDetails();
+  public users: UserDetails[] = [];
+  public tags: Tag[] = [];
+  public userTeams: SimpleTeamInfo[] = [];
+  public selectedItems: Tag[] = [];
+  public dropdownSettings = {};
+
   constructor(
     private readonly workItemDataService: WorkItemDataService,
     private readonly authenticationService: AuthenticationService,
@@ -66,9 +70,10 @@ export class CreateWorkItemComponent implements OnInit {
       allowSearchFilter: true
     };
     this.createWorkItemForm = this.formBuilder.group({
-      title: ["", [Validators.required]],
+      title: ["", [Validators.required, Validators.minLength(3)]],
       reviwer: ["", []],
-      tagControl: ["", []]
+      tagControl: ["", []],
+      editorModel: ["",[Validators.required, Validators.minLength(17)]]
       // password: ['', [Validators.required, Validators.pattern("(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)(?=.*[@$!%*?&])[A-Za-z\\d@$!%*?&]{6,}")]]
     });
   }
@@ -93,9 +98,6 @@ export class CreateWorkItemComponent implements OnInit {
     }
   };
 
-  public editorContent: string;
-  public model: any;
-  public addedUsernames: UserDetails[] = [];
 
   search = (text$: Observable<string>) =>
     text$.pipe(
@@ -141,6 +143,10 @@ export class CreateWorkItemComponent implements OnInit {
     if (this.createWorkItemForm.invalid) {
       return;
     }
+
+    if(this.chosenTeam ==="Choose a team."){
+      return;
+    }
     const reviewers: { username: string }[] = this.addedUsernames.map(
       reviewer => ({ username: reviewer.username })
     );
@@ -149,7 +155,7 @@ export class CreateWorkItemComponent implements OnInit {
     }));
 
     const createdWorkItem: CreateWorkItem = {
-      description: this.editorContent,
+      description: this.createWorkItemForm.value.editorModel,
       reviewers: reviewers,
       team: this.chosenTeam,
       title: this.title,
