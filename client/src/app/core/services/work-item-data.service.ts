@@ -5,6 +5,7 @@ import { UserDetails } from "src/app/models/user-details";
 import { Tag } from "src/app/models/tag";
 import { CreateWorkItem } from "src/app/models/create-work-item";
 import { WorkItem } from "src/app/models/work-item";
+import { UpdateWorkItem } from 'src/app/models/update-work-item';
 
 @Injectable({
   providedIn: "root"
@@ -39,6 +40,13 @@ export class WorkItemDataService {
   public getSelectedWorkItems(url: string): Observable<WorkItem[]> {
     return this.http.get<WorkItem[]>(
       `http://localhost:3000/api/work-item/${url}`
+    );
+  }
+
+  public updateWorkItemById(workItemId: string, updatedWorkItem: UpdateWorkItem): Observable<WorkItem> {
+    return this.http.put<WorkItem>(
+      `http://localhost:3000/api/work-item/${workItemId}`,
+      updatedWorkItem
     );
   }
 }
