@@ -17,6 +17,7 @@ import { SearchBarComponent } from "./search-bar/search-bar.component";
 import { AutocompleteComponent } from "./autocomplete/autocomplete.component";
 import { SearchWorkitemsComponent } from "./search-workitems/search-workitems.component";
 import { WorkitemsTableComponent } from "./workitems-table/workitems-table.component";
+import { EditItem } from './edit/edit-item.component';
 
 @NgModule({
   declarations: [
@@ -32,7 +33,8 @@ import { WorkitemsTableComponent } from "./workitems-table/workitems-table.compo
     SearchBarComponent,
     AutocompleteComponent,
     SearchWorkitemsComponent,
-    WorkitemsTableComponent
+    WorkitemsTableComponent,
+    EditItem,
   ],
   imports: [
     SharedModule,

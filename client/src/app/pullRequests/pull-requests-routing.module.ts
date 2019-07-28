@@ -13,6 +13,7 @@ import { SearchWorkitemsComponent } from "./search-workitems/search-workitems.co
 import { UsersResolverService } from "../core/services/users-resolver.service";
 import { UserTeamsResolverService } from "../core/services/user-teams-resolver.service";
 import { TagsResolverService } from "../core/services/tags-resolver.service";
+import { EditItem } from './edit/edit-item.component';
 
 const routes: Routes = [
   {
@@ -45,6 +46,11 @@ const routes: Routes = [
       {
         path: ":id",
         component: ItemDetails,
+        resolve: { workItem: itemDetailsResolverService }
+      },
+      {
+        path: "edit/:id",
+        component: EditItem,
         resolve: { workItem: itemDetailsResolverService }
       }
     ]
