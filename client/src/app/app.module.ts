@@ -14,7 +14,6 @@ import { JwtInterceptor } from "./interceptors/auth-interceptor";
 import { RequestsNavComponent } from "./pullRequests/requests-nav/requests-nav.component";
 import { RequestsTableComponent } from "./pullRequests/requests-table/requests-table.component";
 import { SearchBarComponent } from "./pullRequests/search-bar/search-bar.component";
-import { AutocompleteComponent } from "./pullRequests/autocomplete/autocomplete.component";
 import { ErrorInterceptor } from "./interceptors/error.interceptor";
 import { SearchWorkitemsComponent } from "./pullRequests/search-workitems/search-workitems.component";
 import { WorkitemsTableComponent } from "./pullRequests/workitems-table/workitems-table.component";

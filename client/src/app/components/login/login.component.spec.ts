@@ -78,45 +78,4 @@ describe("LoginComponent", () => {
     errors = email.errors || {};
     expect(errors["email"]).toBeTruthy();
   });
-
-  // it("submitting a form emits a user", async () => {
-  //   //expect(component.loginForm.valid).toBeFalsy();
-  //   component.loginForm.controls["email"].setValue("test@test.com");
-  //   component.loginForm.controls["password"].setValue("aaaA9!");
-  //   //expect(component.loginForm.valid).toBeTruthy();
-  //   //const hds = fixture.debugElement.injector.get(AuthenticationService);
-  //   let user: MockUser = {
-  //     avatarURL: "avatar",
-  //     email: "test@test.com",
-  //     firstName: "Gosho",
-  //     lastName: "Goshev",
-  //     role: "admin",
-  //     username: "Goshkata",
-  //     id: "id"
-  //   };
-  //   authenticationServiceSpy.login = of("test");
-  //   //authenticationServiceSpy.login.pipe = of("");
-  //   await fixture.detectChanges();
-  //   //const loginSpy = spyOn(hds, "login").and.returnValue(of(user));
-  //   // let user: MockUser = {
-  //   //   avatarURL: "avatar",
-  //   //   email: "test@test.com",
-  //   //   firstName: "Gosho",
-  //   //   lastName: "Goshev",
-  //   //   role: "admin",
-  //   //   username: "Goshkata",
-  //   //   id: "id"
-  //   // };
-  //   // let user: MockUser;
-
-  //   //let user = { email: string, password };
-  //   // Subscribe to the Observable and store the user in a local variable.
-  //   component.logInUser();
-
-  //   // Trigger the login function
-  //   //component.logInUser(component.loginForm.value);
-
-  //   // Now we can check to make sure the emitted value is correct
-  //   expect(component.logInUser()).toBe("test");
-  // });
 });

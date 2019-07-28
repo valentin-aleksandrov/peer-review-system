@@ -14,10 +14,9 @@ import { DisplayComment } from "./comments/display-comment.component";
 import { RequestsNavComponent } from "./requests-nav/requests-nav.component";
 import { RequestsTableComponent } from "./requests-table/requests-table.component";
 import { SearchBarComponent } from "./search-bar/search-bar.component";
-import { AutocompleteComponent } from "./autocomplete/autocomplete.component";
 import { SearchWorkitemsComponent } from "./search-workitems/search-workitems.component";
 import { WorkitemsTableComponent } from "./workitems-table/workitems-table.component";
-import { EditItem } from './edit/edit-item.component';
+import { EditItem } from "./edit/edit-item.component";
 
 @NgModule({
   declarations: [
@@ -31,10 +30,9 @@ import { EditItem } from './edit/edit-item.component';
     RequestsNavComponent,
     RequestsTableComponent,
     SearchBarComponent,
-    AutocompleteComponent,
     SearchWorkitemsComponent,
     WorkitemsTableComponent,
-    EditItem,
+    EditItem
   ],
   imports: [
     SharedModule,

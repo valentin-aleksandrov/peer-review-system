@@ -1,19 +1,19 @@
-import { Injectable } from '@nestjs/common';
-import { Team } from 'src/entities/team.entity';
-import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
-import { TeamInvitation } from 'src/entities/team-invitation.entity';
-import { TeamInvitationStatus } from 'src/entities/team-invitation-status.entity';
-import { stat } from 'fs';
-import { User } from 'src/entities/user.entity';
-import { AddTeamInvitationDTO } from './models/add-team-invitation.dto';
-import { ShowTeamInvitationDTO } from './models/show-team-invitation.dto';
-import { plainToClass } from 'class-transformer';
-import { ShowUserDTO } from 'src/users/models/show-user.dto';
-import { ShowTeamDTO } from 'src/team/models/show-team.dto';
-import { ShowTeamInvitationStatusDTO } from './models/team-invitation-status.dto';
-import { EmailService } from 'src/notifications/email.service';
-import { PushNotificationService } from 'src/notifications/push-notification.service';
+import { Injectable, HttpException, BadRequestException } from "@nestjs/common";
+import { Team } from "src/entities/team.entity";
+import { InjectRepository } from "@nestjs/typeorm";
+import { Repository } from "typeorm";
+import { TeamInvitation } from "src/entities/team-invitation.entity";
+import { TeamInvitationStatus } from "src/entities/team-invitation-status.entity";
+import { stat } from "fs";
+import { User } from "src/entities/user.entity";
+import { AddTeamInvitationDTO } from "./models/add-team-invitation.dto";
+import { ShowTeamInvitationDTO } from "./models/show-team-invitation.dto";
+import { plainToClass } from "class-transformer";
+import { ShowUserDTO } from "src/users/models/show-user.dto";
+import { ShowTeamDTO } from "src/team/models/show-team.dto";
+import { ShowTeamInvitationStatusDTO } from "./models/team-invitation-status.dto";
+import { EmailService } from "src/notifications/email.service";
+import { PushNotificationService } from "src/notifications/push-notification.service";
 
 @Injectable()
 export class TeamInvitationService {
@@ -32,10 +32,23 @@ export class TeamInvitationService {
     body: AddTeamInvitationDTO,
     user: User,
   ): Promise<ShowTeamInvitationDTO> {
+    const currentTeam: Team = await this.teamRepository.findOne({
+      where: {
+        teamName: body.teamName,
+      },
+    });
+    const teamMembers: User[] = await currentTeam.users;
+    for (let member of teamMembers) {
+      if (body.inviteeName === member.username) {
+        throw new BadRequestException(
+          "This user is already a member of this team!",
+        );
+      }
+    }
     const newInvitation = new TeamInvitation();
     const status = await this.teamInvitationStatusRepository.findOne({
       where: {
-        status: 'pending',
+        status: "pending",
       },
     });
     newInvitation.status = status;
@@ -99,7 +112,7 @@ export class TeamInvitationService {
     const newStatus: TeamInvitationStatus = await this.teamInvitationStatusRepository.findOne(
       {
         where: {
-          status: 'accepted',
+          status: "accepted",
         },
       },
     );
@@ -129,7 +142,7 @@ export class TeamInvitationService {
     });
     const newStatus = await this.teamInvitationStatusRepository.findOne({
       where: {
-        status: 'rejected',
+        status: "rejected",
       },
     });
     invitation.status = newStatus;
@@ -157,13 +170,13 @@ export class TeamInvitationService {
       },
     });
     const invitations: TeamInvitation[] = await this.teamInvitationRepository.find(
-      { where: { invitee: user }, relations: ['status'] },
+      { where: { invitee: user }, relations: ["status"] },
     );
     const activeInvitations: TeamInvitation[] = [];
     invitations.forEach(element => {
       const status = element.status.status;
 
-      if (status === 'pending') {
+      if (status === "pending") {
         activeInvitations.push(element);
       }
     });
@@ -193,19 +206,19 @@ export class TeamInvitationService {
     const teamName: string = teamInvitation.team.teamName;
     const inviteeEmail: string = teamInvitation.invitee.email;
     const inviteeUsername: string = teamInvitation.invitee.username;
-    const link: string = 'http://localhost:4200/profile';
+    const link: string = "http://localhost:4200/profile";
 
     this.emailService.sendEmail(
       inviteeEmail,
-      'New invitation',
-      `${hostUsername} invited you to join ${teamName} team. Press here: ${link}`
+      "New invitation",
+      `${hostUsername} invited you to join ${teamName} team. Press here: ${link}`,
     );
 
     this.pushNotificationService.sendPushNotfication(
-      'New invitation',
+      "New invitation",
       `${hostUsername} invited you to join ${teamName} team. Press here:`,
       inviteeUsername,
-      link
+      link,
     );
   }
 }
