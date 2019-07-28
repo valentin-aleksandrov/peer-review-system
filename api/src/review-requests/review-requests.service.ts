@@ -1,4 +1,4 @@
-import { Injectable } from "@nestjs/common";
+import { Injectable, Inject } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
 import { Repository } from "typeorm";
 import { CommentEntity } from "src/entities/comment.entity";
@@ -16,6 +16,9 @@ import { CombinedReviewDTO } from "./models/combined-review.dto";
 import { EmailService } from "src/notifications/email.service";
 import { PushNotificationService } from "src/notifications/push-notification.service";
 import { ShowUserDTO } from "src/users/models/show-user.dto";
+import { TeamRules } from "src/entities/team-rules.entity";
+import { WorkItemStatus } from "src/entities/work-item-status.entity";
+import { Team } from "src/entities/team.entity";
 
 @Injectable()
 export class ReviewRequestsService {
@@ -27,6 +30,8 @@ export class ReviewRequestsService {
     @InjectRepository(ReviewerStatus)
     private reviewStatusRepository: Repository<ReviewerStatus>,
     @InjectRepository(Review) private reviewRepository: Repository<Review>,
+    @InjectRepository(WorkItemStatus)
+    private workItemStatusRepository: Repository<WorkItemStatus>,
     private readonly emailService: EmailService,
     private readonly pushNotificationService: PushNotificationService,
   ) {}
@@ -103,7 +108,58 @@ export class ReviewRequestsService {
       id: workItemId,
     }})
     this.notifyForReviewStatusChange(workItem,combined);
+    // change of a status
+    // update
+    const isWorkItemStatusUpdated: boolean = await this.updateWorkItemStatus(workItem);
+    // do something with isWorkItemStatusUpdate when you have time
+    
     return await combined;
+  }
+  private async updateWorkItemStatus(workItem: WorkItem): Promise<boolean> {
+    const workItemTeam: Team = workItem.team;
+    const teamRule: TeamRules = workItemTeam.rules; 
+    const reviews: Review[] = await workItem.reviews;
+    let reviewStatuses: ReviewerStatus[] = [];
+    for (const review of reviews) {
+      const foundReview: Review = await this.reviewRepository.findOne({
+        where: {
+          id: review.id,
+        }
+      });
+      const foundReviewStatus: ReviewerStatus = foundReview.reviewerStatus;
+      reviewStatuses = [foundReviewStatus, ...reviewStatuses];
+    }
+    const isRejected: boolean = reviewStatuses.some((status)=>status.status==='rejected'); 
+    if(isRejected){
+      // change to reject
+      const workItemStatusRejected: WorkItemStatus = await this.workItemStatusRepository.findOne({
+        where: {
+          status: 'rejected',
+        },
+      });
+      workItem.workItemStatus = workItemStatusRejected;
+      await this.workItemRepository.save(workItem);
+      return true;
+    }
+    const acceptedCount: number = reviewStatuses.filter((status)=>status.status==='accepted').length;
+    const acceptedPercentage: number = this.calculatePercentage(reviewStatuses.length,acceptedCount);
+    if(acceptedPercentage >= teamRule.minPercentApprovalOfItem) {
+      // change te accepted
+      const workItemStatusAccepted: WorkItemStatus = await this.workItemStatusRepository.findOne({
+        where: {
+          status: 'accepted',
+        },
+      });
+      workItem.workItemStatus = workItemStatusAccepted;
+      await this.workItemRepository.save(workItem);
+      return true;
+    }
+    
+    return false;
+  }
+  private calculatePercentage(reviewsCount: number, acceptedCount: number): number {
+    const percentage: number = (acceptedCount/reviewsCount)*100;
+    return percentage;
   }
   private async notifyForReviewStatusChange(workItem: WorkItem, combined: CombinedReviewDTO): Promise<void> {  
     const reviews: Review[] = await workItem.reviews;
