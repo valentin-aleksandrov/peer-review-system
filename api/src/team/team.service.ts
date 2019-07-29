@@ -9,6 +9,7 @@ import { ShowTeamDTO } from "./models/show-team.dto";
 import { plainToClass } from "class-transformer";
 import { SimpleTeamInfoDTO } from "./models/simple-team-info.dto";
 import { ShowUserDTO } from "src/users/models/show-user.dto";
+import { TeamRuleDTO } from "./models/team-rule.dto";
 
 @Injectable()
 export class TeamService {
@@ -114,11 +115,22 @@ export class TeamService {
 
     const foundTeams: SimpleTeamInfoDTO[] = [];
     for (const currentTeam of teams) {
+      const foundTeamRule: TeamRules = await this.teamRulesRepository.findOne({
+        where: {
+          team: currentTeam,
+        }
+      });
+      // const foundTeamRule: TeamRules = await this.
+      const teamRuleDTO: TeamRuleDTO = {
+        minNumberOfReviewers: foundTeamRule.minNumberOfReviewers,
+        minPercentApprovalOfItem: foundTeamRule.minPercentApprovalOfItem,
+      };
       const members: ShowUserDTO[] = await this.getTeamMembers(currentTeam.id);
       const simpleInfo: SimpleTeamInfoDTO = {
         id: currentTeam.id,
         teamName: currentTeam.teamName,
         members: members.map(user => user.username),
+        rules: teamRuleDTO,
       };
       foundTeams.push(simpleInfo);
     }

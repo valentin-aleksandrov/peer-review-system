@@ -12,6 +12,7 @@ import { SimpleTeamInfo } from "src/app/models/simple-team-info";
 import { FormGroup, FormBuilder, Validators } from "@angular/forms";
 import { CreateWorkItem } from "src/app/models/create-work-item";
 import { Router, ActivatedRoute } from "@angular/router";
+import { Team } from 'src/app/models/team';
 
 @Component({
   selector: "create-work-item",
@@ -23,15 +24,16 @@ import { Router, ActivatedRoute } from "@angular/router";
 export class CreateWorkItemComponent implements OnInit {
   public createWorkItemForm: FormGroup;
   public isSubmitted: boolean = false;
-
+  public chosenTeam: Team = new Team('Choose a team');
   public model: any;
   public addedUsernames: UserDetails[] = [];
   public title: string;
-  public chosenTeam: string = "Choose a team.";
+  // public chosenTeam: string = "Choose a team.";
+  public teamNames: string[];
   public loggedUser: UserDetails = new UserDetails();
   public users: UserDetails[] = [];
   public tags: Tag[] = [];
-  public userTeams: SimpleTeamInfo[] = [];
+  public userTeams: Team[] = [];
   public selectedItems: Tag[] = [];
   public dropdownSettings = {};
 
@@ -48,6 +50,7 @@ export class CreateWorkItemComponent implements OnInit {
     this.activatedRoute.data.subscribe(data => {
       this.users = data.users;
       this.userTeams = data.teams;
+      this.teamNames = this.userTeams.map((team:Team)=>team.teamName);
       this.tags = data.tags;
     });
     this.selectedItems = [];
@@ -75,8 +78,10 @@ export class CreateWorkItemComponent implements OnInit {
   onItemSelect(item: any) {}
   onSelectAll(items: any) {}
 
-  public changeTeam(team: SimpleTeamInfo) {
-    this.chosenTeam = team.teamName;
+  public changeTeam(chosenTeam: Team) {
+    // const foundteam = this.userTeams
+    //   .find((team: Team)=>team.teamName===chosenTeam);
+    this.chosenTeam = chosenTeam;
   }
 
   public options: Object = {
@@ -113,6 +118,9 @@ export class CreateWorkItemComponent implements OnInit {
     this.users.splice(index, 1);
     this.model = {};
   }
+  public notEnoughRequevwerAdded(): boolean {
+    return this.addedUsernames.length < this.chosenTeam.rules.minNumberOfReviewers;
+  }
 
   public removeReviewer(event: UserDetails) {
     const index = this.findIndex(this.addedUsernames, event);
@@ -134,9 +142,10 @@ export class CreateWorkItemComponent implements OnInit {
       return;
     }
 
-    if (this.chosenTeam === "Choose a team.") {
+    if (!this.chosenTeam.rules || this.notEnoughRequevwerAdded()) {
       return;
     }
+    
     const reviewers: { username: string }[] = this.addedUsernames.map(
       reviewer => ({ username: reviewer.username })
     );
@@ -147,13 +156,13 @@ export class CreateWorkItemComponent implements OnInit {
     const createdWorkItem: CreateWorkItem = {
       description: this.createWorkItemForm.value.editorModel,
       reviewers: reviewers,
-      team: this.chosenTeam,
+      team: this.chosenTeam.teamName,
       title: this.title,
       tags: tags
     };
 
     this.workItemDataService.createWorkItem(createdWorkItem).subscribe(data => {
-      console.log(data);
+      console.log('Created work item:',data);
       this.router.navigate([`/pullRequests/${data.id}`]);
     });
   }

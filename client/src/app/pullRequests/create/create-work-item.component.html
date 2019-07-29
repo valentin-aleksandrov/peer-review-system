@@ -63,12 +63,12 @@
               class="btn btn-outline-primary"
               ngbDropdownToggle
             >
-              {{ this.chosenTeam }}
+              {{ this.chosenTeam.teamName }}
             </button>
             <div class="dropdown-menu" ngbDropdownMenu>
               <button
                 type="button"
-                *ngFor="let team of userTeams"
+                *ngFor="let team of this.userTeams"
                 ngbDropdownItem
                 (click)="changeTeam(team, ref)"
               >
@@ -78,8 +78,16 @@
             
           </div>
           <div
+          *ngIf="
+            this.isSubmitted === true && this.chosenTeam.rules && this.notEnoughRequevwerAdded()
+          "
+          class="invalid-input"
+        >
+          You neat at least {{this.chosenTeam.rules.minNumberOfReviewers}}
+        </div>
+          <div
               *ngIf="
-                this.isSubmitted === true && this.chosenTeam==='Choose a team.'
+                this.isSubmitted === true && !this.chosenTeam.rules
               "
               class="invalid-input"
             >
