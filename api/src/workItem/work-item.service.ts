@@ -105,10 +105,44 @@ export class WorkItemService {
     } else {
       foundWorkItem.workItemStatus = foundNewStatus;
     }
-    const upadetedWorkItem: WorkItem = await this.workItemRepository.save(
+    const updatedWorkItem: WorkItem = await this.workItemRepository.save(
       foundWorkItem,
     );
-    return await this.convertToShowWorkItemDTO(upadetedWorkItem);
+    return await this.convertToShowWorkItemDTO(updatedWorkItem);
+  }
+  private async notifyForEditedWorkItem(updatedWorkItem: WorkItem): Promise<void> {
+    const link: string = `http://localhost:4200/pullRequests/${updatedWorkItem.id}`;
+    const reviews: Review[] = await updatedWorkItem.reviews;
+    console.log('reviews',reviews);
+    let reviewsLoaded: Review[] = [];
+    for (const currentReview of reviews) {
+      const foundReviewer: Review = await this.reviewsRepository.findOne({
+        where: {
+          id: currentReview.id,
+        }
+      });
+      if(foundReviewer){
+        reviewsLoaded = [foundReviewer,...reviewsLoaded];
+      }
+    }
+    this.notifyUserForEditedWorkItem(updatedWorkItem.author,updatedWorkItem,link);
+    reviewsLoaded
+      .map((review: Review)=>review.user)
+      .forEach((user: User)=>this.notifyUserForEditedWorkItem(user,updatedWorkItem,link));
+  }
+  
+  private notifyUserForEditedWorkItem(user: User, workItem: WorkItem, link: string): void {
+    this.emailService.sendEmail(
+      user.email,
+      'Work Item is edited',
+      `${workItem.title} is edited. Press here:${link}`
+    );
+    this.pushNotificationService.sendPushNotfication(
+      'Work Item is edited',
+      `${workItem.title} is edited. Press here:`,
+      user.username,
+      link
+    );
   }
 
   private calculatePercentage(
@@ -313,6 +347,7 @@ export class WorkItemService {
     }
     foundWorkItem.tags = Promise.resolve(updatedTagsList);
     const updatedWorkItem: WorkItem = await this.workItemRepository.save(foundWorkItem);
+    this.notifyForEditedWorkItem(updatedWorkItem);
     const updatedWorkItemDTO: ShowWorkItemDTO = await this.convertToShowWorkItemDTO(updatedWorkItem);
     return updatedWorkItemDTO;
   }
@@ -333,7 +368,7 @@ export class WorkItemService {
       const text = `${authorUsername} has added you as a reviewer to ${
         workItem.title
       }. Press here to see: `;
-      const link = `http://localhost:3000/api/${workItem.id}`;
+      const link = `http://localhost:4200/pullRequests/${workItem.id}`;
       this.emailService.sendEmail(
         currentReview.user.email,
         "You are added as a reviewer",
