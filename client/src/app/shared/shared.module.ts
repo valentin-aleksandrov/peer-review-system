@@ -19,8 +19,7 @@ import {NgbModule} from '@ng-bootstrap/ng-bootstrap';
       FormsModule,
       ReactiveFormsModule,
       HttpClientModule,
-      NgbModule
-
+      NgbModule,
     ]
   })
   export class SharedModule {}

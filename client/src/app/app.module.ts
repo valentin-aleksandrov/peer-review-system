@@ -11,12 +11,7 @@ import { SharedModule } from "./shared/shared.module";
 import { LoginComponent } from "./components/login/login.component";
 import { HttpClientModule, HTTP_INTERCEPTORS } from "@angular/common/http";
 import { JwtInterceptor } from "./interceptors/auth-interceptor";
-import { RequestsNavComponent } from "./pullRequests/requests-nav/requests-nav.component";
-import { RequestsTableComponent } from "./pullRequests/requests-table/requests-table.component";
-import { SearchBarComponent } from "./pullRequests/search-bar/search-bar.component";
 import { ErrorInterceptor } from "./interceptors/error.interceptor";
-import { SearchWorkitemsComponent } from "./pullRequests/search-workitems/search-workitems.component";
-import { WorkitemsTableComponent } from "./pullRequests/workitems-table/workitems-table.component";
 
 @NgModule({
   declarations: [
@@ -26,7 +21,13 @@ import { WorkitemsTableComponent } from "./pullRequests/workitems-table/workitem
     RegisterComponent,
     LoginComponent
   ],
-  imports: [BrowserModule, AppRoutingModule, CoreModule, SharedModule],
+  imports: [
+    BrowserModule, 
+    AppRoutingModule, 
+    CoreModule, 
+    SharedModule,
+    HttpClientModule,
+  ],
   providers: [
     {
       provide: HTTP_INTERCEPTORS,

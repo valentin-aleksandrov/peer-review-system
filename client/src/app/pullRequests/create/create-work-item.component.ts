@@ -28,7 +28,7 @@ export class CreateWorkItemComponent implements OnInit {
   public model: any;
   public addedUsernames: UserDetails[] = [];
   public title: string;
-  // public chosenTeam: string = "Choose a team.";
+  
   public teamNames: string[];
   public loggedUser: UserDetails = new UserDetails();
   public users: UserDetails[] = [];
