@@ -81,7 +81,7 @@ export class EditItem implements OnInit {
       .updateWorkItemById(this.workItem.id,updateddWorkItem) 
       .subscribe(data => {
         console.log(data);
-        this.router.navigate(["/home"]);
+        this.router.navigate([`/pullRequests/${data.id}`]);
       });
   }
 }
