@@ -82,4 +82,13 @@ export class ItemDetails implements OnInit {
         .subscribe();
     }
   }
+
+  checkEditingRights() {
+    if (
+      this.loggedUser.username === this.workItem.author.username ||
+      this.loggedUser.role === "admin"
+    ) {
+      return true;
+    }
+  }
 }
