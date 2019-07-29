@@ -11,6 +11,7 @@ npm run start
 cd api
 npm run start
 ctrl+c (stop the api to run the seed.ts)
+npm run seed
 npm run start
 ```
 ### Requirements
