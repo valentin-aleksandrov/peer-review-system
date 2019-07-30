@@ -20,6 +20,8 @@ node
 npm
 mariadb or MySQL
 ```
+### Create these files at: peer-review-system/api/
+
 * .env
 
 ```
