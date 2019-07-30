@@ -136,11 +136,28 @@
         <button class="btn btn-success" (click)="showValue()">Show Values</button>
     </div> -->
     </div>
-    <files-uploader></files-uploader>
+   
     <div class="form-group">
       <button class="btn btn-success" type="submit" name="submit">
         Create Work Item
       </button>
     </div>
   </form>
+  <files-uploader
+  (filesEmiter)="onFilesUpload($event)"
+></files-uploader>
+<div class="upload-table">
+  <table class="table">
+      <thead>
+          <tr>
+              <th>File Names:</th>
+          </tr>
+      </thead>
+      <tbody class="upload-name-style">
+          <tr *ngFor="let item of this.files;">
+              <td><strong>{{ item.relativePath }}</strong></td>
+          </tr>
+      </tbody>
+  </table>
+</div>
 </div>

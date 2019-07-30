@@ -13,6 +13,7 @@ import { FormGroup, FormBuilder, Validators } from "@angular/forms";
 import { CreateWorkItem } from "src/app/models/create-work-item";
 import { Router, ActivatedRoute } from "@angular/router";
 import { Team } from 'src/app/models/team';
+import { NgxFileDropEntry } from 'ngx-file-drop';
 
 @Component({
   selector: "create-work-item",
@@ -28,7 +29,7 @@ export class CreateWorkItemComponent implements OnInit {
   public model: any;
   public addedUsernames: UserDetails[] = [];
   public title: string;
-  
+  public files: NgxFileDropEntry[];
   public teamNames: string[];
   public loggedUser: UserDetails = new UserDetails();
   public users: UserDetails[] = [];
@@ -165,5 +166,12 @@ export class CreateWorkItemComponent implements OnInit {
       console.log('Created work item:',data);
       this.router.navigate([`/pullRequests/${data.id}`]);
     });
+  }
+  public onFilesUpload(event) {
+    console.log('honda-----------------');
+    console.log('onFilesUpload',event);
+    console.log('----------------------');
+    
+    this.files = event;
   }
 }

@@ -1,16 +1,6 @@
 import { Component, Input, Output, EventEmitter, OnInit } from "@angular/core";
-import { UserDetails } from "src/app/models/user-details";
-import { WorkItem } from "src/app/models/work-item";
-import { Router, ActivatedRoute } from "@angular/router";
-import { AuthenticationService } from "src/app/core/services/authentication.service";
 import { NgxFileDropEntry, FileSystemFileEntry, FileSystemDirectoryEntry } from 'ngx-file-drop';
-import {
-  FormGroup,
-  FormBuilder,
-  Validators,
-  FormControl
-} from "@angular/forms";
-import { SubmitComment } from "src/app/models/submit-comment";
+
 
 @Component({
   selector: "files-uploader",
@@ -19,6 +9,8 @@ import { SubmitComment } from "src/app/models/submit-comment";
 })
 export class FilesUploaderComponent implements OnInit {
   public files: NgxFileDropEntry[] = [];
+  @Output() filesEmiter = new EventEmitter<NgxFileDropEntry[]>();
+  
   public areFilesUploaded(): boolean {
     return this.files.length > 0;
   }
@@ -28,15 +20,20 @@ export class FilesUploaderComponent implements OnInit {
   }
   public dropped(files: NgxFileDropEntry[]) {
     this.files = files;
+    const filesData: File[] = [];
+    console.log('file->',this.files[0]);
+    console.log('Should sent -> ',this.files[0]);
+    
+    this.filesEmiter.emit(this.files);
     for (const droppedFile of files) {
  
       // Is it a file?
       if (droppedFile.fileEntry.isFile) {
         const fileEntry = droppedFile.fileEntry as FileSystemFileEntry;
         fileEntry.file((file: File) => {
- 
+          filesData.push(file);
           // Here you can access the real file
-          console.log(droppedFile.relativePath, file);
+          console.log('1v0',droppedFile.relativePath, file);
  
           /**
           // You could upload it like this:
@@ -55,19 +52,20 @@ export class FilesUploaderComponent implements OnInit {
           **/
  
         });
+        
       } else {
         // It was a directory (empty directories are added, otherwise only files)
         const fileEntry = droppedFile.fileEntry as FileSystemDirectoryEntry;
-        console.log(droppedFile.relativePath, fileEntry);
+        console.log('1',droppedFile.relativePath, fileEntry);
       }
     }
   }
  
   public fileOver(event){
-    console.log(event);
+    console.log('2',event);
   }
  
   public fileLeave(event){
-    console.log(event);
+    console.log('3',event);
   }
  }
