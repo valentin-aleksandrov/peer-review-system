@@ -52,11 +52,11 @@ export class FilesUploaderComponent implements OnInit {
           const reader = new FileReader();
           console.log('try with FileReader()7');
           // reader.readAsDataURL(blob);
-          reader.readAsDataURL(file);
+          
           
           console.log('Did it work?');
-          this.fileName = `testfile${blob.type}`;
-          this.fileUrl = this.sanitizer.bypassSecurityTrustResourceUrl(window.URL.createObjectURL(blob));
+          this.fileName = `testfile${file.name}`;
+          this.fileUrl = this.sanitizer.bypassSecurityTrustResourceUrl(window.URL.createObjectURL(file));
           
       
 

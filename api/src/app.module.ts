@@ -15,6 +15,7 @@ import { ReviewRequestsModule } from './review-requests/review-requests.module';
 import { HandlebarsAdapter, MailerModule } from '@nest-modules/mailer';
 import { NotificatorModule } from './notifications/notifaction.module';
 import { EmailService } from './notifications/email.service';
+import { FilesModule } from './files/files.module';
 
 @Module({
   imports: [
@@ -58,6 +59,7 @@ import { EmailService } from './notifications/email.service';
     TeamInvitationModule, 
     ReviewRequestsModule,
     NotificatorModule,
+    FilesModule,
   ],
   controllers: [AppController],
   providers: [AppService],
