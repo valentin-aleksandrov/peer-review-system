@@ -1,4 +1,3 @@
-
 import { WorkItem } from "src/entities/work-item.entity";
 import { Role } from "src/entities/role.entity";
 import { ReviewerStatus } from "src/entities/reviewer-status.entity";
@@ -20,7 +19,6 @@ import { NotificatorModule } from "src/notifications/notifaction.module";
 import { FilesService } from "./files.service";
 import { FilesController } from "./files.controller";
 import { WorkItemModule } from "src/workItem/work-item.module";
-
 @Module({
     imports: [
       PassportModule.register({defaultStrategy: 'jwt'}),

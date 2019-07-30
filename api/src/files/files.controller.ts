@@ -13,14 +13,13 @@ import {
   Put,
   UploadedFiles,
   UseInterceptors,
+  Res,
 } from "@nestjs/common";
 import { AuthGuard } from "@nestjs/passport";
 import { WorkItemService } from "src/workItem/work-item.service";
 import { FilesService } from "./files.service";
 import { FilesInterceptor } from "@nestjs/platform-express";
 
-
-@UseGuards(AuthGuard())
 @Controller("api/files")
 export class FilesController {
   constructor(
@@ -29,13 +28,22 @@ export class FilesController {
     ) {}
 
   @Post('workItem/:id')
+  @UseGuards(AuthGuard())
   @UseInterceptors(FilesInterceptor('files'))
   uploadFile(
     @UploadedFiles() files,
     @Param("id") workItemId: string,
     ) {
-    console.log('files',files);
-    console.log('workItemId',workItemId);
-    
+    const fileNames: string[] = this.filesService.saveFiles(files, workItemId);
+    return 'ok';
   }
+
+  @Get(":url")
+  async getFile(@Res() response, @Param("url") fileURL: string,){
+    return response.download(`uploads/${fileURL}`)
+  }
+
+
+
+ 
 }
