@@ -9,31 +9,36 @@ import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser';
   styleUrls: ["./files-uploader.component.css"]
 })
 export class FilesUploaderComponent implements OnInit {
-  public fileUrl: SafeResourceUrl;
-  public files: NgxFileDropEntry[] = [];
+  // public fileUrl: SafeResourceUrl;
+  // public files: NgxFileDropEntry[] = [];
   @Output() filesEmiter = new EventEmitter<NgxFileDropEntry[]>();
-  public url2: string;
-  public fileName: string;
+  // public url2: string;
+  // public fileName: string;
   
   constructor(private sanitizer: DomSanitizer){
     
-  }
-
-  public areFilesUploaded(): boolean {
-    return this.files.length > 0;
   }
  
   ngOnInit(): void {
     
   }
   public dropped(files: NgxFileDropEntry[]) {
-     const filesData: File[] = [];
     this.filesEmiter.emit(files);
-    console.log('before loop');
-    
+  }
+  public fileOver(event){
+    // console.log('2',event);
+  }
+ 
+  public fileLeave(event){
+    // console.log('3',event);
+  }
+ }
+
+
+  /*  {
    // How to handle NgxFileDropEntry
     for (const droppedFile of files) {
-      console.log('isFile',droppedFile.fileEntry.name, droppedFile.fileEntry.isFile);
+      // console.log('isFile',droppedFile.fileEntry.name, droppedFile.fileEntry.isFile);
       
       // Is it a file?
       if (droppedFile.fileEntry.isFile) {
@@ -41,22 +46,22 @@ export class FilesUploaderComponent implements OnInit {
         fileEntry.file((file: File) => {
           filesData.push(file);
 
-          console.log('testing file download',file.name,file.type);
+          // console.log('testing file download',file.name,file.type);
           
           const blob = new Blob([file], { type: file.type });
           const url= window.URL.createObjectURL(blob);
           //window.open(url);
           
-          console.log('blop',blob);
+         
           
-          const reader = new FileReader();
-          console.log('try with FileReader()7');
+          // const reader = new FileReader();
+         
           // reader.readAsDataURL(blob);
           
           
-          console.log('Did it work?');
-          this.fileName = `testfile${file.name}`;
-          this.fileUrl = this.sanitizer.bypassSecurityTrustResourceUrl(window.URL.createObjectURL(file));
+          // console.log('Did it work?');
+          // this.fileName = `testfile${file.name}`;
+          // this.fileUrl = this.sanitizer.bypassSecurityTrustResourceUrl(window.URL.createObjectURL(file));
           
       
 
@@ -83,17 +88,10 @@ export class FilesUploaderComponent implements OnInit {
       } else {
         // It was a directory (empty directories are added, otherwise only files)
         const fileEntry = droppedFile.fileEntry as FileSystemDirectoryEntry;
-        console.log('It is not a file.ѝ');
+        console.log('It is not a file.');
         
       }
-    }
-  }
+    }*/
  
-  public fileOver(event){
-    console.log('2',event);
-  }
  
-  public fileLeave(event){
-    console.log('3',event);
-  }
- }
+ 

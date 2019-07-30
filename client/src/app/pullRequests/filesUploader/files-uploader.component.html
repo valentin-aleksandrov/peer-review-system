@@ -2,12 +2,12 @@
   <ngx-file-drop dropZoneLabel="Drop files here" (onFileDrop)="dropped($event)" 
   (onFileOver)="fileOver($event)" (onFileLeave)="fileLeave($event)">
       <ng-template ngx-file-drop-content-tmp let-openFileSelector="openFileSelector">
-        drag and drop you files here:.
+        Drag and Drop you files here: 
         <button type="button" (click)="openFileSelector()">Browse Files</button>
       </ng-template>
   </ngx-file-drop>
 
-  <a [href]="fileUrl" [download]="fileName">DownloadFile3</a>
+  <!-- <a [href]="fileUrl" [download]="fileName">DownloadFile3</a> -->
   <!-- <div class="upload-table" *ngIf="this.areFilesUploaded()">
       <table class="table">
           <thead>

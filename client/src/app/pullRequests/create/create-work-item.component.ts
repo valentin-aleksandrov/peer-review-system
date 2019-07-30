@@ -29,7 +29,7 @@ export class CreateWorkItemComponent implements OnInit {
   public model: any;
   public addedUsernames: UserDetails[] = [];
   public title: string;
-  public files: NgxFileDropEntry[];
+  public files: NgxFileDropEntry[] = [];
   public teamNames: string[];
   public loggedUser: UserDetails = new UserDetails();
   public users: UserDetails[] = [];
@@ -167,7 +167,29 @@ export class CreateWorkItemComponent implements OnInit {
       this.router.navigate([`/pullRequests/${data.id}`]);
     });
   }
-  public onFilesUpload(event) {
-    this.files = event;
+  public onFilesUpload(event: NgxFileDropEntry[]) {
+    for (const ev of event) {
+      console.log(ev.relativePath);
+      
+    }
+    for (const file of event) {
+      const foundIndex = this.files
+        .findIndex((currentFile)=>currentFile.relativePath === file.relativePath);
+      if(foundIndex>=0){
+        if(confirm("Are you sure to replace "+file.relativePath+" ?")) {
+          this.files.splice(foundIndex,1);
+          this.files.push(file);
+        }
+      } else {
+        this.files.push(file);
+      }
+      
+    }
+  }
+  public removeFile(item: NgxFileDropEntry): void {
+    this.files = this.files.filter((file)=>file.relativePath!==item.relativePath);
+  }
+  public filesToShow(): boolean{
+    return this.files.length > 0;
   }
 }

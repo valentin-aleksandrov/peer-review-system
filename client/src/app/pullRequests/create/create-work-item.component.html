@@ -146,7 +146,7 @@
   <files-uploader
   (filesEmiter)="onFilesUpload($event)"
 ></files-uploader>
-<div class="upload-table">
+<div class="upload-table" *ngIf="this.filesToShow()">
   <table class="table">
       <thead>
           <tr>
@@ -156,6 +156,11 @@
       <tbody class="upload-name-style">
           <tr *ngFor="let item of this.files;">
               <td><strong>{{ item.relativePath }}</strong></td>
+              <td>
+                <button class="btn btn-danger" (click)="removeFile(item)" type="button">
+                  Remove file
+                </button>
+              </td>
           </tr>
       </tbody>
   </table>
