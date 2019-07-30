@@ -168,10 +168,6 @@ export class CreateWorkItemComponent implements OnInit {
     });
   }
   public onFilesUpload(event) {
-    console.log('honda-----------------');
-    console.log('onFilesUpload',event);
-    console.log('----------------------');
-    
     this.files = event;
   }
 }
