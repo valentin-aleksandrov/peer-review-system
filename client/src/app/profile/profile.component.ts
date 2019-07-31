@@ -16,7 +16,8 @@ import { WorkItemDataService } from "../core/services/work-item-data.service";
 import { forEach } from "@angular/router/src/utils/collection";
 import { Router } from "@angular/router";
 import { NgbTabset } from "@ng-bootstrap/ng-bootstrap";
-import { NotificatorConfigService } from '../core/services/notificator-config.service';
+import { NotificatorConfigService } from "../core/services/notificator-config.service";
+import { Team } from "../models/team";
 
 @Component({
   selector: "profile",
@@ -34,7 +35,7 @@ export class ProfileComponent implements OnInit {
   public model: any;
   public addedUsers: string[] = [];
   public activeInvitations: any[] = [];
-  public errorMessage: string = '';
+  public errorMessage: string = "";
   @ViewChild("t")
   public tabset: NgbTabset;
   public successfulInvitation: boolean = false;
@@ -49,7 +50,7 @@ export class ProfileComponent implements OnInit {
     private readonly formBuilder: FormBuilder,
     private readonly workItemDataService: WorkItemDataService,
     private readonly router: Router,
-    private readonly notificatorConfigService: NotificatorConfigService,
+    private readonly notificatorConfigService: NotificatorConfigService
   ) {
     this.subscription = this.authenticationService.currentUser.subscribe(
       x => (this.currentUser = x)
@@ -203,7 +204,6 @@ export class ProfileComponent implements OnInit {
           } else {
             this.errorMessage = error;
           }
-          
         }
       );
   }
@@ -226,6 +226,21 @@ export class ProfileComponent implements OnInit {
                   invitationId: id
                 });
               }
+              this.teamService
+                .getTeamsByUserId(this.currentUser.user.id)
+                .subscribe((teams: SimpleTeamInfo[]) => {
+                  this.userTeams = teams;
+                  this.userTeamsToggles = [];
+                  this.addTeamMembersFormArray = [];
+                  teams.forEach(team => {
+                    this.userTeamsToggles.push(false);
+                    this.addTeamMembersFormArray.push(
+                      this.formBuilder.group({
+                        member: ["", Validators.required]
+                      })
+                    );
+                  });
+                });
               this.tabset.select("tab-selectbyid2");
             },
             error => {
@@ -259,6 +274,27 @@ export class ProfileComponent implements OnInit {
             }
           );
       });
+    this.teamService
+      .getTeamsByUserId(this.currentUser.user.id)
+      .subscribe((teams: SimpleTeamInfo[]) => {
+        this.userTeams = teams;
+        this.userTeamsToggles = [];
+        this.addTeamMembersFormArray = [];
+        teams.forEach(team => {
+          this.userTeamsToggles.push(false);
+          this.addTeamMembersFormArray.push(
+            this.formBuilder.group({ member: ["", Validators.required] })
+          );
+        });
+      });
+
     this.tabset.select("tab-selectbyid2");
+  }
+  public leaveTeam(team: Team) {
+    this.teamService
+      .leaveTeam(team.id, this.currentUser)
+      .subscribe(
+        data => (this.userTeams = this.userTeams.filter(x => x.id !== team.id))
+      );
   }
 }

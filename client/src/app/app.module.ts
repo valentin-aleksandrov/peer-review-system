@@ -22,11 +22,11 @@ import { ErrorInterceptor } from "./interceptors/error.interceptor";
     LoginComponent
   ],
   imports: [
-    BrowserModule, 
-    AppRoutingModule, 
-    CoreModule, 
+    BrowserModule,
+    AppRoutingModule,
+    CoreModule,
     SharedModule,
-    HttpClientModule,
+    HttpClientModule
   ],
   providers: [
     {

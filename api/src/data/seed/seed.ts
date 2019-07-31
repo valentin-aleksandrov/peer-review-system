@@ -74,7 +74,8 @@ const main = async () => {
     user1.password = await bcrypt.hash("aaAA$$123456789", 10);
     user1.firstName = "Valentin";
     user1.lastName = "Aleksandrov";
-    user1.avatarURL = "https://avatars2.githubusercontent.com/u/26555796?s=460&v=4";
+    user1.avatarURL =
+      "https://avatars2.githubusercontent.com/u/26555796?s=460&v=4";
     const user1Role = await roleRepository.findOne({
       where: {
         name: "member",
@@ -87,9 +88,36 @@ const main = async () => {
   } else {
     console.log("Valka is already in the Database!");
   }
+  const stelka: User = await userRepository.findOne({
+    where: {
+      email: "carmen99@abv.bg",
+    },
+  });
+
+  if (!stelka) {
+    const user1: User = new User();
+    user1.username = "Steli";
+    user1.email = "carmen99@abv.bg";
+    user1.password = await bcrypt.hash("aaAA$$123456789", 10);
+    user1.firstName = "Stiliana";
+    user1.lastName = "Georgieva";
+    user1.avatarURL = "https://i.ibb.co/9vrDM7Y/image1.jpg";
+    const user1Role = await roleRepository.findOne({
+      where: {
+        name: "admin",
+      },
+    });
+    user1.role = Promise.resolve(user1Role);
+
+    await userRepository.save(user1);
+    console.log("Steli created!");
+  } else {
+    console.log("Steli is already in the Database!");
+  }
+
   const valka2: User = await userRepository.findOne({
     where: {
-      email: "valentin2805@gmail.com",
+      email: "pingvin_8@mail.bg",
     },
   });
 
@@ -128,7 +156,8 @@ const main = async () => {
     user1.password = await bcrypt.hash("aaAA$$123456789", 10);
     user1.firstName = "Valentin3";
     user1.lastName = "Aleksandrov3";
-    user1.avatarURL = "https://cdn.pixabay.com/photo/2013/07/13/11/43/tux-158547_960_720.png";
+    user1.avatarURL =
+      "https://cdn.pixabay.com/photo/2013/07/13/11/43/tux-158547_960_720.png";
     const user1Role = await roleRepository.findOne({
       where: {
         name: "member",
@@ -535,6 +564,22 @@ const main = async () => {
   } else {
     console.log("computers tag already exists in the DataBase.");
   }
+
+  const tag4 = await tagRepository.findOne({
+    where: {
+      name: "languages",
+    },
+  });
+
+  if (!tag4) {
+    const newTag: Tag = new Tag();
+    newTag.name = "languages";
+    await tagRepository.save(newTag);
+    console.log("Created languages tag.");
+  } else {
+    console.log("languages tag already exists in the DataBase.");
+  }
+
   const tag2 = await tagRepository.findOne({
     where: {
       name: "sports",

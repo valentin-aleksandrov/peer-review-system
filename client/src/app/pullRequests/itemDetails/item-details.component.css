@@ -14,7 +14,7 @@
 }
 
 .title {
-  font-size: 36px;
+  font-size: 34px;
 }
 
 .fa-circle {
@@ -38,7 +38,8 @@
 .reviewers,
 .tags,
 .team,
-.title {
+.title,
+.comments-label {
   font-weight: bold;
 }
 

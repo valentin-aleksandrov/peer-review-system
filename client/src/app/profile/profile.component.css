@@ -11,7 +11,7 @@
 }
 .user-info {
   text-align: center;
-  font-size: 20px;
+  font-size: 18px;
 }
 
 .resource-name {
@@ -25,4 +25,20 @@
 .create-button {
   margin-top: 15px;
   background-color: #b094aa;
+}
+
+.avatar {
+  width: 100px;
+  height: 100px;
+  border-radius: 50%;
+}
+
+form {
+  padding-top: 15px;
+  padding-left: 15px;
+  padding-right: 15px;
+}
+
+.form-check-label {
+  margin-bottom: 10px;
 }

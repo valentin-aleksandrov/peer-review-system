@@ -59,32 +59,38 @@ export class WorkItemService {
     private readonly pushNotificationService: PushNotificationService,
   ) {}
 
-  public async attachedFilesToWorkItem(fileNames: string[], workItemId: string): Promise<ShowWorkItemDTO> {
+  public async attachedFilesToWorkItem(
+    fileNames: string[],
+    workItemId: string,
+  ): Promise<ShowWorkItemDTO> {
     const foundWorkItem: WorkItem = await this.workItemRepository.findOne({
       where: {
         id: workItemId,
-      }
+      },
     });
-    if(!foundWorkItem){
+    if (!foundWorkItem) {
       return null;
     }
     let savedFiles: FileEntity[] = [];
     for (const fileName of fileNames) {
       const newFile: FileEntity = new FileEntity();
       newFile.fileName = fileName;
-      const serverPath: string = 'http://localhost:3000/api/files';
+      const serverPath: string = "http://localhost:3000/api/files";
       const dir = `${serverPath}/uploads/${workItemId}`;
       newFile.url = `${dir}/${fileName}`;
       const savedFile: FileEntity = await this.fileRepository.save(newFile);
 
-      savedFiles = [savedFile,...savedFiles];
+      savedFiles = [savedFile, ...savedFiles];
     }
     foundWorkItem.files = Promise.resolve(savedFiles);
-    const updatedWorkItem: WorkItem = await this.workItemRepository.save(foundWorkItem); 
-    const updatedShowWorkItemDTO: ShowWorkItemDTO = await this.convertToShowWorkItemDTO(updatedWorkItem);
+    const updatedWorkItem: WorkItem = await this.workItemRepository.save(
+      foundWorkItem,
+    );
+    const updatedShowWorkItemDTO: ShowWorkItemDTO = await this.convertToShowWorkItemDTO(
+      updatedWorkItem,
+    );
     return updatedShowWorkItemDTO;
   }
-
 
   async changeWorkItemStatus(
     workItemId: string,
@@ -141,37 +147,51 @@ export class WorkItemService {
     );
     return await this.convertToShowWorkItemDTO(updatedWorkItem);
   }
-  private async notifyForEditedWorkItem(updatedWorkItem: WorkItem): Promise<void> {
-    const link: string = `http://localhost:4200/pullRequests/${updatedWorkItem.id}`;
+  private async notifyForEditedWorkItem(
+    updatedWorkItem: WorkItem,
+  ): Promise<void> {
+    const link: string = `http://localhost:4200/pullRequests/${
+      updatedWorkItem.id
+    }`;
     const reviews: Review[] = await updatedWorkItem.reviews;
     let reviewsLoaded: Review[] = [];
     for (const currentReview of reviews) {
       const foundReviewer: Review = await this.reviewsRepository.findOne({
         where: {
           id: currentReview.id,
-        }
+        },
       });
-      if(foundReviewer){
-        reviewsLoaded = [foundReviewer,...reviewsLoaded];
+      if (foundReviewer) {
+        reviewsLoaded = [foundReviewer, ...reviewsLoaded];
       }
     }
-    this.notifyUserForEditedWorkItem(updatedWorkItem.author,updatedWorkItem,link);
+    this.notifyUserForEditedWorkItem(
+      updatedWorkItem.author,
+      updatedWorkItem,
+      link,
+    );
     reviewsLoaded
-      .map((review: Review)=>review.user)
-      .forEach((user: User)=>this.notifyUserForEditedWorkItem(user,updatedWorkItem,link));
+      .map((review: Review) => review.user)
+      .forEach((user: User) =>
+        this.notifyUserForEditedWorkItem(user, updatedWorkItem, link),
+      );
   }
-  
-  private notifyUserForEditedWorkItem(user: User, workItem: WorkItem, link: string): void {
+
+  private notifyUserForEditedWorkItem(
+    user: User,
+    workItem: WorkItem,
+    link: string,
+  ): void {
     this.emailService.sendEmail(
       user.email,
-      'Work Item is edited',
-      `${workItem.title} is edited. Press here:${link}`
+      "Work Item is edited",
+      `${workItem.title} is edited. Press here:${link}`,
     );
     this.pushNotificationService.sendPushNotfication(
-      'Work Item is edited',
+      "Work Item is edited",
       `${workItem.title} is edited. Press here:`,
       user.username,
-      link
+      link,
     );
   }
 
@@ -353,32 +373,44 @@ export class WorkItemService {
     return await this.convertTagstoDTOs(tags);
   }
 
-  public async editWorkItem(user: User, workItemId: string, editWorkItemDTO: EditWorkItemDTO): Promise<ShowWorkItemDTO> {
-    const foundWorkItem: WorkItem = await this.workItemRepository.findOne({where: {
-      id: workItemId,
-    }});
-    if(!foundWorkItem){
+  public async editWorkItem(
+    user: User,
+    workItemId: string,
+    editWorkItemDTO: EditWorkItemDTO,
+  ): Promise<ShowWorkItemDTO> {
+    const foundWorkItem: WorkItem = await this.workItemRepository.findOne({
+      where: {
+        id: workItemId,
+      },
+    });
+    if (!foundWorkItem) {
       return undefined;
-    } 
+    }
     const role: Role = await user.role; // this may not work
-    if(foundWorkItem.author.id !== user.id && role.name !== 'admin') {
+    if (foundWorkItem.author.id !== user.id && role.name !== "admin") {
       return undefined;
-    } foundWorkItem.title = editWorkItemDTO.title;
+    }
+    foundWorkItem.title = editWorkItemDTO.title;
     foundWorkItem.description = editWorkItemDTO.description;
     let updatedTagsList: Tag[] = [];
     for (const tagDTO of editWorkItemDTO.tags) {
-      const foundTag: Tag = await this.tagsRepository.findOne({where: {
-        name: tagDTO.name
-      }});
-      if(foundTag){
-        updatedTagsList = [foundTag,...updatedTagsList];
+      const foundTag: Tag = await this.tagsRepository.findOne({
+        where: {
+          name: tagDTO.name,
+        },
+      });
+      if (foundTag) {
+        updatedTagsList = [foundTag, ...updatedTagsList];
       }
-
     }
     foundWorkItem.tags = Promise.resolve(updatedTagsList);
-    const updatedWorkItem: WorkItem = await this.workItemRepository.save(foundWorkItem);
+    const updatedWorkItem: WorkItem = await this.workItemRepository.save(
+      foundWorkItem,
+    );
     this.notifyForEditedWorkItem(updatedWorkItem);
-    const updatedWorkItemDTO: ShowWorkItemDTO = await this.convertToShowWorkItemDTO(updatedWorkItem);
+    const updatedWorkItemDTO: ShowWorkItemDTO = await this.convertToShowWorkItemDTO(
+      updatedWorkItem,
+    );
     return updatedWorkItemDTO;
   }
   private notifyForWorkItemCreation(
@@ -634,16 +666,16 @@ export class WorkItemService {
     const workItemFiles: FileEntity[] = await this.fileRepository.find({
       where: {
         workItem: workItem,
-      }
+      },
     });
-    const filesDTOs: ShowFileDTO[] = workItemFiles.map((fileEntity)=>{
-      fileEntity.url
+    const filesDTOs: ShowFileDTO[] = workItemFiles.map(fileEntity => {
+      fileEntity.url;
       const fileDTO: ShowFileDTO = {
         fileName: fileEntity.fileName,
         url: fileEntity.url,
       };
       return fileDTO;
-     });
+    });
     const convertedWorkItem: ShowWorkItemDTO = {
       id: workItem.id,
       isReady: workItem.isReady,
@@ -705,122 +737,6 @@ export class WorkItemService {
   }
 
   public async getAllByQuery(query: WorkItemQueryDTO): Promise<any> {
-    // if (
-    //   query.team &&
-    //   query.tag &&
-    //   query.author &&
-    //   query.asignee &&
-    //   query.status &&
-    //   query.title
-    // ) {
-    //   const currentStatus: WorkItemStatus = await this.workItemStatusRepository.findOne(
-    //     {
-    //       where: {
-    //         status: query.status,
-    //       },
-    //     },
-    //   );
-    //   const asigneeQuery: User = await this.userRepository.findOne({
-    //     where: {
-    //       username: query.asignee,
-    //     },
-    //   });
-    //   const authorQuery: User = await this.userRepository.findOne({
-    //     where: {
-    //       username: query.author,
-    //     },
-    //   });
-    //   const queryObject = {};
-    //   if (query.title) {
-    //     queryObject.title = query.title;
-    //   }
-    //   if (query.author) {
-    //     queryObject.author = query.author;
-    //   }
-    // const workitems: WorkItem[] = await this.workItemRepository.find({
-    //   where: { queryObject },
-    //   // title: query.title,
-    //   // team: query.team,queryObject,
-    //   // asignee: asigneeQuery,
-    //   // workItemStatus: currentStatus,
-    //   // author: authorQuery,
-    // });
-    // return await this.convertToShowWorkItemDTOs(workitems);
-    // }
-    // if (query.author) {
-    //   const authorQuery: User = await this.userRepository.findOne({
-    //     where: {
-    //       username: query.author,
-    //     },
-    //   });
-    //   const workitems: WorkItem[] = await this.workItemRepository.find({
-    //     where: {
-    //       author: authorQuery,
-    //     },
-    //   });
-    //   return workitems;
-    // }
-    // if (query.author && query.team) {
-    //   const authorQuery: User = await this.userRepository.findOne({
-    //     where: {
-    //       username: query.author,
-    //     },
-    //   });
-    //   const teamQuery: Team = await this.teamsRepository.findOne({
-    //     where: {
-    //       teamName: query.team,
-    //     },
-    //   });
-    //   const workitems: WorkItem[] = await this.workItemRepository.find({
-    //     where: {
-    //       author: authorQuery,
-    //       team: teamQuery,
-    //     },
-    //   });
-    //   return workitems;
-    // }
-    // if (query.asignee) {
-    //   const asigneeQuery: User = await this.userRepository.findOne({
-    //     where: {
-    //       username: query.asignee,
-    //     },
-    //   });
-    //   const reviews: Review[] = await this.reviewsRepository.find({
-    //     where: {
-    //       user: asigneeQuery,
-    //     },
-    //   });
-    //   return reviews;
-    // }
-    // if (query.team) {
-    //   const teamQuery: Team = await this.teamsRepository.findOne({
-    //     where: {
-    //       teamName: query.team,
-    //     },
-    //   });
-    //   const workitems: WorkItem[] = await this.workItemRepository.find({
-    //     where: {
-    //       team: teamQuery,
-    //     },
-    //   });
-    //   return workitems;
-    // }
-    // if (query.title) {
-    //   const workitems: WorkItem[] = await this.workItemRepository.find({
-    //     where: {
-    //       title: query.title,
-    //     },
-    //   });
-    //   return workitems;
-    // }
-    // if (query.status) {
-    //   const statusQuery: WorkItemStatus = await this.workItemStatusRepository.findOne(
-    //     {
-    //       where: {
-    //         status: query.status,
-    //       },
-    //     },
-    //   );
     const allWorkItems: WorkItem[] = await this.workItemRepository.find({});
     let allWorkItemsToDTO: ShowWorkItemDTO[] = [];
     for (let item of allWorkItems) {

@@ -111,26 +111,26 @@ export class SearchBarComponent implements OnInit {
     const team = this.searchForm.value["team"];
     const tag = this.chosenTag;
     const status = this.chosenStatus;
-    let urlStr = "";
+    let urlStr = "?";
     if (title) {
-      urlStr += `?title=${title}&`;
+      urlStr += `title=${title}&`;
     }
     if (author) {
-      urlStr += `?author=${author}&`;
+      urlStr += `author=${author}&`;
     }
     if (asignee) {
-      urlStr += `?asignee=${asignee}&`;
+      urlStr += `asignee=${asignee}&`;
     }
     if (team) {
-      urlStr += `?team=${team}&`;
+      urlStr += `team=${team}&`;
     }
     if (tag) {
-      urlStr += `?tag=${tag}&`;
+      urlStr += `tag=${tag}&`;
     }
     if (status) {
-      urlStr += `?status=${status}&`;
+      urlStr += `status=${status}&`;
     }
-
+    this.empty = false;
     this.workItemDataService
       .getSelectedWorkItems(urlStr)
       .subscribe((data: WorkItem[]) => {

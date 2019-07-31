@@ -1,7 +1,7 @@
 <div class="container">
   <div class="row">
     <div class="col-4 user-info">
-      <i class="fas fa-user-circle fa-7x"></i>
+      <img class="avatar" [src]="currentUser.user.avatarURL" />
       <div class="user-info">{{ currentUser.user.username }}</div>
       <div class="user-info">
         <span>{{ currentUser.user.firstName }}</span>
@@ -63,7 +63,11 @@
                   </button>
                 </div>
                 <div class="col-sm">
-                  <button type="button" class="btn btn-outline-danger">
+                  <button
+                    type="button"
+                    class="btn btn-outline-danger"
+                    (click)="leaveTeam(team)"
+                  >
                     Leave
                   </button>
                 </div>

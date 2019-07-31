@@ -7,7 +7,7 @@ import { Review } from "src/app/models/review";
 import { SubmitComment } from "src/app/models/submit-comment";
 import { CommentsDataService } from "src/app/core/services/comments-data.service";
 import { Comment } from "src/app/models/comment";
-import { NotificatorConfigService } from 'src/app/core/services/notificator-config.service';
+import { NotificatorConfigService } from "src/app/core/services/notificator-config.service";
 
 @Component({
   selector: "item-details",
@@ -26,13 +26,13 @@ export class ItemDetails implements OnInit {
     private readonly activatedRoute: ActivatedRoute,
     private readonly authenticationService: AuthenticationService,
     private readonly commentDataService: CommentsDataService,
-    private readonly notificatorConfigService: NotificatorConfigService,
+    private readonly notificatorConfigService: NotificatorConfigService
   ) {}
 
   ngOnInit(): void {
     this.activatedRoute.data.subscribe(data => {
       console.log(data);
-      
+
       this.workItem = data.workItem;
       this.comments = this.workItem.comments;
     });
@@ -83,7 +83,7 @@ export class ItemDetails implements OnInit {
       const reviewId = this.reviewId;
       this.commentDataService
         .changeReviewStatus(reviewId, this.workItem.id, event)
-        .subscribe();
+        .subscribe(data => this.comments.push(data.comment));
     }
   }
 
@@ -96,7 +96,7 @@ export class ItemDetails implements OnInit {
     }
   }
   filesToShow(): boolean {
-    if(!this.workItem.files){
+    if (!this.workItem.files) {
       return false;
     }
     return this.workItem.files.length > 0;

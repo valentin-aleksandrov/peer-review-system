@@ -2,6 +2,7 @@ import { Injectable } from "@angular/core";
 import { Observable } from "rxjs";
 import { HttpClient } from "@angular/common/http";
 import { SimpleTeamInfo } from "src/app/models/simple-team-info";
+import { Team } from "src/app/models/team";
 
 @Injectable({
   providedIn: "root"
@@ -15,6 +16,13 @@ export class TeamService {
 
   public createNewTeam(team): Observable<any> {
     return this.http.post<any>("http://localhost:3000/api/team", team);
+  }
+
+  public leaveTeam(teamId, user): Observable<any> {
+    return this.http.delete<{}>(
+      `http://localhost:3000/api/team/${teamId}`,
+      user
+    );
   }
 
   public getTeamsByUserId(userId: string): Observable<SimpleTeamInfo[]> {
