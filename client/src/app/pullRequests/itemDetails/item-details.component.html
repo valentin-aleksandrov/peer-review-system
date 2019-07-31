@@ -73,4 +73,18 @@
       </div>
     </div>
   </div>
+  <div class="upload-table" *ngIf="this.workItem.files">
+    <table class="table">
+        <thead>
+            <tr>
+                <th>File Names:</th>
+            </tr>
+        </thead>
+        <tbody class="upload-name-style">
+            <tr *ngFor="let item of this.workItem.files;">
+                <td><strong>{{ item }}</strong></td>
+            </tr>
+        </tbody>
+    </table>
+  </div>
 </div>
