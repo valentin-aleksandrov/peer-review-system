@@ -79,6 +79,8 @@ export class WorkItemService {
 
       savedFiles = [savedFile,...savedFiles];
     }
+    const foundWorkItemsFiles: FileEntity[] = await foundWorkItem.files;
+    savedFiles = [...foundWorkItemsFiles,...savedFiles];
     foundWorkItem.files = Promise.resolve(savedFiles);
     const updatedWorkItem: WorkItem = await this.workItemRepository.save(foundWorkItem); 
     const updatedShowWorkItemDTO: ShowWorkItemDTO = await this.convertToShowWorkItemDTO(updatedWorkItem);

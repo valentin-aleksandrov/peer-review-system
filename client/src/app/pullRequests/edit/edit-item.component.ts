@@ -73,8 +73,6 @@ export class EditItem implements OnInit {
   public onSelectAll(items: any) {}
 
   public updateWorkItem() {
-    console.log('updateWorkItem');
-    
     this.isSubmitted = true;
     if (this.updateWorkItemForm.invalid) {
       return;
@@ -93,29 +91,38 @@ export class EditItem implements OnInit {
     this.workItemDataService
       .updateWorkItemById(this.workItem.id,updateddWorkItem) 
       .subscribe(data => {
-        console.log(data);
-        console.log('oldFiles',this.oldFiles);
-        console.log('filesToBeRemoved',this.oldFilesToBeRemove);
-        console.log('filesToBeUploaded',this.files);
-        
-        
-        
-        this.router.navigate([`/pullRequests/${data.id}`]);
+        const formData = new FormData();
+
+        for (const file of this.files) {
+          if (file.fileEntry.isFile) {
+            const fileEntry = file.fileEntry as FileSystemFileEntry;
+            fileEntry.file((currentFile: File) => {
+              formData.append("files", currentFile);
+            });
+          }
+        }
+        this.workItemDataService
+          .attachedFilesToWorkItem(data.id, formData)
+          .subscribe(workItem => {
+            this.router.navigate([`/pullRequests/${data.id}`]);
+            console.log('final version',workItem);
+            this.router.navigate([`/pullRequests/${data.id}`]);
+          });
       });
   }
 
-  private isFileSizeValid(file): boolean {
-    const fileEntry = file.fileEntry as FileSystemFileEntry;
-    let isValidSize: boolean = false;
+  // private isFileSizeValid(file): boolean {
+  //   const fileEntry = file.fileEntry as FileSystemFileEntry;
+  //   let isValidSize: boolean = false;
 
-    fileEntry.file((currentFile: File) => {
-      if (Number(currentFile.size) < this.MAX_FILE_SIZE) {
-        isValidSize = true;
-      }
-    });
+  //   fileEntry.file((currentFile: File) => {
+  //     if (Number(currentFile.size) < this.MAX_FILE_SIZE) {
+  //       isValidSize = true;
+  //     }
+  //   });
 
-    return isValidSize;
-  }
+  //   return isValidSize;
+  // }
 
   public onFilesUpload(event: NgxFileDropEntry[]) {
     for (const file of event) {
@@ -166,10 +173,6 @@ export class EditItem implements OnInit {
     );
   }
   removeOldFile(oldFile: FileEntity): void {
-    console.log('oldFileTobeRemoved-->',oldFile);
-    console.log(oldFile.fileName);
-    
-    
     this.oldFiles = this.oldFiles.filter((f)=>f.fileName!==oldFile.fileName);
     this.oldFilesToBeRemove.push(oldFile);
   }
