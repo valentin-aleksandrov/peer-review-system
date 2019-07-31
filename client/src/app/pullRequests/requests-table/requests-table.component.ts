@@ -4,6 +4,7 @@ import { AuthenticationService } from "src/app/core/services/authentication.serv
 import { UserDetails } from "src/app/models/user-details";
 import { WorkItem } from "src/app/models/work-item";
 import { ActivatedRoute } from "@angular/router";
+import { NotificatorConfigService } from 'src/app/core/services/notificator-config.service';
 
 @Component({
   selector: "app-requests-table",
@@ -17,7 +18,8 @@ export class RequestsTableComponent implements OnInit {
   constructor(
     private readonly workItemDataService: WorkItemDataService,
     private readonly authenticationService: AuthenticationService,
-    private readonly activatedRoute: ActivatedRoute
+    private readonly activatedRoute: ActivatedRoute,
+    private readonly notificatorConfigService: NotificatorConfigService,
   ) {}
   ngOnInit(): void {
     this.loggedUser = this.authenticationService.currentUserValue.user;
@@ -25,5 +27,6 @@ export class RequestsTableComponent implements OnInit {
     this.activatedRoute.data.subscribe(data => {
       this.workItems = data.workItems;
     });
+    this.notificatorConfigService.configEngagespotNotificator();
   }
 }

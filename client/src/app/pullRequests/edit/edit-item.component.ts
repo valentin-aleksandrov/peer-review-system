@@ -13,6 +13,7 @@ import { Tag } from 'src/app/models/tag';
 import { WorkItemDataService } from 'src/app/core/services/work-item-data.service';
 import { CreateWorkItem } from 'src/app/models/create-work-item';
 import { UpdateWorkItem } from 'src/app/models/update-work-item';
+import { NotificatorConfigService } from 'src/app/core/services/notificator-config.service';
 
 @Component({
   selector: "edit-item",
@@ -32,6 +33,7 @@ export class EditItem implements OnInit {
     private readonly formBuilder: FormBuilder,
     private readonly workItemDataService: WorkItemDataService,
     private readonly router: Router,
+    private readonly notificatorConfigService: NotificatorConfigService,
   ) {}
 
   ngOnInit(): void {
@@ -56,6 +58,7 @@ export class EditItem implements OnInit {
       tagControl: [this.workItem.tags, []],
       editorModel: [this.workItem.description,[Validators.required, Validators.minLength(17)]]
     });
+    this.notificatorConfigService.configEngagespotNotificator();
   }
   public onItemSelect(item: any) {}
   public onSelectAll(items: any) {}
