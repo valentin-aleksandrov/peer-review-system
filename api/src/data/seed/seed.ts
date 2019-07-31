@@ -74,8 +74,7 @@ const main = async () => {
     user1.password = await bcrypt.hash("aaAA$$123456789", 10);
     user1.firstName = "Valentin";
     user1.lastName = "Aleksandrov";
-    user1.avatarURL =
-      "https://img2.freepng.ru/20180520/iug/kisspng-computer-icons-user-profile-synonyms-and-antonyms-5b013f455c55c1.0171283215268083893782.jpg";
+    user1.avatarURL = "https://avatars2.githubusercontent.com/u/26555796?s=460&v=4";
     const user1Role = await roleRepository.findOne({
       where: {
         name: "member",
@@ -129,8 +128,7 @@ const main = async () => {
     user1.password = await bcrypt.hash("aaAA$$123456789", 10);
     user1.firstName = "Valentin3";
     user1.lastName = "Aleksandrov3";
-    user1.avatarURL =
-      "https://img2.freepng.ru/20180520/iug/kisspng-computer-icons-user-profile-synonyms-and-antonyms-5b013f455c55c1.0171283215268083893782.jpg";
+    user1.avatarURL = "https://cdn.pixabay.com/photo/2013/07/13/11/43/tux-158547_960_720.png";
     const user1Role = await roleRepository.findOne({
       where: {
         name: "member",
