@@ -365,6 +365,8 @@ export class WorkItemService {
       return undefined;
     } foundWorkItem.title = editWorkItemDTO.title;
     foundWorkItem.description = editWorkItemDTO.description;
+    // function
+    foundWorkItem.files = Promise.resolve(this.filterFiles(await foundWorkItem.files, editWorkItemDTO.filesToBeRemoved));
     let updatedTagsList: Tag[] = [];
     for (const tagDTO of editWorkItemDTO.tags) {
       const foundTag: Tag = await this.tagsRepository.findOne({where: {
@@ -380,6 +382,16 @@ export class WorkItemService {
     this.notifyForEditedWorkItem(updatedWorkItem);
     const updatedWorkItemDTO: ShowWorkItemDTO = await this.convertToShowWorkItemDTO(updatedWorkItem);
     return updatedWorkItemDTO;
+  }
+  private filterFiles(originalFiles: FileEntity[],filesToBeRemove: ShowFileDTO[]): FileEntity[]{
+    let filterFiles: FileEntity[] = [];
+    for (const originalFile of originalFiles) {
+      const remove: boolean = filesToBeRemove.some((currentFile)=>currentFile.url===originalFile.url);
+      if(!remove){
+        filterFiles = [originalFile,...filterFiles];
+      }
+    }
+    return filterFiles;
   }
   private notifyForWorkItemCreation(
     createdWorkItem: WorkItem,
