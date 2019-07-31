@@ -190,35 +190,54 @@ export class CreateWorkItemComponent implements OnInit {
         });
     });
   }
-  private isFileSizeValid(file): boolean {
-    const fileEntry = file.fileEntry as FileSystemFileEntry;
-    let isValidSize: boolean = false;
+  // private isFileSizeValid(file): boolean {
+  //   const fileEntry = file.fileEntry as FileSystemFileEntry;
+  //   let isValidSize: boolean = false;
 
-    fileEntry.file((currentFile: File) => {
-      if (Number(currentFile.size) < this.MAX_FILE_SIZE) {
-        isValidSize = true;
-      }
-    });
-
-    return isValidSize;
-  }
+  //   fileEntry.file((currentFile: File) => {
+  //     console.log('currentFile',currentFile.size);
+  //     console.log(Number(currentFile.size));
+      
+  //     console.log('maxSize->',this.MAX_FILE_SIZE);
+      
+      
+  //     if (Number(currentFile.size) < this.MAX_FILE_SIZE) {
+  //       isValidSize = true;
+  //       console.log('should return ture');
+        
+  //     }
+  //   });
+  //   console.log('isValidSize',isValidSize);
+    
+  //   return isValidSize;
+  // }
   public onFilesUpload(event: NgxFileDropEntry[]) {
     for (const file of event) {
-      if (!this.isFileSizeValid(file)) {
-        window.alert(`${file.fileEntry.name} is larger than 20MB.`);
-        continue;
-      }
-      const foundIndex = this.files.findIndex(
-        currentFile => currentFile.relativePath === file.relativePath
-      );
-      if (foundIndex >= 0) {
-        if (confirm("Are you sure to replace " + file.relativePath + " ?")) {
-          this.files.splice(foundIndex, 1);
+
+      const fileEntry = file.fileEntry as FileSystemFileEntry;
+      let isValidSize: boolean = false;
+  
+      fileEntry.file((currentFile: File) => { 
+        if (Number(currentFile.size) < this.MAX_FILE_SIZE) {
+          isValidSize = true;    
+        } 
+        if (!isValidSize) {
+          window.alert(`${file.fileEntry.name} is larger than 20MB.`);
+        } else {
+        const foundIndex = this.files.findIndex(
+          currentFile => currentFile.relativePath === file.relativePath
+        );
+        if (foundIndex >= 0) {
+          if (confirm("Are you sure to replace " + file.relativePath + " ?")) {
+            this.files.splice(foundIndex, 1);
+            this.files.push(file);
+          }
+        } else {
           this.files.push(file);
         }
-      } else {
-        this.files.push(file);
       }
+      });
+
     }
   }
   public removeFile(item: NgxFileDropEntry): void {

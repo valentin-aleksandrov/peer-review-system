@@ -91,6 +91,20 @@
               </button>
             </td>
           </tr>
+          <tr *ngFor="let oldFile of this.oldFiles">
+            <td>
+              <strong>NOT-> {{ oldFile.fileName }}</strong>
+            </td>
+            <td>
+              <button
+                class="btn btn-danger"
+                (click)="removeOldFile(oldFile)"
+                type="button"
+              >
+                Remove file
+              </button>
+            </td>
+          </tr>
         </tbody>
       </table>
     </div>

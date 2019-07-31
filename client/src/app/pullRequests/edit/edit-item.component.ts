@@ -15,6 +15,7 @@ import { CreateWorkItem } from 'src/app/models/create-work-item';
 import { UpdateWorkItem } from 'src/app/models/update-work-item';
 import { NotificatorConfigService } from 'src/app/core/services/notificator-config.service';
 import { FileSystemFileEntry, NgxFileDropEntry } from 'ngx-file-drop';
+import { FileEntity } from 'src/app/models/file-entity';
 
 @Component({
   selector: "edit-item",
@@ -24,6 +25,8 @@ import { FileSystemFileEntry, NgxFileDropEntry } from 'ngx-file-drop';
 })
 export class EditItem implements OnInit {
   private readonly MAX_FILE_SIZE: number = 20000000;
+  public oldFiles: FileEntity[] = [];
+  public oldFilesToBeRemove: FileEntity[] = [];
   public files: NgxFileDropEntry[] = [];
   public workItem: WorkItem;
   public updateWorkItemForm: FormGroup;
@@ -44,6 +47,9 @@ export class EditItem implements OnInit {
       this.workItem = data.workItem;
       this.tags = data.tags;
       this.selectedItems = this.workItem.tags;
+      this.oldFiles = this.workItem.files;
+      console.log('oldfiles---',this.oldFiles.map((f)=>f.fileName));
+      
     });
     this.dropdownSettings = {
       singleSelection: false,
@@ -81,12 +87,19 @@ export class EditItem implements OnInit {
       description: this.updateWorkItemForm.value.editorModel,
       title: this.updateWorkItemForm.value.title,
       tags: tags,
+      filesToBeRemoved: this.oldFilesToBeRemove,
     };
 
     this.workItemDataService
       .updateWorkItemById(this.workItem.id,updateddWorkItem) 
       .subscribe(data => {
         console.log(data);
+        console.log('oldFiles',this.oldFiles);
+        console.log('filesToBeRemoved',this.oldFilesToBeRemove);
+        console.log('filesToBeUploaded',this.files);
+        
+        
+        
         this.router.navigate([`/pullRequests/${data.id}`]);
       });
   }
@@ -113,17 +126,44 @@ export class EditItem implements OnInit {
       const foundIndex = this.files.findIndex(
         currentFile => currentFile.relativePath === file.relativePath
       );
+      const  foundOldFileIndex = this.oldFiles.findIndex(
+        (oldFile)=>oldFile.fileName===file.relativePath
+      );
       if (foundIndex >= 0) {
         if (confirm("Are you sure to replace " + file.relativePath + " ?")) {
           this.files.splice(foundIndex, 1);
           this.files.push(file);
         }
-      } else {
+      } else if(foundOldFileIndex >= 0 ){
+        if (confirm("Are you sure to replace " + file.relativePath + " ?")) {
+          const oldFileToBeRemove: FileEntity = this.oldFiles.splice(foundOldFileIndex,1)[0];
+          this.oldFilesToBeRemove.push(oldFileToBeRemove);
+          this.files.push(file);
+        }
+      }
+      
+      else {
         this.files.push(file);
       }
     }
   }
   public filesToShow(): boolean {
-    return this.files.length > 0;
+    if(this.oldFiles.length > 0 || this.files.length > 0){
+      return true;
+    }
+    return false;
+  }
+  public removeFile(item: NgxFileDropEntry): void {
+    this.files = this.files.filter(
+      file => file.relativePath !== item.relativePath
+    );
+  }
+  removeOldFile(oldFile: FileEntity): void {
+    console.log('oldFileTobeRemoved-->',oldFile);
+    console.log(oldFile.fileName);
+    
+    
+    this.oldFiles = this.oldFiles.filter((f)=>f.fileName!==oldFile.fileName);
+    this.oldFilesToBeRemove.push(oldFile);
   }
 }
