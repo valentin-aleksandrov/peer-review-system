@@ -15,7 +15,7 @@ import { NotificatorConfigService } from "src/app/core/services/notificator-conf
   styleUrls: ["./item-details.component.css"]
 })
 export class ItemDetails implements OnInit {
-  public workItem: WorkItem;
+  public workItem: any;
   public loggedUser: UserDetails;
   public isReviewer: boolean = false;
   public isAssignee: boolean = false;
@@ -88,6 +88,9 @@ export class ItemDetails implements OnInit {
   }
 
   checkEditingRights() {
+    if (this.workItem.workItemStatus.status === "rejected") {
+      return false;
+    }
     if (
       this.loggedUser.username === this.workItem.author.username ||
       this.loggedUser.role === "admin"
