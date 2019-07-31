@@ -14,6 +14,7 @@ import { CreateWorkItem } from "src/app/models/create-work-item";
 import { Router, ActivatedRoute } from "@angular/router";
 import { Team } from "src/app/models/team";
 import { NgxFileDropEntry, FileSystemFileEntry } from "ngx-file-drop";
+import { Alert } from "selenium-webdriver";
 
 @Component({
   selector: "create-work-item",
@@ -37,6 +38,7 @@ export class CreateWorkItemComponent implements OnInit {
   public userTeams: Team[] = [];
   public selectedItems: Tag[] = [];
   public dropdownSettings = {};
+  private readonly MAX_FILE_SIZE: number = 20000000;
 
   constructor(
     private readonly workItemDataService: WorkItemDataService,
@@ -184,11 +186,24 @@ export class CreateWorkItemComponent implements OnInit {
         });
     });
   }
+  private isFileSizeValid(file): boolean {
+    const fileEntry = file.fileEntry as FileSystemFileEntry;
+    let isValidSize: boolean = false;
+
+    fileEntry.file((currentFile: File) => {
+      if (Number(currentFile.size) < this.MAX_FILE_SIZE) {
+        isValidSize = true;
+      }
+    });
+
+    return isValidSize;
+  }
   public onFilesUpload(event: NgxFileDropEntry[]) {
-    for (const ev of event) {
-      console.log(ev.relativePath);
-    }
     for (const file of event) {
+      if (!this.isFileSizeValid(file)) {
+        window.alert(`${file.fileEntry.name} is larger than 20MB.`);
+        continue;
+      }
       const foundIndex = this.files.findIndex(
         currentFile => currentFile.relativePath === file.relativePath
       );
