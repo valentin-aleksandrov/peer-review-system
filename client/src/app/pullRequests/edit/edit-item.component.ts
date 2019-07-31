@@ -14,6 +14,7 @@ import { WorkItemDataService } from 'src/app/core/services/work-item-data.servic
 import { CreateWorkItem } from 'src/app/models/create-work-item';
 import { UpdateWorkItem } from 'src/app/models/update-work-item';
 import { NotificatorConfigService } from 'src/app/core/services/notificator-config.service';
+import { FileSystemFileEntry, NgxFileDropEntry } from 'ngx-file-drop';
 
 @Component({
   selector: "edit-item",
@@ -22,6 +23,8 @@ import { NotificatorConfigService } from 'src/app/core/services/notificator-conf
   providers: [NgbTypeaheadConfig],
 })
 export class EditItem implements OnInit {
+  private readonly MAX_FILE_SIZE: number = 20000000;
+  public files: NgxFileDropEntry[] = [];
   public workItem: WorkItem;
   public updateWorkItemForm: FormGroup;
   public tags: Tag[] = [];
@@ -86,5 +89,41 @@ export class EditItem implements OnInit {
         console.log(data);
         this.router.navigate([`/pullRequests/${data.id}`]);
       });
+  }
+
+  private isFileSizeValid(file): boolean {
+    const fileEntry = file.fileEntry as FileSystemFileEntry;
+    let isValidSize: boolean = false;
+
+    fileEntry.file((currentFile: File) => {
+      if (Number(currentFile.size) < this.MAX_FILE_SIZE) {
+        isValidSize = true;
+      }
+    });
+
+    return isValidSize;
+  }
+
+  public onFilesUpload(event: NgxFileDropEntry[]) {
+    for (const file of event) {
+      if (!this.isFileSizeValid(file)) {
+        window.alert(`${file.fileEntry.name} is larger than 20MB.`);
+        continue;
+      }
+      const foundIndex = this.files.findIndex(
+        currentFile => currentFile.relativePath === file.relativePath
+      );
+      if (foundIndex >= 0) {
+        if (confirm("Are you sure to replace " + file.relativePath + " ?")) {
+          this.files.splice(foundIndex, 1);
+          this.files.push(file);
+        }
+      } else {
+        this.files.push(file);
+      }
+    }
+  }
+  public filesToShow(): boolean {
+    return this.files.length > 0;
   }
 }
