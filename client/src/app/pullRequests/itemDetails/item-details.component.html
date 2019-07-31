@@ -73,7 +73,7 @@
       </div>
     </div>
   </div>
-  <div class="upload-table" *ngIf="this.workItem.files">
+  <div class="upload-table" *ngIf="filesToShow()">
     <table class="table">
         <thead>
             <tr>
@@ -82,7 +82,7 @@
         </thead>
         <tbody class="upload-name-style">
             <tr *ngFor="let item of this.workItem.files;">
-                <td><strong>{{ item }}</strong></td>
+                <td><a [href]="item.url"><strong>{{ item.fileName }}</strong></a></td>
             </tr>
         </tbody>
     </table>

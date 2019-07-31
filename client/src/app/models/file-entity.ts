@@ -1,4 +1,4 @@
-export class ShowFileDTO {
+export class FileEntity {
     fileName: string;
     url: string;
 }

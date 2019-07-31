@@ -32,6 +32,7 @@ import { ShowWorkItemStatusDTO } from "./models/show-workitem-status.dto";
 import { EditWorkItemDTO } from "./models/edit-work-item.dto";
 import { Role } from "src/entities/role.entity";
 import { FileEntity } from "src/entities/file.entity";
+import { ShowFileDTO } from "src/files/show-file.dto";
 
 @Injectable()
 export class WorkItemService {
@@ -634,8 +635,15 @@ export class WorkItemService {
       where: {
         workItem: workItem,
       }
-    })
-    const filesURL: string[] = workItemFiles.map((fileEntity)=>fileEntity.url);
+    });
+    const filesDTOs: ShowFileDTO[] = workItemFiles.map((fileEntity)=>{
+      fileEntity.url
+      const fileDTO: ShowFileDTO = {
+        fileName: fileEntity.fileName,
+        url: fileEntity.url,
+      };
+      return fileDTO;
+     });
     const convertedWorkItem: ShowWorkItemDTO = {
       id: workItem.id,
       isReady: workItem.isReady,
@@ -647,7 +655,7 @@ export class WorkItemService {
       tags: tagDTOs,
       team: workItem.team,
       comments: commentDTOs,
-      files: filesURL,
+      files: filesDTOs,
     };
     return convertedWorkItem;
   }

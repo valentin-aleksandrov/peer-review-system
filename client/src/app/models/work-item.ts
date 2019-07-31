@@ -2,6 +2,7 @@ import { Tag } from "./tag";
 import { Review } from "./review";
 import { Assignee } from "./assinee";
 import { Comment } from "./comment";
+import { FileEntity } from './file-entity';
 
 export class WorkItem {
   id: string;
@@ -24,5 +25,5 @@ export class WorkItem {
 
   comments: Comment[];
 
-  files: string[];
+  files: FileEntity[];
 }
