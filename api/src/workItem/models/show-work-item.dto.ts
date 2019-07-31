@@ -28,4 +28,7 @@ export class ShowWorkItemDTO {
   team: ShowTeamDTO;
   @Expose()
   comments: ShowCommentDTO[];
+  
+  // will it work without @Expose?
+  files: string[];
 }

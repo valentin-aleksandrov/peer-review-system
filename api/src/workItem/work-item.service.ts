@@ -31,6 +31,7 @@ import { plainToClass } from "class-transformer";
 import { ShowWorkItemStatusDTO } from "./models/show-workitem-status.dto";
 import { EditWorkItemDTO } from "./models/edit-work-item.dto";
 import { Role } from "src/entities/role.entity";
+import { FileEntity } from "src/entities/file.entity";
 
 @Injectable()
 export class WorkItemService {
@@ -51,9 +52,38 @@ export class WorkItemService {
     private readonly teamsRepository: Repository<Team>,
     @InjectRepository(CommentEntity)
     private readonly commentsRepository: Repository<CommentEntity>,
+    @InjectRepository(FileEntity)
+    private readonly fileRepository: Repository<FileEntity>,
     private readonly emailService: EmailService,
     private readonly pushNotificationService: PushNotificationService,
   ) {}
+
+  public async attachedFilesToWorkItem(fileNames: string[], workItemId: string): Promise<ShowWorkItemDTO> {
+    const foundWorkItem: WorkItem = await this.workItemRepository.findOne({
+      where: {
+        id: workItemId,
+      }
+    });
+    if(!foundWorkItem){
+      return null;
+    }
+    let savedFiles: FileEntity[] = [];
+    for (const fileName of fileNames) {
+      const newFile: FileEntity = new FileEntity();
+      newFile.fileName = fileName;
+      const serverPath: string = 'http://localhost:3000/api/files';
+      const dir = `${serverPath}/uploads/${workItemId}`;
+      newFile.url = `${dir}/${fileName}`;
+      const savedFile: FileEntity = await this.fileRepository.save(newFile);
+
+      savedFiles = [savedFile,...savedFiles];
+    }
+    foundWorkItem.files = Promise.resolve(savedFiles);
+    const updatedWorkItem: WorkItem = await this.workItemRepository.save(foundWorkItem); 
+    const updatedShowWorkItemDTO: ShowWorkItemDTO = await this.convertToShowWorkItemDTO(updatedWorkItem);
+    return updatedShowWorkItemDTO;
+  }
+
 
   async changeWorkItemStatus(
     workItemId: string,
@@ -113,7 +143,6 @@ export class WorkItemService {
   private async notifyForEditedWorkItem(updatedWorkItem: WorkItem): Promise<void> {
     const link: string = `http://localhost:4200/pullRequests/${updatedWorkItem.id}`;
     const reviews: Review[] = await updatedWorkItem.reviews;
-    console.log('reviews',reviews);
     let reviewsLoaded: Review[] = [];
     for (const currentReview of reviews) {
       const foundReviewer: Review = await this.reviewsRepository.findOne({
@@ -601,6 +630,12 @@ export class WorkItemService {
       comments,
     );
 
+    const workItemFiles: FileEntity[] = await this.fileRepository.find({
+      where: {
+        workItem: workItem,
+      }
+    })
+    const filesURL: string[] = workItemFiles.map((fileEntity)=>fileEntity.url);
     const convertedWorkItem: ShowWorkItemDTO = {
       id: workItem.id,
       isReady: workItem.isReady,
@@ -612,6 +647,7 @@ export class WorkItemService {
       tags: tagDTOs,
       team: workItem.team,
       comments: commentDTOs,
+      files: filesURL,
     };
     return convertedWorkItem;
   }

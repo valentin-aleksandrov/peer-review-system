@@ -23,4 +23,6 @@ export class WorkItem {
   team: string;
 
   comments: Comment[];
+
+  files: string[];
 }

@@ -13,7 +13,7 @@ import { FormGroup, FormBuilder, Validators } from "@angular/forms";
 import { CreateWorkItem } from "src/app/models/create-work-item";
 import { Router, ActivatedRoute } from "@angular/router";
 import { Team } from 'src/app/models/team';
-import { NgxFileDropEntry } from 'ngx-file-drop';
+import { NgxFileDropEntry, FileSystemFileEntry } from 'ngx-file-drop';
 
 @Component({
   selector: "create-work-item",
@@ -163,7 +163,20 @@ export class CreateWorkItemComponent implements OnInit {
     };
 
     this.workItemDataService.createWorkItem(createdWorkItem).subscribe(data => {
-      console.log('Created work item:',data);
+      console.log('Created work item:',data); 
+      const formData = new FormData();
+
+      for (const file of this.files) {
+        if (file.fileEntry.isFile) {
+          const fileEntry = file.fileEntry as FileSystemFileEntry;
+          fileEntry.file((currentFile: File) => {
+            formData.append('files',currentFile);
+          });
+        }  
+      }
+      this.workItemDataService.attachedFilesToWorkItem(data.id,formData).subscribe(workItem => {
+        console.log(workItem);
+       });
       this.router.navigate([`/pullRequests/${data.id}`]);
     });
   }
