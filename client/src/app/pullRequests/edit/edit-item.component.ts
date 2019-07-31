@@ -119,32 +119,39 @@ export class EditItem implements OnInit {
 
   public onFilesUpload(event: NgxFileDropEntry[]) {
     for (const file of event) {
-      if (!this.isFileSizeValid(file)) {
-        window.alert(`${file.fileEntry.name} is larger than 20MB.`);
-        continue;
-      }
-      const foundIndex = this.files.findIndex(
-        currentFile => currentFile.relativePath === file.relativePath
-      );
-      const  foundOldFileIndex = this.oldFiles.findIndex(
-        (oldFile)=>oldFile.fileName===file.relativePath
-      );
-      if (foundIndex >= 0) {
-        if (confirm("Are you sure to replace " + file.relativePath + " ?")) {
-          this.files.splice(foundIndex, 1);
-          this.files.push(file);
+      const fileEntry = file.fileEntry as FileSystemFileEntry;
+      let isValidSize: boolean = false;
+
+      fileEntry.file((currentFile: File) => {
+        if (Number(currentFile.size) < this.MAX_FILE_SIZE) {
+          isValidSize = true;
         }
-      } else if(foundOldFileIndex >= 0 ){
-        if (confirm("Are you sure to replace " + file.relativePath + " ?")) {
-          const oldFileToBeRemove: FileEntity = this.oldFiles.splice(foundOldFileIndex,1)[0];
-          this.oldFilesToBeRemove.push(oldFileToBeRemove);
-          this.files.push(file);
+        if (!isValidSize) {
+          window.alert(`${file.fileEntry.name} is larger than 20MB.`);
+         
+        } else {
+          const foundIndex = this.files.findIndex(
+            currentFile => currentFile.relativePath === file.relativePath
+          );
+          const  foundOldFileIndex = this.oldFiles.findIndex(
+            (oldFile)=>oldFile.fileName===file.relativePath
+          );
+          if (foundIndex >= 0) {
+            if (confirm("Are you sure to replace " + file.relativePath + " ?")) {
+              this.files.splice(foundIndex, 1);
+              this.files.push(file);
+            }
+          } else if(foundOldFileIndex >= 0 ){
+            if (confirm("Are you sure to replace " + file.relativePath + " ?")) {
+              const oldFileToBeRemove: FileEntity = this.oldFiles.splice(foundOldFileIndex,1)[0];
+              this.oldFilesToBeRemove.push(oldFileToBeRemove);
+              this.files.push(file);
+            }
+          } else {
+            this.files.push(file);
+          }
         }
-      }
-      
-      else {
-        this.files.push(file);
-      }
+      });    
     }
   }
   public filesToShow(): boolean {
