@@ -73,16 +73,6 @@
             </div>
           </div>
           <div
-            *ngIf="
-              this.isSubmitted === true &&
-              this.chosenTeam.rules &&
-              this.notEnoughRequevwerAdded()
-            "
-            class="invalid-input"
-          >
-            You neat at least {{ this.chosenTeam.rules.minNumberOfReviewers }}
-          </div>
-          <div
             *ngIf="this.isSubmitted === true && !this.chosenTeam.rules"
             class="invalid-input"
           >
@@ -95,7 +85,7 @@
             <ngb-highlight [result]="r.username" [term]="t"></ngb-highlight>
           </ng-template>
 
-          <label for="typeahead-template">Search for a user:</label>
+          <label for="typeahead-template">Search for asignees:</label>
           <input
             id="typeahead-template"
             formControlName="reviwer"
@@ -107,6 +97,17 @@
             [resultTemplate]="rt"
             [inputFormatter]="formatter"
           />
+          <div
+            *ngIf="
+              this.isSubmitted === true &&
+              this.chosenTeam.rules &&
+              this.notEnoughRequevwerAdded()
+            "
+            class="invalid-input"
+          >
+            You need at least
+            {{ this.chosenTeam.rules.minNumberOfReviewers }} asignees!
+          </div>
           <button
             type="button"
             class="btn btn-success add-button"
