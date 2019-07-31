@@ -174,6 +174,7 @@ export class CreateWorkItemComponent implements OnInit {
         if (file.fileEntry.isFile) {
           const fileEntry = file.fileEntry as FileSystemFileEntry;
           fileEntry.file((currentFile: File) => {
+            console.log(currentFile.type);
             formData.append("files", currentFile);
           });
         }

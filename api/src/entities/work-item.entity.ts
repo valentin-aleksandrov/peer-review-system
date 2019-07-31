@@ -27,7 +27,7 @@ export class WorkItem {
   @Column("nvarchar")
   title: string;
 
-  @Column("nvarchar") // It could be not Enough!
+  @Column({ type: "text" }) // It could be not Enough!
   description: string;
 
   @ManyToOne(type => User, user => user.workItems, {
