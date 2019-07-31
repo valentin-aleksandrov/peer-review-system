@@ -200,6 +200,33 @@ const main = async () => {
     console.log("Valka5 is already in the Database!");
   }
 
+  const stelka: User = await userRepository.findOne({
+    where: {
+      email: "carmen99@abv.bg",
+    },
+  });
+
+  if (!stelka) {
+    const user1: User = new User();
+    user1.username = "Steli";
+    user1.email = "carmen99@abv.bg";
+    user1.password = await bcrypt.hash("aaAA$$123456789", 10);
+    user1.firstName = "Stiliana";
+    user1.lastName = "Georgieva";
+    user1.avatarURL = "https://ibb.co/9vrDM7Y";
+    const user1Role = await roleRepository.findOne({
+      where: {
+        name: "admin",
+      },
+    });
+    user1.role = Promise.resolve(user1Role);
+
+    await userRepository.save(user1);
+    console.log("Stelka created!");
+  } else {
+    console.log("Stelka is already in the Database!");
+  }
+
   const revPending: ReviewerStatus = await reviewerStatusRepository.findOne({
     where: {
       status: "pending",
