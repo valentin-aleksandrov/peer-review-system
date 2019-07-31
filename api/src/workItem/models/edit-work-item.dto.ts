@@ -1,6 +1,7 @@
 import { IsString, Length, ValidateNested } from "class-validator";
 import { AddTagDTO } from "./add-tag.dto";
 import { Type } from "class-transformer";
+import { ShowFileDTO } from "src/files/show-file.dto";
 
 export class EditWorkItemDTO {
     @IsString()
@@ -14,4 +15,8 @@ export class EditWorkItemDTO {
     @ValidateNested()
     @Type(() => AddTagDTO) 
     tags: AddTagDTO[];
+
+    @ValidateNested()
+    @Type(() => ShowFileDTO) 
+    filesToBeRemoved: ShowFileDTO[];
 }

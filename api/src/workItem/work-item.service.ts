@@ -82,6 +82,8 @@ export class WorkItemService {
 
       savedFiles = [savedFile, ...savedFiles];
     }
+    const foundWorkItemsFiles: FileEntity[] = await foundWorkItem.files;
+    savedFiles = [...foundWorkItemsFiles,...savedFiles];
     foundWorkItem.files = Promise.resolve(savedFiles);
     const updatedWorkItem: WorkItem = await this.workItemRepository.save(
       foundWorkItem,
@@ -392,6 +394,8 @@ export class WorkItemService {
     }
     foundWorkItem.title = editWorkItemDTO.title;
     foundWorkItem.description = editWorkItemDTO.description;
+    // function
+    foundWorkItem.files = Promise.resolve(this.filterFiles(await foundWorkItem.files, editWorkItemDTO.filesToBeRemoved));
     let updatedTagsList: Tag[] = [];
     for (const tagDTO of editWorkItemDTO.tags) {
       const foundTag: Tag = await this.tagsRepository.findOne({
@@ -412,6 +416,16 @@ export class WorkItemService {
       updatedWorkItem,
     );
     return updatedWorkItemDTO;
+  }
+  private filterFiles(originalFiles: FileEntity[],filesToBeRemove: ShowFileDTO[]): FileEntity[]{
+    let filterFiles: FileEntity[] = [];
+    for (const originalFile of originalFiles) {
+      const remove: boolean = filesToBeRemove.some((currentFile)=>currentFile.url===originalFile.url);
+      if(!remove){
+        filterFiles = [originalFile,...filterFiles];
+      }
+    }
+    return filterFiles;
   }
   private notifyForWorkItemCreation(
     createdWorkItem: WorkItem,

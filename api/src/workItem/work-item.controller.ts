@@ -36,6 +36,8 @@ export class WorkItemController {
     createWorkItemDTO: CreateWorkItemDTO,
     @SessionUser() user: User,
   ): Promise<ShowWorkItemDTO> {
+    console.log('createWorkItemDTO',createWorkItemDTO);
+    
     return await this.workItemService.createWorkItem(user, createWorkItemDTO);
   }
 
