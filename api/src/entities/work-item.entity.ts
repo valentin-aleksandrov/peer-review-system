@@ -56,7 +56,7 @@ export class WorkItem {
   pictures: Promise<Picture>;
 
   @OneToMany(type => FileEntity, file => file.workItem)
-  files: Promise<FileEntity>;
+  files: Promise<FileEntity[]>;
 
   @ManyToOne(type => Team, team => team.workItems, {
     eager: true,

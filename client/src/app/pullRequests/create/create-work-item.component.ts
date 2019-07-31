@@ -13,6 +13,7 @@ import { FormGroup, FormBuilder, Validators } from "@angular/forms";
 import { CreateWorkItem } from "src/app/models/create-work-item";
 import { Router, ActivatedRoute } from "@angular/router";
 import { Team } from 'src/app/models/team';
+import { NgxFileDropEntry, FileSystemFileEntry } from 'ngx-file-drop';
 
 @Component({
   selector: "create-work-item",
@@ -28,7 +29,7 @@ export class CreateWorkItemComponent implements OnInit {
   public model: any;
   public addedUsernames: UserDetails[] = [];
   public title: string;
-  // public chosenTeam: string = "Choose a team.";
+  public files: NgxFileDropEntry[] = [];
   public teamNames: string[];
   public loggedUser: UserDetails = new UserDetails();
   public users: UserDetails[] = [];
@@ -162,8 +163,46 @@ export class CreateWorkItemComponent implements OnInit {
     };
 
     this.workItemDataService.createWorkItem(createdWorkItem).subscribe(data => {
-      console.log('Created work item:',data);
+      console.log('Created work item:',data); 
+      const formData = new FormData();
+
+      for (const file of this.files) {
+        if (file.fileEntry.isFile) {
+          const fileEntry = file.fileEntry as FileSystemFileEntry;
+          fileEntry.file((currentFile: File) => {
+            formData.append('files',currentFile);
+          });
+        }  
+      }
+      this.workItemDataService.attachedFilesToWorkItem(data.id,formData).subscribe(workItem => {
+        console.log(workItem);
+       });
       this.router.navigate([`/pullRequests/${data.id}`]);
     });
+  }
+  public onFilesUpload(event: NgxFileDropEntry[]) {
+    for (const ev of event) {
+      console.log(ev.relativePath);
+      
+    }
+    for (const file of event) {
+      const foundIndex = this.files
+        .findIndex((currentFile)=>currentFile.relativePath === file.relativePath);
+      if(foundIndex>=0){
+        if(confirm("Are you sure to replace "+file.relativePath+" ?")) {
+          this.files.splice(foundIndex,1);
+          this.files.push(file);
+        }
+      } else {
+        this.files.push(file);
+      }
+      
+    }
+  }
+  public removeFile(item: NgxFileDropEntry): void {
+    this.files = this.files.filter((file)=>file.relativePath!==item.relativePath);
+  }
+  public filesToShow(): boolean{
+    return this.files.length > 0;
   }
 }

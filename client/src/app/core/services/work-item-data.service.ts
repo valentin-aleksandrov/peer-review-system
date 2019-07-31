@@ -21,8 +21,8 @@ export class WorkItemDataService {
     return this.http.get<Tag[]>(`http://localhost:3000/api/work-item/tags`);
   }
 
-  public createWorkItem(workItem: CreateWorkItem): Observable<any> {
-    return this.http.post<any>("http://localhost:3000/api/work-item", workItem);
+  public createWorkItem(workItem: CreateWorkItem): Observable<WorkItem> {
+    return this.http.post<WorkItem>("http://localhost:3000/api/work-item", workItem);
   }
 
   public getWorkItemsByUserId(userId: string): Observable<WorkItem[]> {
@@ -48,5 +48,8 @@ export class WorkItemDataService {
       `http://localhost:3000/api/work-item/${workItemId}`,
       updatedWorkItem
     );
+  }
+  public attachedFilesToWorkItem(workItemId: string, formData): Observable<WorkItem> {
+    return this.http.post<WorkItem>(`http://localhost:3000/api/files/workItem/${workItemId}`, formData);
   }
 }

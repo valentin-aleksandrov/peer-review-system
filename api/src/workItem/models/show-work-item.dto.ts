@@ -5,6 +5,7 @@ import { ShowCommentDTO } from "src/review-requests/models/show-comment.dto";
 import { Expose } from "class-transformer";
 import { ChangeWorkItemStatus } from "./change-work-item-status.dto";
 import { ShowTeamDTO } from "src/team/models/show-team.dto";
+import { ShowFileDTO } from "src/files/show-file.dto";
 
 export class ShowWorkItemDTO {
   @Expose()
@@ -28,4 +29,7 @@ export class ShowWorkItemDTO {
   team: ShowTeamDTO;
   @Expose()
   comments: ShowCommentDTO[];
+  
+  // will it work without @Expose?
+  files: ShowFileDTO[];
 }

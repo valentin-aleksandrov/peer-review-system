@@ -6,6 +6,15 @@ export class FileEntity {
   @PrimaryGeneratedColumn('uuid')
   id: string;
 
-  @ManyToOne(type => WorkItem, workItem => workItem.files)
-  workItem: Promise<WorkItem>;
+
+  @Column('nvarchar')
+  fileName: string;
+
+  @Column('nvarchar')
+  url: string;
+
+  @ManyToOne(type => WorkItem, workItem => workItem.files, {
+    eager: true,
+  })
+  workItem: WorkItem;
 }

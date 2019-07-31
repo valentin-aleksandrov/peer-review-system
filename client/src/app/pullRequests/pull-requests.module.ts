@@ -17,6 +17,8 @@ import { SearchBarComponent } from "./search-bar/search-bar.component";
 import { SearchWorkitemsComponent } from "./search-workitems/search-workitems.component";
 import { WorkitemsTableComponent } from "./workitems-table/workitems-table.component";
 import { EditItem } from "./edit/edit-item.component";
+import { FilesUploaderComponent } from './filesUploader/files-uploader.component';
+import { NgxFileDropModule } from 'ngx-file-drop';
 
 @NgModule({
   declarations: [
@@ -32,7 +34,8 @@ import { EditItem } from "./edit/edit-item.component";
     SearchBarComponent,
     SearchWorkitemsComponent,
     WorkitemsTableComponent,
-    EditItem
+    EditItem,
+    FilesUploaderComponent,
   ],
   imports: [
     SharedModule,
@@ -40,7 +43,8 @@ import { EditItem } from "./edit/edit-item.component";
     PullRequestsRoutingModule,
     FroalaEditorModule.forRoot(),
     FroalaViewModule.forRoot(),
-    NgMultiSelectDropDownModule.forRoot()
+    NgMultiSelectDropDownModule.forRoot(),
+    NgxFileDropModule,
   ]
 })
 export class PullRequestsModule {}
