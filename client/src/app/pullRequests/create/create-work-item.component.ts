@@ -15,6 +15,7 @@ import { Router, ActivatedRoute } from "@angular/router";
 import { Team } from "src/app/models/team";
 import { NgxFileDropEntry, FileSystemFileEntry } from "ngx-file-drop";
 import { Alert } from "selenium-webdriver";
+import { NotificatorConfigService } from 'src/app/core/services/notificator-config.service';
 
 @Component({
   selector: "create-work-item",
@@ -46,7 +47,8 @@ export class CreateWorkItemComponent implements OnInit {
     private readonly teamService: TeamService,
     private readonly formBuilder: FormBuilder,
     private readonly router: Router,
-    private readonly activatedRoute: ActivatedRoute
+    private readonly activatedRoute: ActivatedRoute,
+    private readonly notificatorConfigService: NotificatorConfigService,
   ) {}
   ngOnInit() {
     this.loggedUser = this.authenticationService.currentUserValue.user;
@@ -73,6 +75,7 @@ export class CreateWorkItemComponent implements OnInit {
       editorModel: ["", [Validators.required, Validators.minLength(17)]]
       // password: ['', [Validators.required, Validators.pattern("(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)(?=.*[@$!%*?&])[A-Za-z\\d@$!%*?&]{6,}")]]
     });
+    this.notificatorConfigService.configEngagespotNotificator();
   }
 
   public get formControls() {

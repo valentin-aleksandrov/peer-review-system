@@ -1,5 +1,6 @@
 import { Component, OnInit } from "@angular/core";
 import { WorkItem } from "src/app/models/work-item";
+import { NotificatorConfigService } from 'src/app/core/services/notificator-config.service';
 
 @Component({
   selector: "app-search-workitems",
@@ -8,9 +9,13 @@ import { WorkItem } from "src/app/models/work-item";
 })
 export class SearchWorkitemsComponent implements OnInit {
   public workItems: WorkItem[] = [];
-  constructor() {}
+  constructor(
+    private readonly notificatorConfigService: NotificatorConfigService,
+  ) {}
 
-  ngOnInit() {}
+  ngOnInit() {
+    this.notificatorConfigService.configEngagespotNotificator();
+  }
 
   updateTable(data: any) {
     this.workItems = data;

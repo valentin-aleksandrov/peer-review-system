@@ -7,6 +7,7 @@ import { Review } from "src/app/models/review";
 import { SubmitComment } from "src/app/models/submit-comment";
 import { CommentsDataService } from "src/app/core/services/comments-data.service";
 import { Comment } from "src/app/models/comment";
+import { NotificatorConfigService } from 'src/app/core/services/notificator-config.service';
 
 @Component({
   selector: "item-details",
@@ -24,7 +25,8 @@ export class ItemDetails implements OnInit {
     private readonly router: Router,
     private readonly activatedRoute: ActivatedRoute,
     private readonly authenticationService: AuthenticationService,
-    private readonly commentDataService: CommentsDataService
+    private readonly commentDataService: CommentsDataService,
+    private readonly notificatorConfigService: NotificatorConfigService,
   ) {}
 
   ngOnInit(): void {
@@ -39,6 +41,7 @@ export class ItemDetails implements OnInit {
     this.updateAssigneeAuthority();
     console.log("isreavewer", this.isReviewer);
     this.getCurrentReview();
+    this.notificatorConfigService.configEngagespotNotificator();
   }
 
   updateReviewerAuthority() {

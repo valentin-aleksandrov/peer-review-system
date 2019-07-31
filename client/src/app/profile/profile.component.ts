@@ -16,6 +16,7 @@ import { WorkItemDataService } from "../core/services/work-item-data.service";
 import { forEach } from "@angular/router/src/utils/collection";
 import { Router } from "@angular/router";
 import { NgbTabset } from "@ng-bootstrap/ng-bootstrap";
+import { NotificatorConfigService } from '../core/services/notificator-config.service';
 
 @Component({
   selector: "profile",
@@ -47,7 +48,8 @@ export class ProfileComponent implements OnInit {
     private readonly teamService: TeamService,
     private readonly formBuilder: FormBuilder,
     private readonly workItemDataService: WorkItemDataService,
-    private readonly router: Router
+    private readonly router: Router,
+    private readonly notificatorConfigService: NotificatorConfigService,
   ) {
     this.subscription = this.authenticationService.currentUser.subscribe(
       x => (this.currentUser = x)
@@ -105,6 +107,7 @@ export class ProfileComponent implements OnInit {
         this.invalidInput = true;
       }
     );
+    this.notificatorConfigService.configEngagespotNotificator();
   }
 
   get formControls() {
