@@ -31,6 +31,8 @@ export class ItemDetails implements OnInit {
 
   ngOnInit(): void {
     this.activatedRoute.data.subscribe(data => {
+      console.log(data);
+      
       this.workItem = data.workItem;
       this.comments = this.workItem.comments;
     });
@@ -94,6 +96,9 @@ export class ItemDetails implements OnInit {
     }
   }
   filesToShow(): boolean {
+    if(!this.workItem.files){
+      return false;
+    }
     return this.workItem.files.length > 0;
   }
 }
