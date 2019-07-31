@@ -91,6 +91,6 @@ export class ItemDetails implements OnInit {
     }
   }
   filesToShow(): boolean {
-    return !!this.workItem.files;
+    return this.workItem.files.length > 0;
   }
 }

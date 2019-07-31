@@ -20,6 +20,27 @@
       <hr />
       <div class="content" [innerHTML]="workItem.description"></div>
       <div class="row">
+        <div class="upload-table col-12" *ngIf="filesToShow()">
+          <table class="table">
+            <thead>
+              <tr>
+                <th>File Names:</th>
+              </tr>
+            </thead>
+            <tbody class="upload-name-style">
+              <tr *ngFor="let item of this.workItem.files">
+                <td>
+                  <a [href]="item.url"
+                    ><strong>{{ item.fileName }}</strong></a
+                  >
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <div class="row">
         <div class="col-12">
           Comments:
           <display-comment [comments]="workItem.comments"></display-comment>
@@ -35,7 +56,6 @@
         </div>
       </div>
     </div>
-
     <div class="col-3 display-review-details">
       <div class="assignee">Author</div>
       <div class="assignee-name">{{ workItem.author.username }}</div>
@@ -72,19 +92,5 @@
         {{ workItem.team.teamName }}
       </div>
     </div>
-  </div>
-  <div class="upload-table" *ngIf="filesToShow()">
-    <table class="table">
-        <thead>
-            <tr>
-                <th>File Names:</th>
-            </tr>
-        </thead>
-        <tbody class="upload-name-style">
-            <tr *ngFor="let item of this.workItem.files;">
-                <td><a [href]="item.url"><strong>{{ item.fileName }}</strong></a></td>
-            </tr>
-        </tbody>
-    </table>
   </div>
 </div>

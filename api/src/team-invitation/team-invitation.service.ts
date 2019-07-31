@@ -4,7 +4,6 @@ import { InjectRepository } from "@nestjs/typeorm";
 import { Repository } from "typeorm";
 import { TeamInvitation } from "src/entities/team-invitation.entity";
 import { TeamInvitationStatus } from "src/entities/team-invitation-status.entity";
-import { stat } from "fs";
 import { User } from "src/entities/user.entity";
 import { AddTeamInvitationDTO } from "./models/add-team-invitation.dto";
 import { ShowTeamInvitationDTO } from "./models/show-team-invitation.dto";

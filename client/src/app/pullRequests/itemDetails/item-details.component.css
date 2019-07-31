@@ -43,6 +43,10 @@
 }
 
 .content {
-  min-height: 200px;
+  min-height: 250px;
   margin-bottom: 20px;
+}
+
+.upload-table {
+  margin-top: 10px;
 }

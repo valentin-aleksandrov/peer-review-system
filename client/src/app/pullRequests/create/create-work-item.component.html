@@ -16,7 +16,8 @@
         </div>
         <div
           *ngIf="
-            this.createWorkItemForm.controls.title.invalid && this.isSubmitted === true
+            this.createWorkItemForm.controls.title.invalid &&
+            this.isSubmitted === true
           "
           class="invalid-input"
         >
@@ -28,20 +29,20 @@
             [(froalaModel)]="editorContent"
             class="froala"
           ></div> -->
-          <textarea 
-          [froalaEditor]="options" 
-          formControlName="editorModel"
-    
-          class="froala"
+          <textarea
+            [froalaEditor]="options"
+            formControlName="editorModel"
+            class="froala"
           ></textarea>
           <div
-          *ngIf="
-            this.createWorkItemForm.controls.editorModel.invalid && this.isSubmitted === true
-          "
-          class="invalid-input"
-        >
-          Description is required (at least 10 characters)!
-        </div>
+            *ngIf="
+              this.createWorkItemForm.controls.editorModel.invalid &&
+              this.isSubmitted === true
+            "
+            class="invalid-input"
+          >
+            Description is required (at least 10 characters)!
+          </div>
         </div>
       </div>
       <div class="col-4">
@@ -70,24 +71,23 @@
                 {{ team.teamName }}
               </button>
             </div>
-            
           </div>
           <div
-          *ngIf="
-            this.isSubmitted === true && this.chosenTeam.rules && this.notEnoughRequevwerAdded()
-          "
-          class="invalid-input"
-        >
-          You neat at least {{this.chosenTeam.rules.minNumberOfReviewers}}
-        </div>
+            *ngIf="
+              this.isSubmitted === true &&
+              this.chosenTeam.rules &&
+              this.notEnoughRequevwerAdded()
+            "
+            class="invalid-input"
+          >
+            You neat at least {{ this.chosenTeam.rules.minNumberOfReviewers }}
+          </div>
           <div
-              *ngIf="
-                this.isSubmitted === true && !this.chosenTeam.rules
-              "
-              class="invalid-input"
-            >
-              Team is required!
-            </div>
+            *ngIf="this.isSubmitted === true && !this.chosenTeam.rules"
+            class="invalid-input"
+          >
+            Team is required!
+          </div>
         </div>
         <div class="form-group">
           <ng-template #rt let-r="result" let-t="term">
@@ -107,7 +107,11 @@
             [resultTemplate]="rt"
             [inputFormatter]="formatter"
           />
-          <button type="button" class="btn btn-success add-button" (click)="addUsername()">
+          <button
+            type="button"
+            class="btn btn-success add-button"
+            (click)="addUsername()"
+          >
             Add
           </button>
 
@@ -132,37 +136,38 @@
           </ng-multiselect-dropdown>
         </div>
       </div>
-      <!-- <div>
-        <button class="btn btn-success" (click)="showValue()">Show Values</button>
-    </div> -->
     </div>
-   
+
     <div class="form-group">
       <button class="btn btn-success" type="submit" name="submit">
         Create Work Item
       </button>
     </div>
   </form>
-  <files-uploader
-  (filesEmiter)="onFilesUpload($event)"
-></files-uploader>
-<div class="upload-table" *ngIf="this.filesToShow()">
-  <table class="table">
+  <files-uploader (filesEmiter)="onFilesUpload($event)"></files-uploader>
+  <div class="upload-table">
+    <table class="table files-table" *ngIf="this.filesToShow()">
       <thead>
-          <tr>
-              <th>File Names:</th>
-          </tr>
+        <tr>
+          <th>File Names:</th>
+        </tr>
       </thead>
       <tbody class="upload-name-style">
-          <tr *ngFor="let item of this.files;">
-              <td><strong>{{ item.relativePath }}</strong></td>
-              <td>
-                <button class="btn btn-danger" (click)="removeFile(item)" type="button">
-                  Remove file
-                </button>
-              </td>
-          </tr>
+        <tr *ngFor="let item of this.files">
+          <td>
+            <strong>{{ item.relativePath }}</strong>
+          </td>
+          <td>
+            <button
+              class="btn btn-danger"
+              (click)="removeFile(item)"
+              type="button"
+            >
+              Remove file
+            </button>
+          </td>
+        </tr>
       </tbody>
-  </table>
-</div>
+    </table>
+  </div>
 </div>

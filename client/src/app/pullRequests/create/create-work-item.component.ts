@@ -12,8 +12,8 @@ import { SimpleTeamInfo } from "src/app/models/simple-team-info";
 import { FormGroup, FormBuilder, Validators } from "@angular/forms";
 import { CreateWorkItem } from "src/app/models/create-work-item";
 import { Router, ActivatedRoute } from "@angular/router";
-import { Team } from 'src/app/models/team';
-import { NgxFileDropEntry, FileSystemFileEntry } from 'ngx-file-drop';
+import { Team } from "src/app/models/team";
+import { NgxFileDropEntry, FileSystemFileEntry } from "ngx-file-drop";
 
 @Component({
   selector: "create-work-item",
@@ -25,7 +25,7 @@ import { NgxFileDropEntry, FileSystemFileEntry } from 'ngx-file-drop';
 export class CreateWorkItemComponent implements OnInit {
   public createWorkItemForm: FormGroup;
   public isSubmitted: boolean = false;
-  public chosenTeam: Team = new Team('Choose a team');
+  public chosenTeam: Team = new Team("Choose a team");
   public model: any;
   public addedUsernames: UserDetails[] = [];
   public title: string;
@@ -51,7 +51,7 @@ export class CreateWorkItemComponent implements OnInit {
     this.activatedRoute.data.subscribe(data => {
       this.users = data.users;
       this.userTeams = data.teams;
-      this.teamNames = this.userTeams.map((team:Team)=>team.teamName);
+      this.teamNames = this.userTeams.map((team: Team) => team.teamName);
       this.tags = data.tags;
     });
     this.selectedItems = [];
@@ -120,7 +120,9 @@ export class CreateWorkItemComponent implements OnInit {
     this.model = {};
   }
   public notEnoughRequevwerAdded(): boolean {
-    return this.addedUsernames.length < this.chosenTeam.rules.minNumberOfReviewers;
+    return (
+      this.addedUsernames.length < this.chosenTeam.rules.minNumberOfReviewers
+    );
   }
 
   public removeReviewer(event: UserDetails) {
@@ -146,7 +148,7 @@ export class CreateWorkItemComponent implements OnInit {
     if (!this.chosenTeam.rules || this.notEnoughRequevwerAdded()) {
       return;
     }
-    
+
     const reviewers: { username: string }[] = this.addedUsernames.map(
       reviewer => ({ username: reviewer.username })
     );
@@ -163,46 +165,49 @@ export class CreateWorkItemComponent implements OnInit {
     };
 
     this.workItemDataService.createWorkItem(createdWorkItem).subscribe(data => {
-      console.log('Created work item:',data); 
+      console.log("Created work item:", data);
       const formData = new FormData();
 
       for (const file of this.files) {
         if (file.fileEntry.isFile) {
           const fileEntry = file.fileEntry as FileSystemFileEntry;
           fileEntry.file((currentFile: File) => {
-            formData.append('files',currentFile);
+            formData.append("files", currentFile);
           });
-        }  
+        }
       }
-      this.workItemDataService.attachedFilesToWorkItem(data.id,formData).subscribe(workItem => {
-        console.log(workItem);
-       });
-      this.router.navigate([`/pullRequests/${data.id}`]);
+      this.workItemDataService
+        .attachedFilesToWorkItem(data.id, formData)
+        .subscribe(workItem => {
+          this.router.navigate([`/pullRequests/${data.id}`]);
+          console.log(workItem);
+        });
     });
   }
   public onFilesUpload(event: NgxFileDropEntry[]) {
     for (const ev of event) {
       console.log(ev.relativePath);
-      
     }
     for (const file of event) {
-      const foundIndex = this.files
-        .findIndex((currentFile)=>currentFile.relativePath === file.relativePath);
-      if(foundIndex>=0){
-        if(confirm("Are you sure to replace "+file.relativePath+" ?")) {
-          this.files.splice(foundIndex,1);
+      const foundIndex = this.files.findIndex(
+        currentFile => currentFile.relativePath === file.relativePath
+      );
+      if (foundIndex >= 0) {
+        if (confirm("Are you sure to replace " + file.relativePath + " ?")) {
+          this.files.splice(foundIndex, 1);
           this.files.push(file);
         }
       } else {
         this.files.push(file);
       }
-      
     }
   }
   public removeFile(item: NgxFileDropEntry): void {
-    this.files = this.files.filter((file)=>file.relativePath!==item.relativePath);
+    this.files = this.files.filter(
+      file => file.relativePath !== item.relativePath
+    );
   }
-  public filesToShow(): boolean{
+  public filesToShow(): boolean {
     return this.files.length > 0;
   }
 }
