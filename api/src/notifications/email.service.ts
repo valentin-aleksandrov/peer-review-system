@@ -11,11 +11,10 @@ export class EmailService {
     this
       .mailerService
       .sendMail({
-        to: to, // sender address
-        // from: 'valentin808@gmail.com', // list of receivers
-        subject: subject, // Subject line
-        text: text, // plaintext body
-        html: `<b>${text}</b>`, // HTML body content
+        to: to, 
+        subject: subject, 
+        text: text, 
+        html: `<b>${text}</b>`, 
       })
       .then((success) => {
           console.log('Email send.');

@@ -88,10 +88,6 @@ export class ReviewRequestsService {
     review.reviewerStatus = newStatus;
     const newReview = await this.reviewRepository.save(review);
 
-    // plain to class returns ShowReview without a reviewStatus and a user D: (linux issue)
-    // const reviewToShow: ShowReviewDTO = plainToClass(ShowReviewDTO, newReview, {
-    //   excludeExtraneousValues: true,
-    // });
     const reviewToShow: ShowReviewDTO = {
       id: newReview.id,
       reviewStatus: newReview.reviewerStatus,
@@ -108,53 +104,67 @@ export class ReviewRequestsService {
       },
     });
     this.notifyForReviewStatusChange(workItem, combined);
-    // change of a status
-    // update
-    const isWorkItemStatusUpdated: boolean = await this.updateWorkItemStatus(workItem);
-    if(isWorkItemStatusUpdated){
+
+    const isWorkItemStatusUpdated: boolean = await this.updateWorkItemStatus(
+      workItem,
+    );
+    if (isWorkItemStatusUpdated) {
       const lockedWorkItem: WorkItem = await this.workItemRepository.findOne({
         where: {
           id: workItemId,
-        }
+        },
       });
       this.notifyForWorkItemStatusChange(lockedWorkItem);
       // notify
     }
-    
+
     return await combined;
   }
 
-
-  private async notifyForWorkItemStatusChange(workItem: WorkItem): Promise<void>{
+  private async notifyForWorkItemStatusChange(
+    workItem: WorkItem,
+  ): Promise<void> {
     const workItemStatus: WorkItemStatus = workItem.workItemStatus;
     const link: string = `http://localhost:4200/pullRequests/${workItem.id}`;
     const reviews: Review[] = await this.reviewRepository.find({
       where: {
         workItem: workItem,
-      }
+      },
     });
-    this.notifyUserForWorkItemStatusChange(workItem.author,workItem.title,workItemStatus.status,link);
+    this.notifyUserForWorkItemStatusChange(
+      workItem.author,
+      workItem.title,
+      workItemStatus.status,
+      link,
+    );
     reviews
-      .map((review: Review)=>review.user)
-      .forEach((user)=>this.notifyUserForWorkItemStatusChange(user,workItem.title,workItemStatus.status,link))
+      .map((review: Review) => review.user)
+      .forEach(user =>
+        this.notifyUserForWorkItemStatusChange(
+          user,
+          workItem.title,
+          workItemStatus.status,
+          link,
+        ),
+      );
   }
   private notifyUserForWorkItemStatusChange(
-    user: User, 
-    workItemTitle: string, 
+    user: User,
+    workItemTitle: string,
     workItemStatus: string,
     workItemLink: string,
-    ): void {
-      this.emailService.sendEmail(
-        user.email,
-        'Peer review is complete.',
-        `${workItemTitle} is ${workItemStatus}. Press here: ${workItemLink}`
-        );
-      this.pushNotificationService.sendPushNotfication(
-        'Peer review is complete.',
-        `${workItemTitle} is ${workItemStatus}. Press here:`,
-        user.username,
-        workItemLink
-      );
+  ): void {
+    this.emailService.sendEmail(
+      user.email,
+      "The peer review is complete.",
+      `${workItemTitle} is ${workItemStatus}. Click here: ${workItemLink}`,
+    );
+    this.pushNotificationService.sendPushNotfication(
+      "The peer review is complete.",
+      `${workItemTitle} is ${workItemStatus}. Click here:`,
+      user.username,
+      workItemLink,
+    );
   }
   private async updateWorkItemStatus(workItem: WorkItem): Promise<boolean> {
     const workItemTeam: Team = workItem.team;
@@ -174,7 +184,6 @@ export class ReviewRequestsService {
       status => status.status === "rejected",
     );
     if (isRejected) {
-      // change to reject
       const workItemStatusRejected: WorkItemStatus = await this.workItemStatusRepository.findOne(
         {
           where: {
@@ -221,7 +230,7 @@ export class ReviewRequestsService {
     combined: CombinedReviewDTO,
   ): Promise<void> {
     const reviews: Review[] = await workItem.reviews;
-    // I need this step, because linux doesn't load reviews with all of data (only IDs D:)
+
     let loadedReviews: Review[] = [];
     for (const currentReview of reviews) {
       const currentlyLoadedReview: Review = await this.reviewRepository.findOne(
@@ -252,18 +261,18 @@ export class ReviewRequestsService {
     this.emailService.sendEmail(
       user.email,
       "Review status change",
-      `${combined.comment.author.username} change his review status to ${
+      `${combined.comment.author.username} changed his review status to ${
         combined.review.reviewStatus.status
       } for Work Item ${workItem.title} because ${
         combined.comment.content
-      }. Press here: ${link}`,
+      }. Click here: ${link}`,
     );
 
     this.pushNotificationService.sendPushNotfication(
       "Review status change",
-      `${combined.comment.author.username} change his review status to ${
+      `${combined.comment.author.username} changed his review status to ${
         combined.review.reviewStatus.status
-      } for Work Item ${workItem.title}. Press here:`,
+      } for Work Item ${workItem.title}. Click here:`,
       user.username,
       link,
     );
@@ -275,7 +284,6 @@ export class ReviewRequestsService {
   ): Promise<void> {
     const workItemAuthor: User = workItem.author;
     const reviews: Review[] = await workItem.reviews;
-    // I need this step, because linux doesn't load reviews with all of data (only IDs D:)
     let loadedReviews: Review[] = [];
     for (const currentReview of reviews) {
       const currentlyLoadedReview: Review = await this.reviewRepository.findOne(
@@ -311,16 +319,16 @@ export class ReviewRequestsService {
     this.emailService.sendEmail(
       user.email,
       "New comment",
-      `${comment.author.username} comment on Work Item ${
+      `${comment.author.username} commented on Work Item ${
         workItem.title
-      }. Press here: ${link}`,
+      }. Click here: ${link}`,
     );
 
     this.pushNotificationService.sendPushNotfication(
       "New comment",
-      `${comment.author.username} comment on Work Item ${
+      `${comment.author.username} commented on Work Item ${
         workItem.title
-      }. Press here:`,
+      }. Click here: ${link}`,
       user.username,
       link,
     );
