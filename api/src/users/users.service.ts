@@ -7,23 +7,29 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { plainToClass } from 'class-transformer';
 import { ShowUserDTO } from './models/show-user.dto';
+import { Role } from 'src/entities/role.entity';
+import { async } from 'rxjs/internal/scheduler/async';
 
 @Injectable()
 export class UsersService {
   constructor(
     @InjectRepository(User)
     private readonly usersRepository: Repository<User>,
+    @InjectRepository(Role)
+    private readonly rolesRepository: Repository<Role>,
   ) {}
 
   // One day we should move those "convert" methods in the ConverterService
-  private async convertToShowUserDTO(user: User): Promise<ShowUserDTO> {
-
+  public async convertToShowUserDTO(user: User): Promise<ShowUserDTO> {
+    
     const convertedUser: ShowUserDTO = {
       id: user.id,
       username: user.username,
       email: user.email,
       firstName: user.firstName,
       lastName: user.lastName,
+      role: (await user.role).name,
+      avatarURL: user.avatarURL,
     };
     return convertedUser;
   }
@@ -37,7 +43,13 @@ export class UsersService {
 
     const passwordHash = await bcrypt.hash(user.password, 10);
     newUser.password = passwordHash;
-
+    const memberRole: Role = await this.rolesRepository.findOne({
+      where: {
+        name: 'member',
+      },
+    });
+    newUser.role = Promise.resolve(memberRole);
+    newUser.avatarURL = 'https://img2.freepng.ru/20180520/iug/kisspng-computer-icons-user-profile-synonyms-and-antonyms-5b013f455c55c1.0171283215268083893782.jpg';
     const savedUser = await this.usersRepository.save(newUser);
 
     return this.convertToShowUserDTO(savedUser);
@@ -56,12 +68,11 @@ export class UsersService {
     if (!foundUser) {
       return undefined;
     }
-
+    
     return this.convertToShowUserDTO(foundUser);
 
     // return plainToClass(ShowUserDTO, foundUser, { excludeExtraneousValues: true });
   }
-
 
   async validateUserPassword(user: UserLoginDTO): Promise<boolean> {
     const userEntity = await this.usersRepository.findOne({
@@ -74,13 +85,14 @@ export class UsersService {
     return await bcrypt.compare(user.password, userEntity.password);
   }
 
-  async findAllUsers(): Promise<ShowUserDTO[]>{
+  async findAllUsers(loggedUser: User): Promise<ShowUserDTO[]>{
     const userEntities:User[] = await this.usersRepository.find({
       where: {
         isDeleted: false,
       },
     });
-    return this.convertToShowUserDTOArray(userEntities);
+
+    return this.convertToShowUserDTOArray(userEntities.filter((user)=>user.id !== loggedUser.id));
   }
 
   async findSingleUser(userId: string): Promise<ShowUserDTO>{

@@ -1,0 +1,18 @@
+.comment {
+  border: 1px solid #e1e4e8;
+  border-radius: 4px;
+  margin-top: 20px;
+  margin-bottom: 20px;
+}
+
+.content {
+  margin-top: 5px;
+  margin-bottom: 20px;
+  margin-left: 10px;
+  margin-right: 10px;
+}
+
+.username {
+  margin-left: 10px;
+  margin-bottom: 5px;
+}

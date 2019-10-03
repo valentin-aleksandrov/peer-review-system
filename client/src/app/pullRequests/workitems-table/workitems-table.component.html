@@ -1,0 +1,21 @@
+<div class="container">
+  <table *ngIf="workItems.length" class="table table-striped">
+    <thead>
+      <tr>
+        <th scope="col">Title</th>
+        <th scope="col">User</th>
+        <th scope="col">Status</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr
+        *ngFor="let currentWorkItem of workItems; let i = index"
+        [routerLink]="['/pullRequests', currentWorkItem.id]"
+      >
+        <td>{{ currentWorkItem.title }}</td>
+        <td>{{ currentWorkItem.author.username }}</td>
+        <td>{{ currentWorkItem.workItemStatus.status }}</td>
+      </tr>
+    </tbody>
+  </table>
+</div>

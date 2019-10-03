@@ -1,0 +1,105 @@
+<div class="container">
+  <form [formGroup]="searchForm">
+    <div class="row">
+      <div class="col-lg col-xs-6 col-md-4 mb-20">
+        <label for="typeahead-format">Author:</label>
+        <input
+          formControlName="author"
+          type="text"
+          class="form-control"
+          [ngbTypeahead]="search"
+          [resultFormatter]="formatter"
+        />
+      </div>
+      <div class="col-lg col-xs-6 col-md-4 mb-20">
+        <label for="typeahead2">Asignee:</label>
+        <input
+          formControlName="asignee"
+          type="text"
+          class="form-control"
+          [ngbTypeahead]="search"
+          [resultFormatter]="formatter"
+        />
+      </div>
+      <div class="col-lg col-xs-6 col-md-4 mb-20">
+        <label for="typeahead3">Team:</label>
+        <input
+          formControlName="team"
+          type="text"
+          class="form-control"
+          [ngbTypeahead]="teamSearch"
+          [resultFormatter]="formatterTeam"
+        />
+      </div>
+      <div class="col-lg col-xs-6 col-md-4 mb-20">
+        <label class="block">Tags:</label>
+        <div ngbDropdown class="d-inline-block w-100">
+          <button
+            class="btn btn-outline-primary w-100"
+            id="dropdownBasic1"
+            ngbDropdownToggle
+          >
+            {{ chosenTag }}
+          </button>
+          <div ngbDropdownMenu aria-labelledby="dropdownBasic1">
+            <button
+              *ngFor="let tag of tags"
+              ngbDropdownItem
+              (click)="changeTag(tag.name)"
+            >
+              {{ tag.name }}
+            </button>
+            <button ngbDropdownItem (click)="changeTag('')">any</button>
+          </div>
+        </div>
+      </div>
+      <div class="col-lg col-xs-6 col-md-4 mb-20">
+        <div ngbDropdown class="d-inline-block w-100">
+          <label class="block" for="typeahead">Status:</label>
+          <button
+            class="btn btn-outline-primary w-100"
+            id="dropdownBasic1"
+            ngbDropdownToggle
+          >
+            {{ chosenStatus }}
+          </button>
+          <div ngbDropdownMenu aria-labelledby="dropdownBasic1">
+            <button ngbDropdownItem (click)="changeStatus('pending')">
+              pending
+            </button>
+            <button ngbDropdownItem (click)="changeStatus('accepted')">
+              accepted
+            </button>
+            <button ngbDropdownItem (click)="changeStatus('rejected')">
+              rejected
+            </button>
+            <button ngbDropdownItem (click)="changeStatus('request_changes')">
+              request changes
+            </button>
+            <button ngbDropdownItem (click)="changeStatus('')">any</button>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-lg-8 col-md-12">
+        <label class="block">Title:</label>
+        <input
+          class="title-input"
+          class="form-control"
+          formControlName="title"
+          style="width:100%;"
+          type="text"
+        />
+      </div>
+      <div class="col-lg-4">
+        <button class="btn search-button" (click)="searchForWorkitems()">
+          Search
+        </button>
+      </div>
+    </div>
+  </form>
+  <div *ngIf="this.empty" class="invalid-input">
+    There are no work items matching the selected criteria!
+  </div>
+</div>

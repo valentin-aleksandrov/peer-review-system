@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { FormGroup, FormBuilder, Validators, FormControl } from '@angular/forms';
 import { Router } from '@angular/router';
-import { AuthenticationService } from 'src/app/core/authentication.service';
+import { AuthenticationService } from 'src/app/core/services/authentication.service';
 import { first } from 'rxjs/operators';
 
 @Component({
@@ -39,8 +39,7 @@ registerUser() {
     return;
   }
   this.authenticationService.register(this.registerForm.value).pipe(first()).subscribe(data => {
-    console.log(data);
-    this.router.navigate(['/']);
+    this.router.navigate(['/login']);
   })
 }
 }

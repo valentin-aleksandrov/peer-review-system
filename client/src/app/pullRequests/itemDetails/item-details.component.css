@@ -1,0 +1,53 @@
+/* .author{
+    display: inline;
+} */
+/* .display-item {
+  background-color: plum;
+}
+
+.display-review-details {
+  background-color: purple;
+} */
+
+.container {
+  margin-top: 40px;
+}
+
+.title {
+  font-size: 34px;
+}
+
+.fa-circle {
+  color: grey;
+  padding: 2px;
+}
+
+.fa-check-circle {
+  color: green;
+}
+
+.fa-exclamation-circle {
+  color: yellow;
+}
+
+.fa-times-circle {
+  color: red;
+}
+
+.assignee,
+.reviewers,
+.tags,
+.team,
+.title,
+.comments-label {
+  font-weight: bold;
+}
+
+.content {
+  min-height: 250px;
+  margin-bottom: 20px;
+}
+
+.upload-table {
+  margin-top: 10px;
+}

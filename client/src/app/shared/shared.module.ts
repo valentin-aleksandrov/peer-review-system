@@ -1,24 +1,24 @@
-import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { CommonModule } from '@angular/common';
-import { NgModule } from '@angular/core';
-import {HttpClientModule} from '@angular/common/http';
-
+import { FormsModule, ReactiveFormsModule } from "@angular/forms";
+import { CommonModule } from "@angular/common";
+import { NgModule } from "@angular/core";
+import { HttpClientModule } from "@angular/common/http";
+import { NgbModule } from "@ng-bootstrap/ng-bootstrap";
 
 @NgModule({
-    declarations: [],
-    imports: [
-      CommonModule, 
-      FormsModule,
-      ReactiveFormsModule,
-      HttpClientModule
-    ],
-    exports: [
-      CommonModule,
-      FormsModule,
-      ReactiveFormsModule,
-      HttpClientModule
-
-    ]
-  })
-  export class SharedModule {}
-  
+  declarations: [],
+  imports: [
+    CommonModule,
+    FormsModule,
+    ReactiveFormsModule,
+    HttpClientModule,
+    NgbModule
+  ],
+  exports: [
+    CommonModule,
+    FormsModule,
+    ReactiveFormsModule,
+    HttpClientModule,
+    NgbModule
+  ]
+})
+export class SharedModule {}
